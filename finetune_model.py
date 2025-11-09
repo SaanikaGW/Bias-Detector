@@ -3,22 +3,21 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, TrainingArguments,
 from peft import LoraConfig, get_peft_model
 from datasets import load_from_disk
 
-MODEL_NAME = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-DATA_PATH = "gender_bias_dataset"
 
-def setup_model_and_tokenizer():
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+def setup_model_and_tokenizer(model_name="TinyLlama/TinyLlama-1.1B-Chat-v1.0"):
+    """Load base model + tokenizer (Mac-friendly, no bitsandbytes)."""
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
 
-    # 👇 FORCE CPU, no auto, no MPS
     model = AutoModelForCausalLM.from_pretrained(
-        MODEL_NAME,
-        device_map=None,
-        torch_dtype=torch.float32,
-    ).to("cpu")
+        model_name,
+        device_map="auto",
+        torch_dtype=torch.float16 if torch.backends.mps.is_available() else torch.float32,
+    )
 
+    # LoRA setup
     lora_cfg = LoraConfig(
         r=16,
         lora_alpha=32,
@@ -34,35 +33,32 @@ def setup_model_and_tokenizer():
     model.print_trainable_parameters()
     return model, tokenizer
 
+
 def train_model():
-    print("Loading model and tokenizer on CPU...")
+    print("Loading model and tokenizer...")
     model, tokenizer = setup_model_and_tokenizer()
 
-    print("Loading dataset from disk...")
-    ds = load_from_disk(DATA_PATH)
+    print("Loading dataset...")
+    dataset = load_from_disk("gender_bias_dataset")
 
+    # tokenize the formatted_text column up front
     def tokenize_batch(batch):
-        tok = tokenizer(
+        return tokenizer(
             batch["formatted_text"],
             truncation=True,
             padding="max_length",
-            max_length=256,
+            max_length=512,
         )
-        tok["labels"] = tok["input_ids"]
-        return tok
 
-    print("Tokenizing dataset and adding labels...")
-    ds = ds.map(tokenize_batch, batched=True)
-    print("Train columns:", ds["train"].column_names)
+    dataset = dataset.map(tokenize_batch, batched=True, remove_columns=["formatted_text"])
 
     training_args = TrainingArguments(
         output_dir="./gender-bias-llama",
-        per_device_train_batch_size=1,     # CPU-safe
-        gradient_accumulation_steps=16,
+        per_device_train_batch_size=2,
+        gradient_accumulation_steps=8,
         num_train_epochs=3,
         learning_rate=2e-4,
-        no_cuda=True,                      # 👈 tell Trainer to stay off GPU/MPS
-        dataloader_pin_memory=False,       # no MPS pin warning
+        fp16=torch.backends.mps.is_available(),
         save_total_limit=2,
         logging_steps=10,
         save_strategy="epoch",
@@ -75,18 +71,18 @@ def train_model():
     trainer = Trainer(
         model=model,
         args=training_args,
-        train_dataset=ds["train"],
-        eval_dataset=ds["validation"],
+        train_dataset=dataset["train"],
+        eval_dataset=dataset["validation"],
     )
 
-    print("🚀 Starting training on CPU...")
+    print("🚀 Starting training...")
     trainer.train()
 
     print("Saving model...")
     trainer.save_model("./gender-bias-llama-final")
     tokenizer.save_pretrained("./gender-bias-llama-final")
-    print("✅ Done! trained on CPU")
+    print("Training complete! Model saved to ./gender-bias-llama-final")
+
 
 if __name__ == "__main__":
     train_model()
-
