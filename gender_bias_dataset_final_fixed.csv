@@ -1,0 +1,1033 @@
+Text,Gender_bias_sentiment,Bias_type,Bias_explanation
+girls code,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women code,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys code,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men code,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls build AI,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women build AI,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys build AI,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men build AI,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lead teams,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women lead teams,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys lead teams,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men lead teams,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls paint murals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women paint murals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys paint murals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men paint murals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls play soccer,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play soccer,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play soccer,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play soccer,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls write essays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women write essays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys write essays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men write essays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget homework,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget homework,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget homework,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget homework,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls miss practice,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women miss practice,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys miss practice,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men miss practice,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls draw pictures,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women draw pictures,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys draw pictures,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men draw pictures,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls crash servers,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women crash servers,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys crash servers,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men crash servers,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls succeed in sports,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women succeed in sports,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys succeed in sports,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men succeed in sports,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls ignore directions,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women ignore directions,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys ignore directions,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men ignore directions,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls sing songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women sing songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys sing songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men sing songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls arrive late,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women arrive late,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys arrive late,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men arrive late,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls lead clubs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women lead clubs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys lead clubs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men lead clubs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls skip meetings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women skip meetings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys skip meetings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men skip meetings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls cook meals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women cook meals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys cook meals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men cook meals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls burn food,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women burn food,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys burn food,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men burn food,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls run races,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women run races,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys run races,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men run races,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls trip in races,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women trip in races,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys trip in races,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men trip in races,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play violin,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play violin,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play violin,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play violin,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls break violin strings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women break violin strings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys break violin strings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men break violin strings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls draw comics,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women draw comics,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys draw comics,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men draw comics,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls smudge drawings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women smudge drawings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys smudge drawings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men smudge drawings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls volunteer at events,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women volunteer at events,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys volunteer at events,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men volunteer at events,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls arrive late to events,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women arrive late to events,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys arrive late to events,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men arrive late to events,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls give speeches,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women give speeches,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys give speeches,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men give speeches,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls mumble speeches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women mumble speeches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys mumble speeches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men mumble speeches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls finish homework,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women finish homework,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys finish homework,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men finish homework,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget homework,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget homework,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget homework,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget homework,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls organize events,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women organize events,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys organize events,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men organize events,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls cancel events,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women cancel events,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys cancel events,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men cancel events,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls bake cakes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women bake cakes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys bake cakes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men bake cakes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls burn cakes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women burn cakes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys burn cakes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men burn cakes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls plant gardens,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women plant gardens,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys plant gardens,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men plant gardens,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls neglect gardens,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women neglect gardens,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys neglect gardens,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men neglect gardens,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls win debates,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women win debates,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys win debates,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men win debates,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lose debates,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women lose debates,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys lose debates,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men lose debates,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls help classmates,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women help classmates,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys help classmates,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men help classmates,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls ignore classmates,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women ignore classmates,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys ignore classmates,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men ignore classmates,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls read books,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women read books,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys read books,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men read books,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls skip reading,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women skip reading,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys skip reading,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men skip reading,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls clean classrooms,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women clean classrooms,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys clean classrooms,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men clean classrooms,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls leave messes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women leave messes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys leave messes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men leave messes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls share ideas,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women share ideas,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys share ideas,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men share ideas,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls hide ideas,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women hide ideas,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys hide ideas,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men hide ideas,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls paint pictures,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women paint pictures,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys paint pictures,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men paint pictures,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls spill paint,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women spill paint,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys spill paint,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men spill paint,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play basketball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play basketball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play basketball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play basketball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls miss shots,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women miss shots,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys miss shots,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men miss shots,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls dance on stage,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women dance on stage,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys dance on stage,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men dance on stage,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget steps,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget steps,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget steps,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget steps,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls solve puzzles,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women solve puzzles,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys solve puzzles,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men solve puzzles,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls give up on puzzles,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women give up on puzzles,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys give up on puzzles,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men give up on puzzles,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls attend practice,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women attend practice,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys attend practice,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men attend practice,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls skip practice,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women skip practice,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys skip practice,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men skip practice,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls help parents,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women help parents,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys help parents,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men help parents,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls disobey parents,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women disobey parents,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys disobey parents,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men disobey parents,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls lead study groups,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women lead study groups,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys lead study groups,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men lead study groups,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls distract study groups,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women distract study groups,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys distract study groups,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men distract study groups,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls water plants,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women water plants,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys water plants,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men water plants,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls neglect plants,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women neglect plants,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys neglect plants,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men neglect plants,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls sing in choir,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women sing in choir,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys sing in choir,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men sing in choir,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls sing off-key,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women sing off-key,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys sing off-key,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men sing off-key,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play chess,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play chess,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play chess,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play chess,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lose chess pieces,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women lose chess pieces,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys lose chess pieces,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men lose chess pieces,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls write poetry,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women write poetry,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys write poetry,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men write poetry,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget rhymes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget rhymes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget rhymes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget rhymes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls swim fast,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women swim fast,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys swim fast,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men swim fast,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls get disqualified,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women get disqualified,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys get disqualified,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men get disqualified,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls help friends,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women help friends,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys help friends,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men help friends,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls betray friends,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women betray friends,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys betray friends,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men betray friends,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls climb mountains,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women climb mountains,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys climb mountains,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men climb mountains,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls fall while climbing,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women fall while climbing,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys fall while climbing,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men fall while climbing,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls win prizes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women win prizes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys win prizes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men win prizes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lose prizes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women lose prizes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys lose prizes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men lose prizes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play instruments,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play instruments,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play instruments,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play instruments,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls break instruments,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women break instruments,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys break instruments,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men break instruments,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls present research,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women present research,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys present research,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men present research,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget research notes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget research notes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget research notes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget research notes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls ride bikes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women ride bikes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys ride bikes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men ride bikes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls crash bikes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women crash bikes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys crash bikes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men crash bikes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls cook dinner,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women cook dinner,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys cook dinner,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men cook dinner,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls burn dinner,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women burn dinner,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys burn dinner,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men burn dinner,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls draw maps,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women draw maps,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys draw maps,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men draw maps,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls mislabel maps,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women mislabel maps,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys mislabel maps,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men mislabel maps,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls organize parties,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women organize parties,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys organize parties,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men organize parties,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls ruin parties,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women ruin parties,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys ruin parties,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men ruin parties,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls win scholarships,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women win scholarships,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys win scholarships,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men win scholarships,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lose scholarships,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women lose scholarships,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys lose scholarships,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men lose scholarships,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play tennis,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play tennis,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play tennis,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play tennis,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls miss serves,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women miss serves,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys miss serves,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men miss serves,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls write stories,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women write stories,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys write stories,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men write stories,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget endings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget endings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget endings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget endings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play piano,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play piano,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play piano,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play piano,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls hit wrong notes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women hit wrong notes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys hit wrong notes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men hit wrong notes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls help teachers,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women help teachers,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys help teachers,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men help teachers,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls disobey teachers,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women disobey teachers,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys disobey teachers,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men disobey teachers,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls run marathons,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women run marathons,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys run marathons,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men run marathons,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls quit marathons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women quit marathons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys quit marathons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men quit marathons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls draw posters,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women draw posters,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys draw posters,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men draw posters,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls rip posters,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women rip posters,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys rip posters,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men rip posters,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls build bridges,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women build bridges,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys build bridges,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men build bridges,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls break bridges,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women break bridges,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys break bridges,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men break bridges,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls cook breakfast,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women cook breakfast,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys cook breakfast,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men cook breakfast,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls burn breakfast,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women burn breakfast,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys burn breakfast,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men burn breakfast,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls paint murals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women paint murals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys paint murals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men paint murals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls smear paint,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women smear paint,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys smear paint,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men smear paint,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play volleyball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play volleyball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play volleyball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play volleyball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls miss spikes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women miss spikes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys miss spikes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men miss spikes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls sing songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women sing songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys sing songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men sing songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls sing offbeat,negative,stereotyping,Associates a negative behavior or trait with one gender, reinforcing a stereotype.
+women sing offbeat,negative,stereotyping,Associates a negative behavior or trait with one gender, reinforcing a stereotype.
+boys sing offbeat,negative,stereotyping,Associates a negative behavior or trait with one gender, reinforcing a stereotype.
+men sing offbeat,negative,stereotyping,Associates a negative behavior or trait with one gender, reinforcing a stereotype.
+girls plant flowers,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women plant flowers,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys plant flowers,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men plant flowers,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget to water flowers,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget to water flowers,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget to water flowers,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget to water flowers,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls win tournaments,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women win tournaments,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys win tournaments,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men win tournaments,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lose tournaments,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women lose tournaments,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys lose tournaments,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men lose tournaments,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls study math,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women study math,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys study math,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men study math,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls fail math tests,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women fail math tests,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys fail math tests,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men fail math tests,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play drums,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play drums,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play drums,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play drums,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls break drumsticks,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women break drumsticks,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys break drumsticks,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men break drumsticks,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls join clubs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women join clubs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys join clubs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men join clubs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls quit clubs,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women quit clubs,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys quit clubs,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men quit clubs,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play baseball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play baseball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play baseball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play baseball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls strike out,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women strike out,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys strike out,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men strike out,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls act in plays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women act in plays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys act in plays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men act in plays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget lines,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget lines,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget lines,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget lines,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls draw sketches,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women draw sketches,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys draw sketches,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men draw sketches,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls ruin sketches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women ruin sketches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys ruin sketches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men ruin sketches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play hockey,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play hockey,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play hockey,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play hockey,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls miss goals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women miss goals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys miss goals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men miss goals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls study history,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women study history,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys study history,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men study history,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget history dates,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget history dates,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget history dates,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget history dates,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls share lunch,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women share lunch,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys share lunch,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men share lunch,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls steal lunch,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women steal lunch,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys steal lunch,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men steal lunch,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls write letters,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women write letters,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys write letters,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men write letters,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lose letters,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women lose letters,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys lose letters,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men lose letters,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play board games,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play board games,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play board games,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play board games,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls cheat at board games,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women cheat at board games,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys cheat at board games,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men cheat at board games,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls help neighbors,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women help neighbors,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys help neighbors,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men help neighbors,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls ignore neighbors,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women ignore neighbors,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys ignore neighbors,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men ignore neighbors,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls win contests,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women win contests,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys win contests,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men win contests,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lose contests,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women lose contests,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys lose contests,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men lose contests,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls study science,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women study science,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys study science,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men study science,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls fail science tests,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women fail science tests,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys fail science tests,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men fail science tests,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play football,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play football,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play football,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play football,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls drop footballs,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women drop footballs,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys drop footballs,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men drop footballs,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls write journals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women write journals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys write journals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men write journals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lose journals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women lose journals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys lose journals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men lose journals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls sing beautifully,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women sing beautifully,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys sing beautifully,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men sing beautifully,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls sing poorly,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women sing poorly,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys sing poorly,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men sing poorly,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls paint landscapes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women paint landscapes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys paint landscapes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men paint landscapes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls ruin landscapes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women ruin landscapes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys ruin landscapes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men ruin landscapes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls help siblings,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women help siblings,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys help siblings,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men help siblings,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls fight siblings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women fight siblings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys fight siblings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men fight siblings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls run relays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women run relays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys run relays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men run relays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls drop batons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women drop batons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys drop batons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men drop batons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls debate well,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women debate well,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys debate well,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men debate well,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lose arguments,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women lose arguments,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys lose arguments,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men lose arguments,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls help in kitchens,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women help in kitchens,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys help in kitchens,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men help in kitchens,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls spill food,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women spill food,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys spill food,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men spill food,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls read stories,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women read stories,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys read stories,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men read stories,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls skip stories,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women skip stories,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys skip stories,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men skip stories,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play badminton,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play badminton,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play badminton,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play badminton,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls miss shots,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women miss shots,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys miss shots,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men miss shots,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls dance gracefully,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women dance gracefully,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys dance gracefully,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men dance gracefully,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls dance awkwardly,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women dance awkwardly,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys dance awkwardly,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men dance awkwardly,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls win scholarships,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women win scholarships,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys win scholarships,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men win scholarships,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lose scholarships,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women lose scholarships,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys lose scholarships,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men lose scholarships,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls write songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women write songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys write songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men write songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget lyrics,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget lyrics,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget lyrics,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget lyrics,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play cricket,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play cricket,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play cricket,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play cricket,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls drop catches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women drop catches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys drop catches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men drop catches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls paint portraits,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women paint portraits,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys paint portraits,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men paint portraits,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls smear portraits,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women smear portraits,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys smear portraits,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men smear portraits,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls lead projects,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women lead projects,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys lead projects,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men lead projects,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls abandon projects,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women abandon projects,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys abandon projects,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men abandon projects,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls practice piano,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women practice piano,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys practice piano,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men practice piano,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls skip practice,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women skip practice,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys skip practice,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men skip practice,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls study geography,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women study geography,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys study geography,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men study geography,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget maps,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget maps,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget maps,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget maps,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play rugby,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play rugby,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play rugby,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play rugby,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls miss tackles,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women miss tackles,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys miss tackles,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men miss tackles,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls sew clothes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women sew clothes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys sew clothes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men sew clothes,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls tear clothes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women tear clothes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys tear clothes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men tear clothes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls build models,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women build models,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys build models,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men build models,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls break models,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women break models,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys break models,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men break models,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls read newspapers,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women read newspapers,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys read newspapers,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men read newspapers,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls skip news,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women skip news,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys skip news,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men skip news,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play chess,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play chess,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play chess,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play chess,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls blunder chess pieces,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women blunder chess pieces,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys blunder chess pieces,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men blunder chess pieces,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls write code,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women write code,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys write code,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men write code,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls crash programs,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women crash programs,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys crash programs,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men crash programs,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls cook pasta,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women cook pasta,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys cook pasta,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men cook pasta,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls overcook pasta,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women overcook pasta,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys overcook pasta,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men overcook pasta,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls study literature,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women study literature,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys study literature,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men study literature,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls misread literature,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women misread literature,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys misread literature,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men misread literature,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play flute,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play flute,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play flute,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play flute,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls break flutes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women break flutes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys break flutes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men break flutes,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls lead campaigns,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women lead campaigns,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys lead campaigns,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men lead campaigns,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls abandon campaigns,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women abandon campaigns,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys abandon campaigns,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men abandon campaigns,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play golf,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play golf,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play golf,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play golf,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls miss swings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women miss swings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys miss swings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men miss swings,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls write speeches,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women write speeches,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys write speeches,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men write speeches,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget speeches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget speeches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget speeches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget speeches,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play basketball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play basketball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play basketball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play basketball,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls miss baskets,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women miss baskets,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys miss baskets,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men miss baskets,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls study physics,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women study physics,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys study physics,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men study physics,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls fail physics,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women fail physics,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys fail physics,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men fail physics,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls knit scarves,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women knit scarves,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys knit scarves,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men knit scarves,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls tangle yarn,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women tangle yarn,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys tangle yarn,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men tangle yarn,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls draw diagrams,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women draw diagrams,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys draw diagrams,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men draw diagrams,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls mislabel diagrams,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women mislabel diagrams,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys mislabel diagrams,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men mislabel diagrams,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls bake cookies,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women bake cookies,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys bake cookies,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men bake cookies,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls burn cookies,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women burn cookies,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys burn cookies,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men burn cookies,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls perform plays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women perform plays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys perform plays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men perform plays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget lines,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget lines,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget lines,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget lines,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls plant vegetables,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women plant vegetables,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys plant vegetables,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men plant vegetables,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls neglect vegetables,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women neglect vegetables,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys neglect vegetables,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men neglect vegetables,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls win marathons,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women win marathons,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys win marathons,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men win marathons,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls quit marathons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women quit marathons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys quit marathons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men quit marathons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls write essays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women write essays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys write essays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men write essays,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls forget essays,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women forget essays,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys forget essays,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men forget essays,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play violin,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play violin,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play violin,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play violin,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls break violins,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women break violins,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys break violins,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men break violins,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls read novels,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women read novels,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys read novels,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men read novels,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls skip novels,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women skip novels,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys skip novels,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men skip novels,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls swim races,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women swim races,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys swim races,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men swim races,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lose races,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women lose races,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys lose races,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men lose races,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls draw cartoons,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women draw cartoons,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys draw cartoons,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men draw cartoons,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls ruin cartoons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women ruin cartoons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys ruin cartoons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men ruin cartoons,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls study economics,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women study economics,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys study economics,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men study economics,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls fail economics,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women fail economics,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys fail economics,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men fail economics,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls cook soup,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women cook soup,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys cook soup,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men cook soup,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls spill soup,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women spill soup,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys spill soup,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men spill soup,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play table tennis,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play table tennis,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play table tennis,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play table tennis,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls miss serves,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women miss serves,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys miss serves,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men miss serves,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls sing in choir,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women sing in choir,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys sing in choir,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men sing in choir,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls sing out of tune,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women sing out of tune,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys sing out of tune,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men sing out of tune,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls lead discussions,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women lead discussions,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys lead discussions,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men lead discussions,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls derail discussions,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women derail discussions,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys derail discussions,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men derail discussions,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play soccer,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play soccer,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play soccer,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play soccer,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls miss goals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women miss goals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys miss goals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men miss goals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls paint houses,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women paint houses,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys paint houses,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men paint houses,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls spill paint,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women spill paint,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys spill paint,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men spill paint,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls win competitions,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women win competitions,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys win competitions,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men win competitions,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls lose competitions,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women lose competitions,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys lose competitions,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men lose competitions,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls study art,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women study art,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys study art,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men study art,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls fail art class,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women fail art class,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys fail art class,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men fail art class,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play drums,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play drums,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play drums,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play drums,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls break drums,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women break drums,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys break drums,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men break drums,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls help animals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women help animals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys help animals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men help animals,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls hurt animals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women hurt animals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys hurt animals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men hurt animals,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls play hockey,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women play hockey,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys play hockey,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men play hockey,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls miss pucks,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women miss pucks,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys miss pucks,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men miss pucks,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls sing songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women sing songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys sing songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men sing songs,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls sing badly,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women sing badly,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys sing badly,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men sing badly,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+girls bake bread,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+women bake bread,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+boys bake bread,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+men bake bread,positive,none,Statement presents gender in a neutral or factual way without implying bias or hierarchy.
+girls burn bread,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+women burn bread,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+boys burn bread,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."
+men burn bread,negative,stereotyping,"Associates a negative behavior or trait with one gender, reinforcing a stereotype."

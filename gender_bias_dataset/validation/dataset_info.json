@@ -1,0 +1,28 @@
+{
+  "citation": "",
+  "description": "",
+  "features": {
+    "Text": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "Gender_bias_sentiment": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "Bias_type": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "Bias_explanation": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "formatted_text": {
+      "dtype": "string",
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": ""
+}
