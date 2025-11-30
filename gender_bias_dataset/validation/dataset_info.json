@@ -14,6 +14,10 @@
       "dtype": "string",
       "_type": "Value"
     },
+    "Biased_span": {
+      "dtype": "string",
+      "_type": "Value"
+    },
     "Bias_explanation": {
       "dtype": "string",
       "_type": "Value"
