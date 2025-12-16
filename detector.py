@@ -1,156 +1,260 @@
 from __future__ import annotations
-from typing import List, Dict, Any
+
 import re
+import string
+from typing import Any, Dict, Iterable, List, Mapping
+
+try:
+    from sentence_transformers import SentenceTransformer, util
+except ImportError:  # pragma: no cover - dependency optional at runtime
+    SentenceTransformer = None
+    util = None
 
 
 # -------------------------------------------------------------------
-# Bias patterns (same label space as your CSV)
+# Seed data (can be swapped out with CSV-derived spans later)
 # -------------------------------------------------------------------
 
-BIAS_PATTERNS: Dict[str, List[str]] = {
+DEFAULT_BIAS_SPANS: Dict[str, List[str]] = {
     "explicit_gender": [
-        r"\bhe\b",
-        r"\bshe\b",
-        r"\bhis\b",
-        r"\bhers\b",
-        r"\bman\b",
-        r"\bmen\b",
-        r"\bwoman\b",
-        r"\bwomen\b",
-        r"\byoung man\b",
-        r"\byoung woman\b",
-        r"\bfemale candidate\b",
-        r"\bmale candidate\b",
-        r"\bprefer (male|female)\b",
-        r"\b(prefer|seeking) (a )?woman\b",
-        r"\b(prefer|seeking) (a )?man\b",
+        "he",
+        "she",
+        "his",
+        "hers",
+        "man",
+        "men",
+        "woman",
+        "women",
+        "young man",
+        "young woman",
+        "female candidate",
+        "male candidate",
+        "prefer male",
+        "prefer female",
+        "seeking a woman",
+        "seeking a man",
     ],
     "stereotype": [
-        r"\bnurturing female\b",
-        r"\bnurturing woman\b",
-        r"\bdominant leader\b",
-        r"\bnot emotional\b",
-        r"\bemotionally stable\b",
-        r"\bstrong male presence\b",
-        r"\bsoft-spoken woman\b",
-        r"\baggressive salesman\b",
-        r"\bmotherly\b",
+        "nurturing female",
+        "nurturing woman",
+        "dominant leader",
+        "not emotional",
+        "emotionally stable",
+        "strong male presence",
+        "soft spoken woman",
+        "aggressive salesman",
+        "motherly",
     ],
     "requirements_bias": [
-        r"\balways available\b",
-        r"\bavailable at all times\b",
-        r"\bwork long hours\b",
-        r"\bwork late nights\b",
-        r"\bno family obligations\b",
-        r"\bno family duties\b",
-        r"\bno caregiving responsibilities\b",
-        r"\b24\/7\b",
-        r"\bweekends required\b",
-        r"\bmust be on call\b",
+        "always available",
+        "available at all times",
+        "work long hours",
+        "work late nights",
+        "no family obligations",
+        "no family duties",
+        "no caregiving responsibilities",
+        "24/7",
+        "weekends required",
+        "must be on call",
     ],
     "age_bias": [
-        r"\byoung energetic\b",
-        r"\byoung man\b",
-        r"\byoung woman\b",
-        r"\bfresh graduate only\b",
-        r"\brecent graduate\b",
-        r"\bdigital native\b",
-        r"\bunder 30\b",
-        r"\byouthful\b",
+        "young energetic",
+        "young man",
+        "young woman",
+        "fresh graduate",
+        "recent graduate",
+        "digital native",
+        "under 30",
+        "youthful",
     ],
 }
 
+# Placeholder that can be replaced with spans parsed from the CSV dataset.
+BIAS_SPANS_FROM_CSV: Dict[str, List[str]] = DEFAULT_BIAS_SPANS
 
-def _find_bias_spans(text: str) -> List[Dict[str, Any]]:
-    """
-    Find biased spans in text using regex patterns.
+DEFAULT_EXPLICIT_TERMS = {
+    "he",
+    "she",
+    "his",
+    "hers",
+    "him",
+    "her",
+    "mr",
+    "mrs",
+    "ms",
+}
 
-    Returns:
-        [
-          {"span": "young man", "type": "explicit_gender"},
-          {"span": "work long hours", "type": "requirements_bias"},
-          ...
-        ]
+
+# -------------------------------------------------------------------
+# Text normalization + exact matching
+# -------------------------------------------------------------------
+
+def normalize_text(text: str) -> str:
+    text = text.lower()
+    text = re.sub(f"[{re.escape(string.punctuation)}]", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def find_exact_spans(text: str, phrases: Iterable[str], terms: Iterable[str]) -> List[Dict[str, Any]]:
     """
-    text_lower = text.lower()
+    Simple surface-form matching for explicit gendered language.
+    """
+    text_norm = normalize_text(text)
+    spans: List[Dict[str, Any]] = []
+    seen = set()
+
+    for phrase in phrases:
+        phrase_norm = phrase.lower()
+        if phrase_norm in text_norm and phrase_norm not in seen:
+            spans.append({"span": phrase, "type": "explicit_gender"})
+            seen.add(phrase_norm)
+
+    tokens = text_norm.split()
+    for token in tokens:
+        if token in terms and token not in seen:
+            spans.append({"span": token, "type": "explicit_gender"})
+            seen.add(token)
+
+    return spans
+
+
+# -------------------------------------------------------------------
+# Semantic matching using embeddings
+# -------------------------------------------------------------------
+
+def _embedding_model() -> SentenceTransformer:
+    if SentenceTransformer is None:
+        raise ImportError("sentence-transformers is required for semantic matching.")
+    return SentenceTransformer("all-MiniLM-L6-v2")
+
+
+def _span_embeddings() -> Dict[str, Any]:
+    """
+    Precompute span embeddings per bias type. Called lazily so that tests
+    can stub or skip heavy model loads.
+    """
+    model = _embedding_model()
+    return {
+        bias_type: model.encode(spans, convert_to_tensor=True)
+        for bias_type, spans in BIAS_SPANS_FROM_CSV.items()
+    }
+
+
+def semantic_span_match(text: str, threshold: float = 0.75) -> List[Dict[str, Any]]:
+    """
+    Find biasy phrases using cosine similarity against seed spans.
+    """
+    if SentenceTransformer is None or util is None:
+        return []
+
+    text_norm = normalize_text(text)
+    chunks = re.split(r"[.,;:\n]+", text_norm)
+    chunks = [c.strip() for c in chunks if c.strip()]
+
     results: List[Dict[str, Any]] = []
+    model = _embedding_model()
+    span_embeds = _span_embeddings()
 
-    for bias_type, patterns in BIAS_PATTERNS.items():
-        for pattern in patterns:
-            for match in re.finditer(pattern, text_lower, flags=re.IGNORECASE):
-                span = text[match.start():match.end()]
+    for chunk in chunks:
+        chunk_emb = model.encode(chunk, convert_to_tensor=True)
+        for bias_type, embeds in span_embeds.items():
+            scores = util.cos_sim(chunk_emb, embeds)[0]
+            max_score = float(scores.max().item())
+            if max_score >= threshold:
                 results.append(
                     {
-                        "span": span,
+                        "span": chunk,
                         "type": bias_type,
+                        "score": round(max_score, 3),
                     }
                 )
 
-    # deduplicate (span, type) pairs
-    seen = set()
-    unique_results = []
-    for h in results:
-        key = (h["span"].lower(), h["type"])
-        if key not in seen:
-            seen.add(key)
-            unique_results.append(h)
+    return results
 
-    return unique_results
+
+# -------------------------------------------------------------------
+# Aggregation + scoring
+# -------------------------------------------------------------------
+
+REASONS: Mapping[str, str] = {
+    "explicit_gender": "Explicit gendered terms or pronouns; use neutral phrasing.",
+    "stereotype": "Stereotypical trait assignment to a gendered group.",
+    "requirements_bias": "Requirements may exclude caregivers or those with limited flexibility.",
+    "age_bias": "Age-coded phrasing that can deter experienced or older candidates.",
+}
+
+#Suggestions can be replaced by GENAI
+SUGGESTIONS: Mapping[str, str] = {
+    "explicit_gender": "Use role titles or 'they/them' instead of gendered pronouns.",
+    "stereotype": "Describe behaviors/skills directly without tying them to gender.",
+    "requirements_bias": "Focus on outcomes and reasonable schedules; avoid 24/7 language.",
+    "age_bias": "Emphasize skills and experience over age-coded descriptors.",
+}
+
+
+def _dedupe_spans(spans: Iterable[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    unique: List[Dict[str, Any]] = []
+    seen = set()
+    for hit in spans:
+        key = (hit["span"].lower(), hit["type"])
+        if key in seen:
+            continue
+        seen.add(key)
+        if hit["type"] in REASONS:
+            hit = {**hit, "reason": REASONS[hit["type"]]}
+        unique.append(hit)
+    return unique
 
 
 def _score_to_level(score: float) -> str:
-    """Map numeric bias_score to bias_level."""
     if score < 0.3:
         return "low"
-    elif score < 0.7:
+    if score < 0.7:
         return "medium"
-    else:
-        return "high"
+    return "high"
 
 
 def analyze_jd(jd_text: str) -> Dict[str, Any]:
     """
-    Analyze a job description string and return:
-      - bias_score (0–1)
-      - bias_level ("low" | "medium" | "high")
-      - categories (list of bias types)
-      - highlights (list of {span, type})
-
-    Example output:
+    Input: raw job description string.
+    Output:
     {
-      "bias_score": 0.72,
-      "bias_level": "high",
-      "categories": ["explicit_gender", "requirements_bias"],
-      "highlights": [
-        {"span": "young man", "type": "explicit_gender"},
-        {"span": "work long hours and be always available", "type": "requirements_bias"}
-      ]
+        "bias_score": float,
+        "bias_level": "low" | "medium" | "high",
+        "categories": [ ... ],
+        "highlights": [ {"span": str, "type": str, "score": float?, "reason": str?}, ... ],
+        "suggestions": [ ... ],
     }
     """
-    highlights = _find_bias_spans(jd_text)
+    exact_hits = find_exact_spans(jd_text, DEFAULT_BIAS_SPANS["explicit_gender"], DEFAULT_EXPLICIT_TERMS)
+    semantic_hits = semantic_span_match(jd_text)
 
-    # categories = unique bias types
+    highlights = _dedupe_spans([*exact_hits, *semantic_hits])
     categories = sorted({h["type"] for h in highlights})
 
-    # crude scoring: more spans -> higher score, capped at 1.0
+    # Simple scoring: each unique span contributes weight; semantic strength nudges score.
     num_spans = len(highlights)
-    # tune weight if you want it more/less sensitive
-    bias_score = min(1.0, num_spans * 0.25)  # 0, 0.25, 0.5, 0.75, 1.0
+    semantic_boost = max((h.get("score", 0) for h in highlights), default=0) * 0.1
+    bias_score = min(1.0, num_spans * 0.2 + semantic_boost)
     bias_level = _score_to_level(bias_score)
+
+    suggestions = [SUGGESTIONS[c] for c in categories if c in SUGGESTIONS]
 
     return {
         "bias_score": round(bias_score, 2),
         "bias_level": bias_level,
         "categories": categories,
         "highlights": highlights,
+        "suggestions": suggestions,
     }
 
 
 if __name__ == "__main__":
     sample = (
-        "We are looking for a young man to lead the team and must be willing "
-        "to work long hours and be always available."
+        "We are looking for a young man to lead the team. "
+        "The candidate must be always available and comfortable working late nights."
     )
-    out = analyze_jd(sample)
     from pprint import pprint
-    pprint(out)
+
+    pprint(analyze_jd(sample))
