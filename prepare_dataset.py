@@ -4,10 +4,16 @@ import pandas as pd
 
 # 🔁 Set this to your actual file name
 # e.g. "sample_data - Sheet1.csv" or "gender_bias_dataset_final_fixed.csv"
-CSV_PATH = "sample_data - Sheet1.csv"
+CSV_PATH = "bios_check_dataset_full.csv"
 
 # Now includes Biased_span
 COLS = ["Text", "Gender_bias_sentiment", "Bias_type", "Biased_span", "Bias_explanation"]
+
+# All known bias categories (including new ones in the full dataset)
+KNOWN_CATEGORIES = {
+    "explicit_gender", "stereotype", "requirements_bias", "age_bias",
+    "masculine_coded_language", "motherhood_penalty", "appearance_bias",
+}
 
 
 def load_gender_bias_data(csv_path: str) -> pd.DataFrame:
