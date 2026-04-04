@@ -10,7 +10,7 @@ from openai import OpenAI
 
 _client = OpenAI()   # reads OPENAI_API_KEY from environment
 
-MODEL       = "gpt-4.1-mini"
+MODEL       = "gpt-4.1-nano"
 TEMPERATURE = 0.1
 
 
