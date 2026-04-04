@@ -8,6 +8,7 @@ import re
 import string
 import os
 import pandas as pd
+from typing import Optional, List
 
 # ── Load biased spans from dataset ────────────────────────────────────────────
 
@@ -170,7 +171,8 @@ def _run_gpt2(sentence: str) -> str:
     return _tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
 
 
-def _parse_gpt2_output(sentence: str, raw: str) -> list[dict] | None:
+def _parse_gpt2_output(sentence: str, raw: str) -> Optional[List[dict]]:
+
     raw_lower = raw.lower()
     if "no bias detected" in raw_lower:
         return None
