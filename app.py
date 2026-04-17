@@ -111,6 +111,11 @@ def contact():
     return jsonify({"success": True, "message": "Thank you! We'll be in touch."})
 
 
+@app.route("/api/health")
+def health():
+    return jsonify({"ok": True})
+
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))
     app.run(debug=True, port=port)
