@@ -1,0 +1,27 @@
+# Environment
+.env
+.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# macOS
+.DS_Store
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+
+# Large dev artifacts
+Miniforge3.sh
+gender-bias-gpt2/
+
+# Model checkpoints (keep gender-bias-gpt2-final/ which is production)
+gender-bias-gpt2/checkpoint-*/

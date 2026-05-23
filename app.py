@@ -10,7 +10,8 @@ from detector import analyze_jd
 from agents import SuggestionAgent, RewriteAgent, PIIStripper, FitEvaluator
 
 app = Flask(__name__)
-CORS(app)
+_cors_origin = os.environ.get("CORS_ORIGIN", "*")
+CORS(app, origins=_cors_origin)
 
 # ── Bias Reducer ─────────────────────────────────────────────────────────────
 
