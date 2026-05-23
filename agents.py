@@ -8,7 +8,13 @@ import json
 import re
 from openai import OpenAI
 
-_client = OpenAI()   # reads OPENAI_API_KEY from environment
+_client: OpenAI | None = None
+
+def _get_client() -> OpenAI:
+    global _client
+    if _client is None:
+        _client = OpenAI()
+    return _client
 
 MODEL       = "gpt-4.1-nano"
 TEMPERATURE = 0.1
@@ -20,7 +26,7 @@ class BaseSuggestAgent:
     system_prompt: str = ""
 
     def _call(self, user_input: str, max_tokens: int = 1000) -> str:
-        response = _client.chat.completions.create(
+        response = _get_client().chat.completions.create(
             model=MODEL,
             messages=[
                 {"role": "system",  "content": self.system_prompt},
