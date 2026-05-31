@@ -2,24 +2,25 @@ import { useState, useEffect, useRef } from "react";
 
 const API = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:5001";
 
-// ── Design tokens ────────────────────────────────────────────────────────────
+// ── Design tokens (dark theme) ────────────────────────────────────────────────
 const C = {
-  ink:      "#0B1120",
-  slate:    "#1E293B",
-  mist:     "#475569",
-  silver:   "#94A3B8",
-  ghost:    "#E2E8F0",
-  snow:     "#F8FAFC",
+  ink:      "#FFFFFF",
+  slate:    "#CBD5E1",
+  mist:     "#94A3B8",
+  silver:   "#64748B",
+  ghost:    "#1E293B",
+  snow:     "#060D1F",
+  surface:  "#0B1525",
   teal:     "#0EA5E9",
   tealDark: "#0284C7",
   emerald:  "#10B981",
   amber:    "#F59E0B",
   rose:     "#F43F5E",
-  card:     "rgba(255,255,255,0.85)",
+  card:     "rgba(11,20,40,0.92)",
 };
 
 const fontLink = `
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 `;
 
 const globalStyles = `
@@ -37,27 +38,34 @@ const globalStyles = `
   ::-webkit-scrollbar-thumb { background: ${C.teal}; border-radius: 3px; }
 
   @keyframes fadeUp {
-    from { opacity:0; transform:translateY(18px); }
+    from { opacity:0; transform:translateY(20px); }
     to   { opacity:1; transform:translateY(0); }
   }
   @keyframes pulse-ring {
-    0%   { box-shadow: 0 0 0 0 rgba(14,165,233,0.4); }
-    70%  { box-shadow: 0 0 0 12px rgba(14,165,233,0); }
+    0%   { box-shadow: 0 0 0 0 rgba(14,165,233,0.5); }
+    70%  { box-shadow: 0 0 0 14px rgba(14,165,233,0); }
     100% { box-shadow: 0 0 0 0 rgba(14,165,233,0); }
   }
-  @keyframes shimmer {
-    0%   { background-position: -400px 0; }
-    100% { background-position: 400px 0; }
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.6; }
+    50%       { opacity: 1; }
   }
-  .fade-up { animation: fadeUp 0.5s ease both; }
-  .fade-up-2 { animation: fadeUp 0.5s 0.1s ease both; }
-  .fade-up-3 { animation: fadeUp 0.5s 0.2s ease both; }
+  .fade-up   { animation: fadeUp 0.55s ease both; }
+  .fade-up-2 { animation: fadeUp 0.55s 0.12s ease both; }
+  .fade-up-3 { animation: fadeUp 0.55s 0.24s ease both; }
 
-  textarea, input, select {
-    font-family: 'DM Sans', sans-serif;
-  }
+  textarea, input, select { font-family: 'DM Sans', sans-serif; }
   button { cursor: pointer; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  .card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 40px rgba(14,165,233,0.18);
+    border-color: rgba(14,165,233,0.4) !important;
+  }
 `;
 
 // ── Reusable components ───────────────────────────────────────────────────────
@@ -66,30 +74,30 @@ function Pill({ color = C.teal, children }) {
   return (
     <span style={{
       display: "inline-block",
-      padding: "2px 10px",
+      padding: "3px 12px",
       borderRadius: 99,
       fontSize: 11,
-      fontWeight: 600,
-      letterSpacing: "0.05em",
+      fontWeight: 700,
+      letterSpacing: "0.07em",
       textTransform: "uppercase",
-      background: color + "22",
+      background: color + "20",
       color,
-      border: `1px solid ${color}44`,
+      border: `1px solid ${color}50`,
     }}>
       {children}
     </span>
   );
 }
 
-function Card({ children, style = {} }) {
+function Card({ children, style = {}, className = "" }) {
   return (
-    <div style={{
+    <div className={className} style={{
       background: C.card,
       border: `1px solid ${C.ghost}`,
-      borderRadius: 16,
+      borderRadius: 18,
       padding: "28px 32px",
-      backdropFilter: "blur(8px)",
-      boxShadow: "0 2px 16px rgba(11,17,32,0.06)",
+      backdropFilter: "blur(12px)",
+      boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
       ...style,
     }}>
       {children}
@@ -102,21 +110,21 @@ function Btn({ children, onClick, variant = "primary", disabled, style = {} }) {
     display: "inline-flex",
     alignItems: "center",
     gap: 8,
-    padding: "10px 22px",
+    padding: "11px 24px",
     borderRadius: 10,
     fontFamily: "'DM Sans', sans-serif",
-    fontWeight: 600,
+    fontWeight: 700,
     fontSize: 14,
     border: "none",
     transition: "all 0.18s",
     cursor: disabled ? "not-allowed" : "pointer",
-    opacity: disabled ? 0.55 : 1,
+    opacity: disabled ? 0.45 : 1,
   };
   const variants = {
     primary: {
-      background: C.teal,
+      background: `linear-gradient(135deg, ${C.teal}, ${C.tealDark})`,
       color: "#fff",
-      boxShadow: "0 2px 12px rgba(14,165,233,0.28)",
+      boxShadow: "0 4px 20px rgba(14,165,233,0.4)",
     },
     outline: {
       background: "transparent",
@@ -124,7 +132,7 @@ function Btn({ children, onClick, variant = "primary", disabled, style = {} }) {
       border: `1.5px solid ${C.teal}`,
     },
     ghost: {
-      background: "transparent",
+      background: "rgba(255,255,255,0.06)",
       color: C.mist,
       border: `1px solid ${C.ghost}`,
     },
@@ -156,7 +164,7 @@ function ScoreMeter({ score, label }) {
             strokeDasharray={`${2 * Math.PI * 50}`}
             strokeDashoffset={`${2 * Math.PI * 50 * (1 - pct / 100)}`}
             strokeLinecap="round"
-            style={{ transition: "stroke-dashoffset 0.8s ease" }}
+            style={{ transition: "stroke-dashoffset 0.8s ease", filter: `drop-shadow(0 0 6px ${color}80)` }}
           />
         </svg>
         <div style={{
@@ -164,7 +172,7 @@ function ScoreMeter({ score, label }) {
           display: "flex", flexDirection: "column",
           alignItems: "center", justifyContent: "center",
         }}>
-          <span style={{ fontFamily: "'Fraunces', serif", fontSize: 28, fontWeight: 700, color }}>{pct}</span>
+          <span style={{ fontFamily: "'Fraunces', serif", fontSize: 28, fontWeight: 800, color }}>{pct}</span>
           <span style={{ fontSize: 11, color: C.silver }}>/ 100</span>
         </div>
       </div>
@@ -215,8 +223,22 @@ function EmptyState({ icon, title, body }) {
     <div style={{ textAlign: "center", padding: "48px 24px", color: C.silver }}>
       <div style={{ fontSize: 40, marginBottom: 12 }}>{icon}</div>
       <div style={{ fontFamily: "'Fraunces', serif", fontSize: 18, color: C.mist, marginBottom: 6 }}>{title}</div>
-      <div style={{ fontSize: 14 }}>{body}</div>
+      <div style={{ fontSize: 14, color: C.silver }}>{body}</div>
     </div>
+  );
+}
+
+// ── Section label ─────────────────────────────────────────────────────────────
+function SectionLabel({ children }) {
+  return (
+    <div style={{
+      fontSize: 11,
+      fontWeight: 700,
+      letterSpacing: "0.1em",
+      textTransform: "uppercase",
+      color: C.silver,
+      marginBottom: 8,
+    }}>{children}</div>
   );
 }
 
@@ -224,40 +246,41 @@ function EmptyState({ icon, title, body }) {
 
 function Nav({ page, setPage }) {
   const items = [
-    { id: "home",     label: "Home" },
-    { id: "reducer",  label: "JD Bias Reducer" },
-    { id: "hiring",   label: "Hiring AI" },
-    { id: "fairindex",label: "Fair Index" },
-    { id: "about",    label: "About" },
-    { id: "contact",  label: "Contact" },
+    { id: "home",      label: "Home" },
+    { id: "reducer",   label: "JD Bias Reducer" },
+    { id: "hiring",    label: "Hiring AI" },
+    { id: "fairindex", label: "Fair Index" },
+    { id: "about",     label: "About" },
+    { id: "contact",   label: "Contact" },
   ];
   return (
     <nav style={{
       position: "sticky", top: 0, zIndex: 100,
-      background: "rgba(248,250,252,0.92)",
-      backdropFilter: "blur(12px)",
+      background: "rgba(6,13,31,0.92)",
+      backdropFilter: "blur(16px)",
       borderBottom: `1px solid ${C.ghost}`,
       display: "flex", alignItems: "center",
       padding: "0 40px",
-      height: 58,
-      gap: 4,
+      height: 60,
+      gap: 2,
     }}>
       <div
-        style={{ cursor: "pointer", marginRight: "auto", display: "flex", alignItems: "center", gap: 8 }}
+        style={{ cursor: "pointer", marginRight: "auto", display: "flex", alignItems: "center", gap: 10 }}
         onClick={() => setPage("home")}
       >
         <div style={{
-          width: 30, height: 30,
-          borderRadius: 8,
+          width: 32, height: 32,
+          borderRadius: 9,
           background: `linear-gradient(135deg, ${C.teal}, ${C.emerald})`,
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 14,
+          fontSize: 15,
+          boxShadow: `0 0 16px ${C.teal}50`,
         }}>⚖️</div>
         <span style={{
           fontFamily: "'Fraunces', serif",
           fontWeight: 700,
           fontSize: 17,
-          color: C.ink,
+          color: "#fff",
           letterSpacing: "-0.01em",
         }}>BIOS Check</span>
       </div>
@@ -266,13 +289,13 @@ function Nav({ page, setPage }) {
           key={it.id}
           onClick={() => setPage(it.id)}
           style={{
-            background: page === it.id ? `${C.teal}14` : "transparent",
+            background: page === it.id ? `${C.teal}18` : "transparent",
             color: page === it.id ? C.teal : C.mist,
             border: "none",
             borderRadius: 8,
             padding: "6px 14px",
             fontSize: 13,
-            fontWeight: page === it.id ? 600 : 400,
+            fontWeight: page === it.id ? 700 : 400,
             transition: "all 0.15s",
             fontFamily: "'DM Sans', sans-serif",
           }}
@@ -288,9 +311,27 @@ function Nav({ page, setPage }) {
 
 function HomePage({ setPage }) {
   const features = [
-    { icon: "🔍", title: "JD Bias Reducer", desc: "Paste any job description and get an instant bias score, flagged phrases, and an inclusively rewritten version — ready to post.", page: "reducer" },
-    { icon: "🤖", title: "Bias-Aware Hiring AI", desc: "Compare how a bias-aware AI and a traditional AI rank the same candidate — see the gap that bias creates, quantified.", page: "hiring" },
-    { icon: "📊", title: "Fair Hiring Index", desc: "Track fairness across your full library of job descriptions. One score that tells you where your language stands — and where to improve.", page: "fairindex" },
+    {
+      icon: "🔍",
+      title: "JD Bias Reducer",
+      desc: "Paste any job description and get an instant bias score, flagged phrases, and an inclusively rewritten version — ready to post.",
+      page: "reducer",
+      accent: C.teal,
+    },
+    {
+      icon: "🤖",
+      title: "Bias-Aware Hiring AI",
+      desc: "Compare how a bias-aware AI and a traditional AI rank the same candidate — see the gap that bias creates, quantified.",
+      page: "hiring",
+      accent: "#8B5CF6",
+    },
+    {
+      icon: "📊",
+      title: "Fair Hiring Index",
+      desc: "Track fairness across your full library of job descriptions. One score that tells you where your language stands — and where to improve.",
+      page: "fairindex",
+      accent: C.emerald,
+    },
   ];
 
   return (
@@ -298,24 +339,31 @@ function HomePage({ setPage }) {
       {/* Hero */}
       <div className="fade-up" style={{
         textAlign: "center",
-        padding: "88px 40px 64px",
+        padding: "100px 40px 72px",
         position: "relative",
       }}>
+        {/* Background glow */}
         <div style={{
           position: "absolute", inset: 0,
-          background: `radial-gradient(ellipse 60% 40% at 50% 30%, ${C.teal}10, transparent)`,
+          background: `radial-gradient(ellipse 70% 50% at 50% 0%, ${C.teal}18, transparent 70%)`,
           pointerEvents: "none",
         }} />
+        <div style={{
+          position: "absolute", inset: 0,
+          background: `radial-gradient(ellipse 40% 30% at 50% 0%, ${C.emerald}10, transparent 60%)`,
+          pointerEvents: "none",
+        }} />
+
         <Pill color={C.emerald}>Open Research Project</Pill>
         <h1 style={{
           fontFamily: "'Fraunces', serif",
-          fontSize: "clamp(38px, 5vw, 60px)",
-          fontWeight: 700,
-          lineHeight: 1.12,
-          marginTop: 20,
-          marginBottom: 20,
-          letterSpacing: "-0.02em",
-          color: C.ink,
+          fontSize: "clamp(42px, 6vw, 72px)",
+          fontWeight: 800,
+          lineHeight: 1.08,
+          marginTop: 24,
+          marginBottom: 24,
+          letterSpacing: "-0.03em",
+          color: "#fff",
         }}>
           Fair hiring starts<br />
           <span style={{
@@ -325,21 +373,24 @@ function HomePage({ setPage }) {
           }}>with fair language.</span>
         </h1>
         <p style={{
-          fontSize: 18,
-          color: C.mist,
-          maxWidth: 580,
-          margin: "0 auto 40px",
-          lineHeight: 1.65,
+          fontSize: 19,
+          color: C.slate,
+          maxWidth: 560,
+          margin: "0 auto 44px",
+          lineHeight: 1.7,
           fontWeight: 300,
         }}>
           AI hiring tools inherit gender bias from their training data. BIOS Check makes that
-          bias visible, measurable, and fixable — at every step of the process.
+          bias <em>visible</em>, measurable, and fixable — at every step of the process.
         </p>
-        <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-          <Btn onClick={() => setPage("reducer")} style={{ padding: "13px 32px", fontSize: 15, animation: "pulse-ring 2.5s infinite" }}>
+        <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
+          <Btn
+            onClick={() => setPage("reducer")}
+            style={{ padding: "14px 36px", fontSize: 15, animation: "pulse-ring 2.5s infinite" }}
+          >
             ✦ Analyze a Job Description
           </Btn>
-          <Btn variant="outline" onClick={() => setPage("about")} style={{ padding: "13px 32px", fontSize: 15 }}>
+          <Btn variant="outline" onClick={() => setPage("about")} style={{ padding: "14px 36px", fontSize: 15 }}>
             Learn More
           </Btn>
         </div>
@@ -353,28 +404,36 @@ function HomePage({ setPage }) {
         paddingBottom: 100,
       }}>
         {features.map(f => (
-          <Card key={f.page} style={{
-            cursor: "pointer",
-            transition: "transform 0.18s, box-shadow 0.18s",
-          }}
+          <Card
+            key={f.page}
+            className="card-hover"
+            style={{
+              cursor: "pointer",
+              borderTop: `3px solid ${f.accent}`,
+            }}
             onClick={() => setPage(f.page)}
           >
-            <div style={{ fontSize: 30, marginBottom: 12 }}>{f.icon}</div>
+            <div style={{
+              width: 48, height: 48, borderRadius: 12,
+              background: f.accent + "18",
+              border: `1px solid ${f.accent}30`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 22, marginBottom: 16,
+            }}>{f.icon}</div>
             <div style={{
               fontFamily: "'Fraunces', serif",
-              fontSize: 20,
-              fontWeight: 600,
-              color: C.ink,
-              marginBottom: 8,
+              fontSize: 21,
+              fontWeight: 700,
+              color: "#fff",
+              marginBottom: 10,
             }}>{f.title}</div>
-            <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.65 }}>{f.desc}</p>
-            <div style={{ marginTop: 18 }}>
-              <span style={{ color: C.teal, fontSize: 13, fontWeight: 700, letterSpacing: "0.01em" }}>Open tool →</span>
-            </div>
+            <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.7, marginBottom: 20 }}>{f.desc}</p>
+            <span style={{ color: f.accent, fontSize: 13, fontWeight: 700, letterSpacing: "0.01em" }}>
+              Open tool →
+            </span>
           </Card>
         ))}
       </div>
-
     </div>
   );
 }
@@ -382,11 +441,11 @@ function HomePage({ setPage }) {
 // ── JD Bias Reducer ───────────────────────────────────────────────────────────
 
 function ReducerPage() {
-  const [text, setText]         = useState("");
-  const [result, setResult]     = useState(null);
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState("");
-  const [tab, setTab]           = useState("suggestions");
+  const [text, setText]       = useState("");
+  const [result, setResult]   = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState("");
+  const [tab, setTab]         = useState("suggestions");
   const MAX = 3000;
 
   async function handleAnalyze() {
@@ -413,15 +472,15 @@ function ReducerPage() {
   const levelIcon  = { low: "✓", medium: "⚠", high: "✕" };
 
   return (
-    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 32px" }}>
-      <div className="fade-up" style={{ marginBottom: 32 }}>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, marginTop: 0, marginBottom: 8 }}>
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 32px" }}>
+      <div className="fade-up" style={{ marginBottom: 36, textAlign: "center" }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, marginBottom: 10, color: "#fff", letterSpacing: "-0.02em" }}>
           JD Bias Reducer
         </h1>
-        <p style={{ color: C.slate, fontSize: 15 }}>
+        <p style={{ color: C.slate, fontSize: 16, maxWidth: 520, margin: "0 auto 8px" }}>
           Paste a job description. We'll detect bias, explain it, and rewrite it — inclusively.
         </p>
-        <p style={{ fontSize: 12, color: C.mist, marginTop: 6 }}>
+        <p style={{ fontSize: 12, color: C.silver }}>
           ⚠ Do not input personal or identifying information.
         </p>
       </div>
@@ -431,7 +490,7 @@ function ReducerPage() {
         <div className="fade-up">
           <Card>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <label style={{ fontWeight: 600, fontSize: 14, color: C.ink }}>Job Description</label>
+              <label style={{ fontWeight: 700, fontSize: 14, color: "#fff" }}>Job Description</label>
               <span style={{ fontSize: 12, color: text.length > MAX * 0.9 ? C.rose : C.silver }}>
                 {text.length} / {MAX}
               </span>
@@ -439,10 +498,7 @@ function ReducerPage() {
             <textarea
               value={text}
               onChange={e => setText(e.target.value.slice(0, MAX))}
-              placeholder="Paste job description here…
-
-Example:
-We are looking for a young, energetic salesman to join our team. The ideal candidate should be available 24/7 and have a dominant personality..."
+              placeholder={`Paste job description here…\n\nExample:\nWe are looking for a young, energetic salesman to join our team. The ideal candidate should be available 24/7 and have a dominant personality...`}
               style={{
                 width: "100%",
                 minHeight: 320,
@@ -451,10 +507,10 @@ We are looking for a young, energetic salesman to join our team. The ideal candi
                 padding: "14px 16px",
                 fontSize: 14,
                 lineHeight: 1.65,
-                color: C.ink,
+                color: C.slate,
                 resize: "vertical",
                 outline: "none",
-                background: C.snow,
+                background: C.surface,
               }}
             />
             {error && (
@@ -482,14 +538,14 @@ We are looking for a young, energetic salesman to join our team. The ideal candi
           )}
           {loading && (
             <Card style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
-              <div style={{ width: 40, height: 40, borderRadius: "50%", border: `3px solid ${C.ghost}`, borderTopColor: C.teal, animation: "spin 0.8s linear infinite" }} />
+              <div style={{ width: 44, height: 44, borderRadius: "50%", border: `3px solid ${C.ghost}`, borderTopColor: C.teal, animation: "spin 0.8s linear infinite" }} />
               <p style={{ color: C.mist, fontSize: 14 }}>Detecting bias patterns…</p>
             </Card>
           )}
           {result && (
             <Card>
               {/* Score summary */}
-              <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 20, padding: "16px", background: C.snow, borderRadius: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 20, padding: "16px", background: C.surface, borderRadius: 10, border: `1px solid ${C.ghost}` }}>
                 <ScoreMeter score={result.bias_score} label="Bias Score" />
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
@@ -510,7 +566,7 @@ We are looking for a young, energetic salesman to join our team. The ideal candi
                         cat === "explicit_gender" ? C.rose :
                         cat === "stereotype"       ? C.amber :
                         cat === "age_bias"         ? "#F97316" : "#8B5CF6"
-                      }>{cat.replace("_", " ")}</Pill>
+                      }>{cat.replace(/_/g, " ")}</Pill>
                     ))}
                     {result.categories?.length === 0 && <Pill color={C.emerald}>No bias detected</Pill>}
                   </div>
@@ -520,7 +576,7 @@ We are looking for a young, energetic salesman to join our team. The ideal candi
               {/* Flagged spans */}
               {result.highlights?.length > 0 && (
                 <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontSize: 12, fontWeight: 600, color: C.silver, letterSpacing: "0.07em", textTransform: "uppercase", marginBottom: 8 }}>Flagged Phrases</div>
+                  <SectionLabel>Flagged Phrases</SectionLabel>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {result.highlights.map((h, i) => <HighlightChip key={i} span={h.span} type={h.type} />)}
                   </div>
@@ -533,7 +589,7 @@ We are looking for a young, energetic salesman to join our team. The ideal candi
                   <button key={t} onClick={() => setTab(t)} style={{
                     padding: "7px 16px",
                     fontSize: 13,
-                    fontWeight: tab === t ? 600 : 400,
+                    fontWeight: tab === t ? 700 : 400,
                     color: tab === t ? C.teal : C.mist,
                     background: "transparent",
                     border: "none",
@@ -563,12 +619,13 @@ We are looking for a young, energetic salesman to join our team. The ideal candi
                 {tab === "rewrite" && (
                   result.rewritten_jd
                     ? <div style={{
-                        background: C.snow,
+                        background: C.surface,
                         borderRadius: 8,
                         padding: "14px 16px",
                         whiteSpace: "pre-wrap",
                         fontFamily: "'DM Sans', sans-serif",
                         fontSize: 13.5,
+                        border: `1px solid ${C.ghost}`,
                       }}>{result.rewritten_jd}</div>
                     : <EmptyState icon="✏️" title="Rewrite pending" body="Rewritten JD will appear here." />
                 )}
@@ -584,12 +641,12 @@ We are looking for a young, energetic salesman to join our team. The ideal candi
 // ── Hiring AI page ────────────────────────────────────────────────────────────
 
 function HiringAIPage() {
-  const [step, setStep]           = useState(1);
-  const [jd, setJd]               = useState("");
-  const [resume, setResume]       = useState("");
-  const [result, setResult]       = useState(null);
-  const [loading, setLoading]     = useState(false);
-  const [error, setError]         = useState("");
+  const [step, setStep]       = useState(1);
+  const [jd, setJd]           = useState("");
+  const [resume, setResume]   = useState("");
+  const [result, setResult]   = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError]     = useState("");
 
   async function handleEvaluate() {
     if (!jd.trim() || !resume.trim()) return;
@@ -614,34 +671,34 @@ function HiringAIPage() {
   const matchColor = { full: C.emerald, partial: C.amber, none: C.rose };
 
   return (
-    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 32px" }}>
-      <div className="fade-up" style={{ marginBottom: 32, textAlign: "center" }}>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, marginTop: 0, marginBottom: 8 }}>
+    <div style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 32px" }}>
+      <div className="fade-up" style={{ marginBottom: 36, textAlign: "center" }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, marginBottom: 10, color: "#fff", letterSpacing: "-0.02em" }}>
           Bias-Aware Hiring AI
         </h1>
-        <p style={{ color: C.slate, fontSize: 15, maxWidth: 600, margin: "0 auto 12px" }}>
+        <p style={{ color: C.slate, fontSize: 16, maxWidth: 560, margin: "0 auto 14px" }}>
           Evaluate candidate fit using PII-stripped resumes and bias-reduced JDs.
           See how traditional AI compares side-by-side.
         </p>
-        <div style={{ display: "inline-flex", padding: "8px 14px", background: `${C.teal}10`, border: `1px solid ${C.teal}30`, borderRadius: 8, fontSize: 13, color: C.teal, gap: 6, alignItems: "center" }}>
+        <div style={{ display: "inline-flex", padding: "8px 16px", background: `${C.teal}12`, border: `1px solid ${C.teal}30`, borderRadius: 8, fontSize: 13, color: C.teal, gap: 6, alignItems: "center" }}>
           🔒 Resumes are never stored. PII is stripped before any evaluation.
         </div>
       </div>
 
       {/* Stepper */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 32, background: C.ghost, borderRadius: 12, padding: 4 }}>
+      <div style={{ display: "flex", gap: 0, marginBottom: 32, background: C.surface, borderRadius: 12, padding: 4, border: `1px solid ${C.ghost}` }}>
         {[1, 2, 3].map(s => (
           <button key={s} onClick={() => s < step && setStep(s)} style={{
             flex: 1,
             padding: "10px 16px",
             borderRadius: 10,
             border: "none",
-            background: step === s ? "#fff" : "transparent",
+            background: step === s ? C.ghost : "transparent",
             color: step === s ? C.teal : step > s ? C.emerald : C.silver,
-            fontWeight: step === s ? 600 : 400,
+            fontWeight: step === s ? 700 : 400,
             fontSize: 13,
             fontFamily: "'DM Sans', sans-serif",
-            boxShadow: step === s ? "0 1px 8px rgba(0,0,0,0.08)" : "none",
+            boxShadow: step === s ? "0 1px 8px rgba(0,0,0,0.3)" : "none",
             cursor: s < step ? "pointer" : "default",
             transition: "all 0.15s",
           }}>
@@ -653,7 +710,7 @@ function HiringAIPage() {
 
       {step === 1 && (
         <Card className="fade-up">
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, marginBottom: 6 }}>Step 1 — Paste Job Description</h2>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, marginBottom: 6, color: "#fff" }}>Step 1 — Paste Job Description</h2>
           <p style={{ fontSize: 13, color: C.mist, marginBottom: 16 }}>Use a bias-reduced JD from the Bias Reducer for best results.</p>
           <textarea
             value={jd}
@@ -663,7 +720,7 @@ function HiringAIPage() {
               width: "100%", minHeight: 260,
               border: `1.5px solid ${C.ghost}`, borderRadius: 10,
               padding: "14px 16px", fontSize: 14, lineHeight: 1.65,
-              color: C.ink, resize: "vertical", outline: "none", background: C.snow,
+              color: C.slate, resize: "vertical", outline: "none", background: C.surface,
             }}
           />
           <div style={{ marginTop: 14 }}>
@@ -674,7 +731,7 @@ function HiringAIPage() {
 
       {step === 2 && (
         <Card className="fade-up">
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, marginBottom: 6 }}>Step 2 — Paste Resume</h2>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, marginBottom: 6, color: "#fff" }}>Step 2 — Paste Resume</h2>
           <p style={{ fontSize: 13, color: C.mist, marginBottom: 16 }}>
             Paste the candidate's resume text. PII will be automatically stripped before evaluation.
           </p>
@@ -686,7 +743,7 @@ function HiringAIPage() {
               width: "100%", minHeight: 320,
               border: `1.5px solid ${C.ghost}`, borderRadius: 10,
               padding: "14px 16px", fontSize: 14, lineHeight: 1.65,
-              color: C.ink, resize: "vertical", outline: "none", background: C.snow,
+              color: C.slate, resize: "vertical", outline: "none", background: C.surface,
             }}
           />
           {error && (
@@ -713,11 +770,11 @@ function HiringAIPage() {
             ].map(({ label, color, data, icon }) => (
               <Card key={label} style={{ borderTop: `3px solid ${color}` }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                  <span style={{ fontWeight: 600, fontSize: 14, color: C.ink }}>{icon} {label}</span>
+                  <span style={{ fontWeight: 700, fontSize: 14, color: "#fff" }}>{icon} {label}</span>
                   <span style={{
                     fontFamily: "'Fraunces', serif",
-                    fontSize: 26,
-                    fontWeight: 700,
+                    fontSize: 28,
+                    fontWeight: 800,
                     color,
                   }}>{Math.round((data?.fit_score || 0) * 100)}%</span>
                 </div>
@@ -727,19 +784,26 @@ function HiringAIPage() {
                     data?.fit_level === "moderate" ? C.amber : C.rose
                   }>{data?.fit_level || "—"} fit</Pill>
                 </div>
-                <p style={{ fontSize: 13, color: C.mist, lineHeight: 1.6 }}>{data?.explanation || "—"}</p>
+                <p style={{ fontSize: 13, color: C.slate, lineHeight: 1.6 }}>{data?.explanation || "—"}</p>
               </Card>
             ))}
           </div>
 
           {/* Delta callout */}
-          <Card style={{ background: `linear-gradient(135deg, ${C.ink}, ${C.slate})`, border: "none", marginBottom: 24, display: "flex", alignItems: "center", gap: 24 }}>
-            <div style={{ fontFamily: "'Fraunces', serif", fontSize: 48, fontWeight: 700, color: C.teal }}>
+          <Card style={{
+            background: `linear-gradient(135deg, rgba(14,165,233,0.12), rgba(16,185,129,0.08))`,
+            border: `1px solid ${C.teal}30`,
+            marginBottom: 24,
+            display: "flex",
+            alignItems: "center",
+            gap: 24,
+          }}>
+            <div style={{ fontFamily: "'Fraunces', serif", fontSize: 52, fontWeight: 800, color: C.teal }}>
               {result.score_delta}
             </div>
             <div>
-              <div style={{ color: "#fff", fontWeight: 600, marginBottom: 4 }}>Score Delta</div>
-              <div style={{ color: "#64748B", fontSize: 14 }}>
+              <div style={{ color: "#fff", fontWeight: 700, fontSize: 16, marginBottom: 4 }}>Score Delta</div>
+              <div style={{ color: C.slate, fontSize: 14 }}>
                 {parseFloat(result.score_delta) >= 0
                   ? "Our bias-aware system ranked this candidate higher than traditional AI would have."
                   : "Traditional AI may have over-fitted on biased signals for this candidate."}
@@ -750,18 +814,19 @@ function HiringAIPage() {
           {/* Skill matches */}
           {result.bias_aware?.skill_matches?.length > 0 && (
             <Card style={{ marginBottom: 24 }}>
-              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 18, marginBottom: 16 }}>Skill Match Breakdown</h3>
+              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, marginBottom: 16, color: "#fff" }}>Skill Match Breakdown</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {result.bias_aware.skill_matches.map((m, i) => (
                   <div key={i} style={{
                     display: "flex", gap: 12, alignItems: "flex-start",
                     padding: "10px 14px",
-                    background: C.snow,
+                    background: C.surface,
                     borderRadius: 8,
                     borderLeft: `3px solid ${matchColor[m.match] || C.silver}`,
+                    border: `1px solid ${C.ghost}`,
                   }}>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 600, fontSize: 13, color: C.ink, marginBottom: 3 }}>{m.requirement}</div>
+                      <div style={{ fontWeight: 700, fontSize: 13, color: "#fff", marginBottom: 3 }}>{m.requirement}</div>
                       <div style={{ fontSize: 12, color: C.mist }}>{m.evidence}</div>
                     </div>
                     <Pill color={matchColor[m.match] || C.silver}>{m.match}</Pill>
@@ -774,7 +839,7 @@ function HiringAIPage() {
           {/* PII suppressed */}
           {result.bias_aware?.bias_signals_suppressed?.length > 0 && (
             <Card>
-              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 16, marginBottom: 10 }}>🔒 Bias Signals Suppressed</h3>
+              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 16, fontWeight: 700, marginBottom: 10, color: "#fff" }}>🔒 Bias Signals Suppressed</h3>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {result.bias_aware.bias_signals_suppressed.map((s, i) => (
                   <span key={i} style={{
@@ -783,7 +848,7 @@ function HiringAIPage() {
                     background: `${C.teal}12`,
                     color: C.teal,
                     fontSize: 12,
-                    fontWeight: 500,
+                    fontWeight: 600,
                   }}>{s}</span>
                 ))}
               </div>
@@ -791,7 +856,7 @@ function HiringAIPage() {
           )}
 
           <div style={{ marginTop: 20 }}>
-            <Btn variant="outline" onClick={() => { setStep(1); setResult(null); setJd(""); setResume(""); }}>
+            <Btn variant="ghost" onClick={() => { setStep(1); setResult(null); setJd(""); setResume(""); }}>
               ← Start New Evaluation
             </Btn>
           </div>
@@ -804,8 +869,8 @@ function HiringAIPage() {
 // ── Fair Index page ───────────────────────────────────────────────────────────
 
 function FairIndexPage() {
-  const [jds, setJds]   = useState([{ text: "", id: Date.now() }]);
-  const [scores, setScores] = useState(null);
+  const [jds, setJds]         = useState([{ text: "", id: Date.now() }]);
+  const [scores, setScores]   = useState(null);
   const [loading, setLoading] = useState(false);
 
   const WEIGHTS = { explicit_gender: 1.0, stereotype: 0.8, age_bias: 0.7, requirements_bias: 0.6 };
@@ -847,13 +912,13 @@ function FairIndexPage() {
     : C.silver;
 
   return (
-    <div style={{ maxWidth: 1000, margin: "0 auto", padding: "40px 32px" }}>
-      <div className="fade-up" style={{ marginBottom: 32 }}>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, marginTop: 0, marginBottom: 8 }}>
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: "48px 32px" }}>
+      <div className="fade-up" style={{ marginBottom: 36, textAlign: "center" }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, marginBottom: 10, color: "#fff", letterSpacing: "-0.02em" }}>
           Fair Hiring Index
         </h1>
-        <p style={{ color: C.slate, fontSize: 15, maxWidth: 560 }}>
-          Paste one or more job descriptions to get a single 0–100 fairness score for your hiring language.
+        <p style={{ color: C.slate, fontSize: 16, maxWidth: 540, margin: "0 auto" }}>
+          Paste one or more job descriptions to get a single 0–100 fairness score.
           Higher is fairer — scores are weighted by the severity of each bias type detected.
         </p>
       </div>
@@ -861,15 +926,13 @@ function FairIndexPage() {
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
         {/* Input */}
         <Card className="fade-up">
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 18, marginBottom: 16 }}>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, marginBottom: 16, color: "#fff" }}>
             Batch Job Descriptions
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {jds.map((jd, i) => (
               <div key={jd.id}>
-                <label style={{ fontSize: 12, fontWeight: 600, color: C.silver, letterSpacing: "0.06em", textTransform: "uppercase" }}>
-                  JD #{i + 1}
-                </label>
+                <SectionLabel>JD #{i + 1}</SectionLabel>
                 <textarea
                   value={jd.text}
                   onChange={e => setJds(prev => prev.map(j => j.id === jd.id ? { ...j, text: e.target.value } : j))}
@@ -878,7 +941,7 @@ function FairIndexPage() {
                     width: "100%", minHeight: 100, marginTop: 4,
                     border: `1.5px solid ${C.ghost}`, borderRadius: 8,
                     padding: "10px 12px", fontSize: 13, lineHeight: 1.6,
-                    color: C.ink, resize: "vertical", outline: "none", background: C.snow,
+                    color: C.slate, resize: "vertical", outline: "none", background: C.surface,
                   }}
                 />
               </div>
@@ -892,13 +955,13 @@ function FairIndexPage() {
           </div>
 
           {/* Formula card */}
-          <div style={{ marginTop: 20, padding: "14px", background: C.snow, borderRadius: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: C.mist, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>How the score is calculated</div>
-            <div style={{ fontFamily: "monospace", fontSize: 13, color: C.slate, lineHeight: 1.8 }}>
+          <div style={{ marginTop: 20, padding: "16px", background: C.surface, borderRadius: 8, border: `1px solid ${C.ghost}` }}>
+            <SectionLabel>How the score is calculated</SectionLabel>
+            <div style={{ fontFamily: "monospace", fontSize: 13, color: C.slate, lineHeight: 1.9 }}>
               FHI = 100 × (1 − (1/N) × Σ(Bᵢ × Cᵢ))<br />
               <span style={{ color: C.mist, fontSize: 11 }}>Bᵢ = bias score per JD · Cᵢ = category severity weight</span>
             </div>
-            <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
+            <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 6 }}>
               {Object.entries(WEIGHTS).map(([k, v]) => (
                 <span key={k} style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: C.ghost, color: C.slate }}>
                   {k.replace(/_/g, " ")}: {v}×
@@ -918,8 +981,8 @@ function FairIndexPage() {
           {scores && (
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               <Card style={{ textAlign: "center", borderTop: `3px solid ${fhiColor}` }}>
-                <div style={{ fontSize: 12, fontWeight: 600, color: C.silver, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 10 }}>Fair Hiring Index</div>
-                <div style={{ fontFamily: "'Fraunces', serif", fontSize: 72, fontWeight: 700, color: fhiColor, lineHeight: 1 }}>
+                <SectionLabel>Fair Hiring Index</SectionLabel>
+                <div style={{ fontFamily: "'Fraunces', serif", fontSize: 80, fontWeight: 800, color: fhiColor, lineHeight: 1, marginTop: 8, textShadow: `0 0 40px ${fhiColor}60` }}>
                   {scores.fhi}
                 </div>
                 <div style={{ fontSize: 14, color: C.mist, marginTop: 6 }}>out of 100</div>
@@ -933,13 +996,13 @@ function FairIndexPage() {
               {scores.results.map((r, i) => (
                 <Card key={i} style={{ borderLeft: `3px solid ${r.bias_level === "low" ? C.emerald : r.bias_level === "medium" ? C.amber : C.rose}` }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                    <span style={{ fontWeight: 600, fontSize: 13, color: C.ink }}>JD #{i + 1}</span>
+                    <span style={{ fontWeight: 700, fontSize: 13, color: "#fff" }}>JD #{i + 1}</span>
                     <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 700, color: r.bias_score > 0.5 ? C.rose : r.bias_score > 0.25 ? C.amber : C.emerald }}>
                       {Math.round(r.bias_score * 100)}% bias
                     </span>
                   </div>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                    {r.categories?.length ? r.categories.map(c => <Pill key={c} color={C.silver}>{c.replace("_", " ")}</Pill>) : <Pill color={C.emerald}>clean</Pill>}
+                    {r.categories?.length ? r.categories.map(c => <Pill key={c} color={C.mist}>{c.replace(/_/g, " ")}</Pill>) : <Pill color={C.emerald}>clean</Pill>}
                   </div>
                 </Card>
               ))}
@@ -960,6 +1023,7 @@ function AboutPage() {
       title: "JD Bias Reducer",
       status: "Live",
       statusColor: C.emerald,
+      accent: C.teal,
       what: "Detects four categories of bias in job descriptions: explicit gender language (e.g. \"salesman\", \"he/she\"), stereotyping (language that implicitly favors one gender's traits), age bias (phrases that exclude older or younger candidates), and requirements bias (credentials that are not genuinely necessary for the role).",
       how: "Each flagged phrase is explained, scored, and replaced with an inclusive alternative. The full JD is rewritten and ready to post.",
       implications: "Biased language causes qualified candidates to self-screen before applying. By intervening at the source — the job description — this tool reduces structural exclusion before the pipeline even starts.",
@@ -969,42 +1033,52 @@ function AboutPage() {
       title: "Fair Hiring Index",
       status: "Live",
       statusColor: C.emerald,
+      accent: C.emerald,
       what: "Aggregates bias scores across one or many job descriptions into a single 0–100 fairness score. Each bias category is weighted by severity: explicit gender bias counts most, requirements bias least. The score reflects how equitable your hiring language is as a whole.",
       how: "Paste multiple JDs at once. The index runs each through the bias detector, applies category weights, and produces a composite score with a per-JD breakdown.",
-      implications: "Individual JDs can look fine in isolation but reveal a pattern at scale. The Fair Hiring Index makes that pattern visible — giving hiring teams a benchmark to track over time and compare across departments.",
+      implications: "Individual JDs can look fine in isolation but reveal a pattern at scale. The Fair Hiring Index makes that pattern visible — giving teams a benchmark to track over time and compare across departments.",
     },
     {
       icon: "🤖",
       title: "Bias-Aware Hiring AI",
       status: "In Progress",
       statusColor: C.amber,
+      accent: "#8B5CF6",
       what: "Evaluates a candidate's resume against a job description using two separate AI pipelines: a traditional AI (which sees the original, potentially biased JD and unredacted resume) and a bias-aware AI (which uses a bias-reduced JD and a PII-stripped resume). Both return a fit score and skill match breakdown.",
       how: "The two scores are compared side-by-side. The delta between them reveals exactly how much bias in the original pipeline disadvantaged — or advantaged — the candidate.",
-      implications: "Most hiring AI systems learn from historical data that reflects past discrimination. By making the two systems race, BIOS Check shows not just that bias exists, but how much it changes outcomes for real candidates.",
+      implications: "Most hiring AI systems learn from historical data that reflects past discrimination. By racing the two systems, BIOS Check shows not just that bias exists, but how much it changes outcomes for real candidates.",
     },
   ];
 
   return (
     <div style={{ maxWidth: 860, margin: "0 auto", padding: "60px 32px" }}>
       {/* Hero */}
-      <div className="fade-up" style={{ marginBottom: 56 }}>
+      <div className="fade-up" style={{ marginBottom: 56, textAlign: "center" }}>
         <Pill color={C.teal}>About the Project</Pill>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 42, fontWeight: 700, marginTop: 16, marginBottom: 20, letterSpacing: "-0.02em", lineHeight: 1.15 }}>
+        <h1 style={{
+          fontFamily: "'Fraunces', serif",
+          fontSize: "clamp(36px, 5vw, 52px)",
+          fontWeight: 800,
+          marginTop: 20,
+          marginBottom: 24,
+          letterSpacing: "-0.03em",
+          color: "#fff",
+          lineHeight: 1.1,
+        }}>
           Measuring what matters.
         </h1>
-        <p style={{ fontSize: 16, color: C.slate, lineHeight: 1.8, marginBottom: 16 }}>
+        <p style={{ fontSize: 17, color: C.slate, lineHeight: 1.8, marginBottom: 16, maxWidth: 640, margin: "0 auto 16px" }}>
           BIOS Check is a research project investigating how gender bias in language propagates through AI hiring systems — and how to stop it.
         </p>
-        <p style={{ fontSize: 15, color: C.mist, lineHeight: 1.8 }}>
+        <p style={{ fontSize: 15, color: C.mist, lineHeight: 1.8, maxWidth: 640, margin: "0 auto" }}>
           Most bias-detection tools work retroactively, flagging decisions already made. This project is designed differently: by stripping demographic signals before evaluation and using bias-reduced job descriptions as rubrics, the hiring AI is structurally incapable of acting on bias signals — not just instructed to ignore them.
         </p>
       </div>
 
       {/* Research stats banner */}
       <Card className="fade-up-2" style={{
-        background: `linear-gradient(135deg, ${C.ink}, ${C.slate})`,
-        border: "none",
-        color: "#fff",
+        background: `linear-gradient(135deg, rgba(14,165,233,0.14), rgba(16,185,129,0.07))`,
+        border: `1px solid ${C.teal}30`,
         marginBottom: 56,
         display: "flex",
         alignItems: "center",
@@ -1016,12 +1090,12 @@ function AboutPage() {
           <h2 style={{
             fontFamily: "'Fraunces', serif",
             fontSize: 24,
-            fontWeight: 600,
-            marginTop: 12,
-            marginBottom: 8,
+            fontWeight: 700,
+            marginTop: 14,
+            marginBottom: 10,
             color: "#fff",
           }}>Why does this matter?</h2>
-          <p style={{ fontSize: 14, color: "#94A3B8", lineHeight: 1.7 }}>
+          <p style={{ fontSize: 14, color: C.mist, lineHeight: 1.75 }}>
             Studies show that gendered language in job postings reduces the applicant pool by up to 42%
             for underrepresented groups. Embedding-based AI screeners amplify this further — a bias
             present in training data becomes a structural disadvantage at scale.
@@ -1030,8 +1104,8 @@ function AboutPage() {
         <div style={{ display: "flex", gap: 28, flexWrap: "wrap" }}>
           {[["42%", "fewer applicants from biased JDs"], ["87%", "of hiring AIs trained on biased data"], ["3×", "more likely to screen out qualified candidates"]].map(([stat, desc]) => (
             <div key={stat} style={{ textAlign: "center" }}>
-              <div style={{ fontFamily: "'Fraunces', serif", fontSize: 36, fontWeight: 700, color: C.teal }}>{stat}</div>
-              <div style={{ fontSize: 12, color: "#64748B", maxWidth: 100 }}>{desc}</div>
+              <div style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, color: C.teal, textShadow: `0 0 20px ${C.teal}60` }}>{stat}</div>
+              <div style={{ fontSize: 12, color: C.mist, maxWidth: 100, marginTop: 4 }}>{desc}</div>
             </div>
           ))}
         </div>
@@ -1039,31 +1113,35 @@ function AboutPage() {
 
       {/* Feature deep-dives */}
       <div className="fade-up-3" style={{ marginBottom: 56 }}>
-        <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700, marginBottom: 24, color: C.ink }}>
+        <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 28, fontWeight: 800, marginBottom: 28, color: "#fff", textAlign: "center" }}>
           What each tool does
         </h2>
         <div style={{ display: "grid", gap: 24 }}>
           {features.map(f => (
-            <Card key={f.title} style={{ borderLeft: `4px solid ${f.statusColor}` }}>
-              <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 14 }}>
-                <span style={{ fontSize: 24 }}>{f.icon}</span>
-                <span style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 600, color: C.ink }}>{f.title}</span>
+            <Card key={f.title} style={{ borderLeft: `4px solid ${f.accent}` }}>
+              <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 20 }}>
+                <div style={{
+                  width: 44, height: 44, borderRadius: 11,
+                  background: f.accent + "18",
+                  border: `1px solid ${f.accent}30`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 20,
+                }}>{f.icon}</div>
+                <span style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, color: "#fff" }}>{f.title}</span>
                 <Pill color={f.statusColor}>{f.status}</Pill>
               </div>
 
-              <div style={{ display: "grid", gap: 14 }}>
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: C.silver, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>What it does</div>
-                  <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.7 }}>{f.what}</p>
-                </div>
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: C.silver, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>How it works</div>
-                  <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.7 }}>{f.how}</p>
-                </div>
-                <div>
-                  <div style={{ fontSize: 11, fontWeight: 700, color: C.silver, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Why it matters</div>
-                  <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.7 }}>{f.implications}</p>
-                </div>
+              <div style={{ display: "grid", gap: 18 }}>
+                {[
+                  { label: "What it does", text: f.what },
+                  { label: "How it works", text: f.how },
+                  { label: "Why it matters", text: f.implications },
+                ].map(({ label, text }) => (
+                  <div key={label}>
+                    <SectionLabel>{label}</SectionLabel>
+                    <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.75 }}>{text}</p>
+                  </div>
+                ))}
               </div>
             </Card>
           ))}
@@ -1071,9 +1149,18 @@ function AboutPage() {
       </div>
 
       {/* GitHub CTA */}
-      <Card style={{ marginBottom: 32, background: C.snow, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+      <Card style={{
+        marginBottom: 32,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: 16,
+        background: `linear-gradient(135deg, rgba(14,165,233,0.08), rgba(16,185,129,0.04))`,
+        border: `1px solid ${C.teal}20`,
+      }}>
         <div>
-          <div style={{ fontFamily: "'Fraunces', serif", fontSize: 17, fontWeight: 600, color: C.ink, marginBottom: 4 }}>
+          <div style={{ fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 6 }}>
             Curious about the methodology?
           </div>
           <p style={{ fontSize: 14, color: C.mist, lineHeight: 1.6 }}>
@@ -1086,19 +1173,23 @@ function AboutPage() {
       </Card>
 
       {/* Author */}
-      <Card style={{ background: `linear-gradient(135deg, ${C.ink}, ${C.slate})`, border: "none" }}>
+      <Card style={{
+        background: `linear-gradient(135deg, rgba(14,165,233,0.1), rgba(16,185,129,0.06))`,
+        border: `1px solid ${C.teal}25`,
+      }}>
         <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
           <div style={{
-            width: 56, height: 56, borderRadius: "50%",
+            width: 58, height: 58, borderRadius: "50%",
             background: `linear-gradient(135deg, ${C.teal}, ${C.emerald})`,
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 22, flexShrink: 0,
+            fontSize: 24, flexShrink: 0,
+            boxShadow: `0 0 24px ${C.teal}50`,
           }}>👩‍💻</div>
           <div>
-            <div style={{ color: "#fff", fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 600, marginBottom: 4 }}>
+            <div style={{ color: "#fff", fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, marginBottom: 4 }}>
               Saanika
             </div>
-            <div style={{ color: "#64748B", fontSize: 13, lineHeight: 1.6 }}>
+            <div style={{ color: C.mist, fontSize: 13, lineHeight: 1.6 }}>
               Builder of BIOS Check · Researching fairness in AI hiring systems · Mentored by Jason
             </div>
           </div>
@@ -1111,10 +1202,10 @@ function AboutPage() {
 // ── Contact ───────────────────────────────────────────────────────────────────
 
 function ContactPage() {
-  const [form, setForm] = useState({ name: "", email: "", category: "General", message: "", consent: false });
-  const [sent, setSent] = useState(false);
+  const [form, setForm]       = useState({ name: "", email: "", category: "General", message: "", consent: false });
+  const [sent, setSent]       = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError]     = useState("");
 
   async function handleSubmit() {
     if (!form.name || !form.email || !form.message || !form.consent) return;
@@ -1141,18 +1232,18 @@ function ContactPage() {
     borderRadius: 10,
     padding: "11px 14px",
     fontSize: 14,
-    color: C.ink,
+    color: C.slate,
     outline: "none",
-    background: C.snow,
+    background: C.surface,
     fontFamily: "'DM Sans', sans-serif",
     transition: "border-color 0.15s",
   };
 
   return (
     <div style={{ maxWidth: 560, margin: "0 auto", padding: "60px 32px" }}>
-      <div className="fade-up" style={{ marginBottom: 36 }}>
+      <div className="fade-up" style={{ marginBottom: 36, textAlign: "center" }}>
         <Pill>Get in Touch</Pill>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, marginTop: 12, marginBottom: 8 }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 36, fontWeight: 800, marginTop: 16, marginBottom: 10, color: "#fff", letterSpacing: "-0.02em" }}>
           Contact Us
         </h1>
         <p style={{ color: C.mist, fontSize: 15 }}>Feedback, research questions, or collaboration inquiries.</p>
@@ -1161,7 +1252,7 @@ function ContactPage() {
       {sent ? (
         <Card className="fade-up" style={{ textAlign: "center", padding: "48px 32px" }}>
           <div style={{ fontSize: 40, marginBottom: 12 }}>✓</div>
-          <div style={{ fontFamily: "'Fraunces', serif", fontSize: 22, marginBottom: 8 }}>Message Sent</div>
+          <div style={{ fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700, marginBottom: 8, color: "#fff" }}>Message Sent</div>
           <p style={{ color: C.mist, fontSize: 14 }}>Thank you! We'll be in touch soon.</p>
         </Card>
       ) : (
@@ -1169,22 +1260,22 @@ function ContactPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, color: C.silver, letterSpacing: "0.06em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Name</label>
+                <SectionLabel>Name</SectionLabel>
                 <input style={inputStyle} value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Your name" />
               </div>
               <div>
-                <label style={{ fontSize: 12, fontWeight: 600, color: C.silver, letterSpacing: "0.06em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Email</label>
+                <SectionLabel>Email</SectionLabel>
                 <input type="email" style={inputStyle} value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} placeholder="you@example.com" />
               </div>
             </div>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: C.silver, letterSpacing: "0.06em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Category</label>
+              <SectionLabel>Category</SectionLabel>
               <select style={inputStyle} value={form.category} onChange={e => setForm(p => ({ ...p, category: e.target.value }))}>
                 {["General", "Research", "Bug Report", "Collaboration", "Other"].map(c => <option key={c}>{c}</option>)}
               </select>
             </div>
             <div>
-              <label style={{ fontSize: 12, fontWeight: 600, color: C.silver, letterSpacing: "0.06em", textTransform: "uppercase", display: "block", marginBottom: 6 }}>Message</label>
+              <SectionLabel>Message</SectionLabel>
               <textarea style={{ ...inputStyle, minHeight: 130, resize: "vertical" }} value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} placeholder="Your message…" />
             </div>
             <label style={{ display: "flex", gap: 10, alignItems: "flex-start", cursor: "pointer" }}>
@@ -1231,12 +1322,12 @@ export default function App() {
     <>
       <style>{globalStyles}</style>
       <Nav page={page} setPage={setPage} />
-      <main style={{ minHeight: "calc(100vh - 58px)" }}>
+      <main style={{ minHeight: "calc(100vh - 60px)" }}>
         {pages[page] || pages.home}
       </main>
       <footer style={{
         borderTop: `1px solid ${C.ghost}`,
-        padding: "24px 40px",
+        padding: "28px 40px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
@@ -1244,15 +1335,28 @@ export default function App() {
         gap: 12,
         fontSize: 13,
         color: C.silver,
+        background: "rgba(6,13,31,0.6)",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span>⚖️</span>
-          <span style={{ fontFamily: "'Fraunces', serif", color: C.mist }}>BIOS Check Careers</span>
-          <span>— Making fair hiring measurable.</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{
+            width: 28, height: 28, borderRadius: 7,
+            background: `linear-gradient(135deg, ${C.teal}, ${C.emerald})`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 13,
+          }}>⚖️</div>
+          <span style={{ fontFamily: "'Fraunces', serif", color: C.mist, fontWeight: 600 }}>BIOS Check</span>
+          <span style={{ color: C.silver }}>— Making fair hiring measurable.</span>
         </div>
-        <div style={{ display: "flex", gap: 16 }}>
-          {["Home", "Bias Reducer", "Hiring AI", "Fair Index", "About"].map(l => (
-            <button key={l} style={{ background: "none", border: "none", color: C.silver, fontSize: 13, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ display: "flex", gap: 4 }}>
+          {[
+            ["Home", "home"], ["Bias Reducer", "reducer"], ["Hiring AI", "hiring"],
+            ["Fair Index", "fairindex"], ["About", "about"],
+          ].map(([l, id]) => (
+            <button
+              key={id}
+              onClick={() => setPage(id)}
+              style={{ background: "none", border: "none", color: C.silver, fontSize: 13, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", padding: "4px 10px", borderRadius: 6, transition: "color 0.15s" }}
+            >
               {l}
             </button>
           ))}
