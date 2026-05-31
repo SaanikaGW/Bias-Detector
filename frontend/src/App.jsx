@@ -89,9 +89,9 @@ function Pill({ color = C.teal, children }) {
   );
 }
 
-function Card({ children, style = {}, className = "" }) {
+function Card({ children, style = {}, className = "", onClick }) {
   return (
-    <div className={className} style={{
+    <div className={className} onClick={onClick} style={{
       background: C.card,
       border: `1px solid ${C.ghost}`,
       borderRadius: 18,
@@ -401,16 +401,13 @@ function HomePage({ setPage }) {
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
         gap: 20,
-        paddingBottom: 100,
+        marginBottom: 56,
       }}>
         {features.map(f => (
           <Card
             key={f.page}
             className="card-hover"
-            style={{
-              cursor: "pointer",
-              borderTop: `3px solid ${f.accent}`,
-            }}
+            style={{ cursor: "pointer", borderTop: `3px solid ${f.accent}` }}
             onClick={() => setPage(f.page)}
           >
             <div style={{
@@ -433,6 +430,55 @@ function HomePage({ setPage }) {
             </span>
           </Card>
         ))}
+      </div>
+
+      {/* How to navigate */}
+      <div className="fade-up-3" style={{ marginBottom: 100 }}>
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <SectionLabel>How to use this site</SectionLabel>
+          <p style={{ color: C.mist, fontSize: 14, marginTop: 4 }}>
+            Each tool builds on the last. Here's the recommended flow:
+          </p>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 0, flexWrap: "wrap", justifyContent: "center" }}>
+          {[
+            { step: "1", icon: "🔍", label: "Fix your JD", sub: "Run the JD Bias Reducer to detect and rewrite biased language", page: "reducer", accent: C.teal },
+            { step: "2", icon: "📊", label: "Score your org", sub: "Paste multiple JDs into the Fair Hiring Index to see your overall fairness score", page: "fairindex", accent: C.emerald },
+            { step: "3", icon: "🤖", label: "Compare AI outcomes", sub: "Use the Hiring AI to see how bias changes candidate rankings in practice", page: "hiring", accent: "#8B5CF6" },
+          ].map((s, i) => (
+            <div key={s.step} style={{ display: "flex", alignItems: "center" }}>
+              <div
+                onClick={() => setPage(s.page)}
+                style={{
+                  cursor: "pointer",
+                  textAlign: "center",
+                  padding: "20px 24px",
+                  borderRadius: 14,
+                  border: `1px solid ${C.ghost}`,
+                  background: C.surface,
+                  width: 200,
+                  transition: "border-color 0.18s",
+                }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = s.accent + "80"}
+                onMouseLeave={e => e.currentTarget.style.borderColor = C.ghost}
+              >
+                <div style={{
+                  width: 36, height: 36, borderRadius: "50%",
+                  background: s.accent + "20",
+                  border: `1px solid ${s.accent}40`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 18, margin: "0 auto 10px",
+                }}>{s.icon}</div>
+                <div style={{ fontSize: 11, fontWeight: 700, color: s.accent, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 4 }}>Step {s.step}</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 6 }}>{s.label}</div>
+                <p style={{ fontSize: 12, color: C.mist, lineHeight: 1.55 }}>{s.sub}</p>
+              </div>
+              {i < 2 && (
+                <div style={{ color: C.silver, fontSize: 18, padding: "0 12px", flexShrink: 0 }}>→</div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
