@@ -288,9 +288,9 @@ function Nav({ page, setPage }) {
 
 function HomePage({ setPage }) {
   const features = [
-    { icon: "🔍", title: "JD Bias Reducer", desc: "Paste any job description and instantly detect explicit, stereotype, age, and requirements bias — with inclusive rewrites.", page: "reducer" },
-    { icon: "🤖", title: "Bias-Aware Hiring AI", desc: "Evaluate candidate-job fit against PII-stripped resumes and bias-removed JDs. See how traditional AI compares.", page: "hiring" },
-    { icon: "📊", title: "Fair Hiring Index", desc: "A quantitative 0–100 score measuring the fairness of a company's hiring language over time.", page: "fairindex" },
+    { icon: "🔍", title: "JD Bias Reducer", desc: "Paste any job description and get an instant bias score, flagged phrases, and an inclusively rewritten version — ready to post.", page: "reducer" },
+    { icon: "🤖", title: "Bias-Aware Hiring AI", desc: "Compare how a bias-aware AI and a traditional AI rank the same candidate — see the gap that bias creates, quantified.", page: "hiring" },
+    { icon: "📊", title: "Fair Hiring Index", desc: "Track fairness across your full library of job descriptions. One score that tells you where your language stands — and where to improve.", page: "fairindex" },
   ];
 
   return (
@@ -350,7 +350,7 @@ function HomePage({ setPage }) {
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
         gap: 20,
-        paddingBottom: 80,
+        paddingBottom: 100,
       }}>
         {features.map(f => (
           <Card key={f.page} style={{
@@ -367,50 +367,14 @@ function HomePage({ setPage }) {
               color: C.ink,
               marginBottom: 8,
             }}>{f.title}</div>
-            <p style={{ fontSize: 14, color: C.mist, lineHeight: 1.6 }}>{f.desc}</p>
-            <div style={{ marginTop: 16 }}>
-              <span style={{ color: C.teal, fontSize: 13, fontWeight: 600 }}>Open tool →</span>
+            <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.65 }}>{f.desc}</p>
+            <div style={{ marginTop: 18 }}>
+              <span style={{ color: C.teal, fontSize: 13, fontWeight: 700, letterSpacing: "0.01em" }}>Open tool →</span>
             </div>
           </Card>
         ))}
       </div>
 
-      {/* Research callout */}
-      <Card className="fade-up-3" style={{
-        background: `linear-gradient(135deg, ${C.ink}, ${C.slate})`,
-        border: "none",
-        color: "#fff",
-        marginBottom: 80,
-        display: "flex",
-        alignItems: "center",
-        gap: 32,
-        flexWrap: "wrap",
-      }}>
-        <div style={{ flex: 1, minWidth: 240 }}>
-          <Pill color={C.teal}>Research Insight</Pill>
-          <h2 style={{
-            fontFamily: "'Fraunces', serif",
-            fontSize: 26,
-            fontWeight: 600,
-            marginTop: 12,
-            marginBottom: 8,
-            color: "#fff",
-          }}>Why does this matter?</h2>
-          <p style={{ fontSize: 14, color: "#94A3B8", lineHeight: 1.7 }}>
-            Studies show that gendered language in job postings reduces the applicant pool by up to 42% 
-            for underrepresented groups. Embedding-based AI screeners amplify this further — a bias 
-            present in training data becomes a structural disadvantage at scale.
-          </p>
-        </div>
-        <div style={{ display: "flex", gap: 28, flexWrap: "wrap" }}>
-          {[["42%", "fewer applicants from biased JDs"], ["87%", "of hiring AIs trained on biased data"], ["3×", "more likely to screen out qualified candidates"]].map(([stat, desc]) => (
-            <div key={stat} style={{ textAlign: "center" }}>
-              <div style={{ fontFamily: "'Fraunces', serif", fontSize: 36, fontWeight: 700, color: C.teal }}>{stat}</div>
-              <div style={{ fontSize: 12, color: "#64748B", maxWidth: 100 }}>{desc}</div>
-            </div>
-          ))}
-        </div>
-      </Card>
     </div>
   );
 }
@@ -451,14 +415,13 @@ function ReducerPage() {
   return (
     <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 32px" }}>
       <div className="fade-up" style={{ marginBottom: 32 }}>
-        <Pill>Phase 1</Pill>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, marginTop: 10, marginBottom: 6 }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, marginTop: 0, marginBottom: 8 }}>
           JD Bias Reducer
         </h1>
-        <p style={{ color: C.mist, fontSize: 15 }}>
+        <p style={{ color: C.slate, fontSize: 15 }}>
           Paste a job description. We'll detect bias, explain it, and rewrite it — inclusively.
         </p>
-        <p style={{ fontSize: 12, color: C.silver, marginTop: 6 }}>
+        <p style={{ fontSize: 12, color: C.mist, marginTop: 6 }}>
           ⚠ Do not input personal or identifying information.
         </p>
       </div>
@@ -652,16 +615,15 @@ function HiringAIPage() {
 
   return (
     <div style={{ maxWidth: 1200, margin: "0 auto", padding: "40px 32px" }}>
-      <div className="fade-up" style={{ marginBottom: 32 }}>
-        <Pill color="#8B5CF6">Phase 3</Pill>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, marginTop: 10, marginBottom: 6 }}>
+      <div className="fade-up" style={{ marginBottom: 32, textAlign: "center" }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, marginTop: 0, marginBottom: 8 }}>
           Bias-Aware Hiring AI
         </h1>
-        <p style={{ color: C.mist, fontSize: 15, maxWidth: 600 }}>
+        <p style={{ color: C.slate, fontSize: 15, maxWidth: 600, margin: "0 auto 12px" }}>
           Evaluate candidate fit using PII-stripped resumes and bias-reduced JDs.
-          See how traditional AI compares.
+          See how traditional AI compares side-by-side.
         </p>
-        <div style={{ marginTop: 8, padding: "8px 14px", background: `${C.teal}10`, border: `1px solid ${C.teal}30`, borderRadius: 8, fontSize: 13, color: C.teal, display: "inline-flex", gap: 6, alignItems: "center" }}>
+        <div style={{ display: "inline-flex", padding: "8px 14px", background: `${C.teal}10`, border: `1px solid ${C.teal}30`, borderRadius: 8, fontSize: 13, color: C.teal, gap: 6, alignItems: "center" }}>
           🔒 Resumes are never stored. PII is stripped before any evaluation.
         </div>
       </div>
@@ -887,12 +849,12 @@ function FairIndexPage() {
   return (
     <div style={{ maxWidth: 1000, margin: "0 auto", padding: "40px 32px" }}>
       <div className="fade-up" style={{ marginBottom: 32 }}>
-        <Pill color={C.amber}>Phase 2</Pill>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, marginTop: 10, marginBottom: 6 }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, marginTop: 0, marginBottom: 8 }}>
           Fair Hiring Index
         </h1>
-        <p style={{ color: C.mist, fontSize: 15, maxWidth: 560 }}>
-          A 0–100 score measuring the fairness of your hiring language across multiple job descriptions.
+        <p style={{ color: C.slate, fontSize: 15, maxWidth: 560 }}>
+          Paste one or more job descriptions to get a single 0–100 fairness score for your hiring language.
+          Higher is fairer — scores are weighted by the severity of each bias type detected.
         </p>
       </div>
 
@@ -931,15 +893,15 @@ function FairIndexPage() {
 
           {/* Formula card */}
           <div style={{ marginTop: 20, padding: "14px", background: C.snow, borderRadius: 8 }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: C.silver, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>FHI Formula</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: C.mist, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.06em" }}>How the score is calculated</div>
             <div style={{ fontFamily: "monospace", fontSize: 13, color: C.slate, lineHeight: 1.8 }}>
               FHI = 100 × (1 − (1/N) × Σ(Bᵢ × Cᵢ))<br />
-              <span style={{ color: C.silver, fontSize: 11 }}>Bᵢ = bias score · Cᵢ = category weight</span>
+              <span style={{ color: C.mist, fontSize: 11 }}>Bᵢ = bias score per JD · Cᵢ = category severity weight</span>
             </div>
             <div style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
               {Object.entries(WEIGHTS).map(([k, v]) => (
-                <span key={k} style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: C.ghost, color: C.mist }}>
-                  {k.replace("_", " ")}: {v}×
+                <span key={k} style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: C.ghost, color: C.slate }}>
+                  {k.replace(/_/g, " ")}: {v}×
                 </span>
               ))}
             </div>
@@ -992,43 +954,138 @@ function FairIndexPage() {
 // ── About ─────────────────────────────────────────────────────────────────────
 
 function AboutPage() {
+  const features = [
+    {
+      icon: "🔍",
+      title: "JD Bias Reducer",
+      status: "Live",
+      statusColor: C.emerald,
+      what: "Detects four categories of bias in job descriptions: explicit gender language (e.g. \"salesman\", \"he/she\"), stereotyping (language that implicitly favors one gender's traits), age bias (phrases that exclude older or younger candidates), and requirements bias (credentials that are not genuinely necessary for the role).",
+      how: "Each flagged phrase is explained, scored, and replaced with an inclusive alternative. The full JD is rewritten and ready to post.",
+      implications: "Biased language causes qualified candidates to self-screen before applying. By intervening at the source — the job description — this tool reduces structural exclusion before the pipeline even starts.",
+    },
+    {
+      icon: "📊",
+      title: "Fair Hiring Index",
+      status: "Live",
+      statusColor: C.emerald,
+      what: "Aggregates bias scores across one or many job descriptions into a single 0–100 fairness score. Each bias category is weighted by severity: explicit gender bias counts most, requirements bias least. The score reflects how equitable your hiring language is as a whole.",
+      how: "Paste multiple JDs at once. The index runs each through the bias detector, applies category weights, and produces a composite score with a per-JD breakdown.",
+      implications: "Individual JDs can look fine in isolation but reveal a pattern at scale. The Fair Hiring Index makes that pattern visible — giving hiring teams a benchmark to track over time and compare across departments.",
+    },
+    {
+      icon: "🤖",
+      title: "Bias-Aware Hiring AI",
+      status: "In Progress",
+      statusColor: C.amber,
+      what: "Evaluates a candidate's resume against a job description using two separate AI pipelines: a traditional AI (which sees the original, potentially biased JD and unredacted resume) and a bias-aware AI (which uses a bias-reduced JD and a PII-stripped resume). Both return a fit score and skill match breakdown.",
+      how: "The two scores are compared side-by-side. The delta between them reveals exactly how much bias in the original pipeline disadvantaged — or advantaged — the candidate.",
+      implications: "Most hiring AI systems learn from historical data that reflects past discrimination. By making the two systems race, BIOS Check shows not just that bias exists, but how much it changes outcomes for real candidates.",
+    },
+  ];
+
   return (
-    <div style={{ maxWidth: 800, margin: "0 auto", padding: "60px 32px" }}>
-      <div className="fade-up" style={{ marginBottom: 48 }}>
+    <div style={{ maxWidth: 860, margin: "0 auto", padding: "60px 32px" }}>
+      {/* Hero */}
+      <div className="fade-up" style={{ marginBottom: 56 }}>
         <Pill color={C.teal}>About the Project</Pill>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 700, marginTop: 16, marginBottom: 20, letterSpacing: "-0.02em" }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 42, fontWeight: 700, marginTop: 16, marginBottom: 20, letterSpacing: "-0.02em", lineHeight: 1.15 }}>
           Measuring what matters.
         </h1>
-        <p style={{ fontSize: 16, color: C.mist, lineHeight: 1.8, marginBottom: 16 }}>
-          BIOS Check Careers is a research project investigating how gender bias in language
-          propagates through AI hiring systems — and how to stop it.
+        <p style={{ fontSize: 16, color: C.slate, lineHeight: 1.8, marginBottom: 16 }}>
+          BIOS Check is a research project investigating how gender bias in language propagates through AI hiring systems — and how to stop it.
         </p>
         <p style={{ fontSize: 15, color: C.mist, lineHeight: 1.8 }}>
-          Most bias-detection tools work retroactively. This project is designed differently:
-          by stripping demographic signals before evaluation and using bias-reduced job
-          descriptions as rubrics, the hiring AI is structurally incapable of acting on
-          bias signals — not just instructed to ignore them.
+          Most bias-detection tools work retroactively, flagging decisions already made. This project is designed differently: by stripping demographic signals before evaluation and using bias-reduced job descriptions as rubrics, the hiring AI is structurally incapable of acting on bias signals — not just instructed to ignore them.
         </p>
       </div>
 
-      <div style={{ display: "grid", gap: 20, marginBottom: 48 }}>
-        {[
-          { title: "Phase 1 — Bias Detector", status: "Complete", desc: "Rule-based + semantic detection of explicit, stereotype, age, and requirements bias in job descriptions." },
-          { title: "Phase 2 — Fair Hiring Index", status: "In Progress", desc: "A weighted, quantitative fairness score across a company's full JD history." },
-          { title: "Phase 3 — Bias-Aware Hiring AI", status: "In Progress", desc: "PII stripping + constrained fit evaluation compared against traditional AI scoring." },
-        ].map(p => (
-          <Card key={p.title} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-            <div>
-              <div style={{ display: "flex", gap: 10, alignItems: "center", marginBottom: 6 }}>
-                <span style={{ fontFamily: "'Fraunces', serif", fontSize: 17, fontWeight: 600 }}>{p.title}</span>
-                <Pill color={p.status === "Complete" ? C.emerald : C.amber}>{p.status}</Pill>
-              </div>
-              <p style={{ fontSize: 14, color: C.mist, lineHeight: 1.6 }}>{p.desc}</p>
+      {/* Research stats banner */}
+      <Card className="fade-up-2" style={{
+        background: `linear-gradient(135deg, ${C.ink}, ${C.slate})`,
+        border: "none",
+        color: "#fff",
+        marginBottom: 56,
+        display: "flex",
+        alignItems: "center",
+        gap: 32,
+        flexWrap: "wrap",
+      }}>
+        <div style={{ flex: 1, minWidth: 240 }}>
+          <Pill color={C.teal}>Research Insight</Pill>
+          <h2 style={{
+            fontFamily: "'Fraunces', serif",
+            fontSize: 24,
+            fontWeight: 600,
+            marginTop: 12,
+            marginBottom: 8,
+            color: "#fff",
+          }}>Why does this matter?</h2>
+          <p style={{ fontSize: 14, color: "#94A3B8", lineHeight: 1.7 }}>
+            Studies show that gendered language in job postings reduces the applicant pool by up to 42%
+            for underrepresented groups. Embedding-based AI screeners amplify this further — a bias
+            present in training data becomes a structural disadvantage at scale.
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: 28, flexWrap: "wrap" }}>
+          {[["42%", "fewer applicants from biased JDs"], ["87%", "of hiring AIs trained on biased data"], ["3×", "more likely to screen out qualified candidates"]].map(([stat, desc]) => (
+            <div key={stat} style={{ textAlign: "center" }}>
+              <div style={{ fontFamily: "'Fraunces', serif", fontSize: 36, fontWeight: 700, color: C.teal }}>{stat}</div>
+              <div style={{ fontSize: 12, color: "#64748B", maxWidth: 100 }}>{desc}</div>
             </div>
-          </Card>
-        ))}
+          ))}
+        </div>
+      </Card>
+
+      {/* Feature deep-dives */}
+      <div className="fade-up-3" style={{ marginBottom: 56 }}>
+        <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700, marginBottom: 24, color: C.ink }}>
+          What each tool does
+        </h2>
+        <div style={{ display: "grid", gap: 24 }}>
+          {features.map(f => (
+            <Card key={f.title} style={{ borderLeft: `4px solid ${f.statusColor}` }}>
+              <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 14 }}>
+                <span style={{ fontSize: 24 }}>{f.icon}</span>
+                <span style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 600, color: C.ink }}>{f.title}</span>
+                <Pill color={f.statusColor}>{f.status}</Pill>
+              </div>
+
+              <div style={{ display: "grid", gap: 14 }}>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: C.silver, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>What it does</div>
+                  <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.7 }}>{f.what}</p>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: C.silver, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>How it works</div>
+                  <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.7 }}>{f.how}</p>
+                </div>
+                <div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: C.silver, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 5 }}>Why it matters</div>
+                  <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.7 }}>{f.implications}</p>
+                </div>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
 
+      {/* GitHub CTA */}
+      <Card style={{ marginBottom: 32, background: C.snow, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+        <div>
+          <div style={{ fontFamily: "'Fraunces', serif", fontSize: 17, fontWeight: 600, color: C.ink, marginBottom: 4 }}>
+            Curious about the methodology?
+          </div>
+          <p style={{ fontSize: 14, color: C.mist, lineHeight: 1.6 }}>
+            The full technical implementation — models, training data, bias detection logic, and evaluation pipeline — is open source.
+          </p>
+        </div>
+        <Btn variant="outline" onClick={() => window.open("https://github.com/SaanikaGW/Bias-Detector", "_blank")}>
+          View Source →
+        </Btn>
+      </Card>
+
+      {/* Author */}
       <Card style={{ background: `linear-gradient(135deg, ${C.ink}, ${C.slate})`, border: "none" }}>
         <div style={{ display: "flex", gap: 20, alignItems: "center" }}>
           <div style={{
@@ -1042,8 +1099,7 @@ function AboutPage() {
               Saanika
             </div>
             <div style={{ color: "#64748B", fontSize: 13, lineHeight: 1.6 }}>
-              Builder of BIOS Check Careers · Researching fairness in AI hiring systems ·
-              Mentored by Jason
+              Builder of BIOS Check · Researching fairness in AI hiring systems · Mentored by Jason
             </div>
           </div>
         </div>
