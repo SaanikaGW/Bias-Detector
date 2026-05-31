@@ -433,49 +433,101 @@ function HomePage({ setPage }) {
       </div>
 
       {/* How to navigate */}
-      <div className="fade-up-3" style={{ marginBottom: 100 }}>
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <SectionLabel>How to use this site</SectionLabel>
-          <p style={{ color: C.mist, fontSize: 14, marginTop: 4 }}>
-            Each tool builds on the last. Here's the recommended flow:
+      <div className="fade-up-3" style={{
+        marginBottom: 100,
+        borderRadius: 24,
+        border: `1px solid ${C.ghost}`,
+        background: "linear-gradient(135deg, rgba(14,165,233,0.06) 0%, rgba(11,20,40,0.6) 50%, rgba(16,185,129,0.06) 100%)",
+        padding: "48px 40px",
+        position: "relative",
+        overflow: "hidden",
+      }}>
+        {/* Subtle corner glows */}
+        <div style={{ position: "absolute", top: -60, left: -60, width: 200, height: 200, borderRadius: "50%", background: `${C.teal}0C`, pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: -60, right: -60, width: 200, height: 200, borderRadius: "50%", background: `${C.emerald}0C`, pointerEvents: "none" }} />
+
+        <div style={{ textAlign: "center", marginBottom: 40, position: "relative" }}>
+          <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: C.teal, marginBottom: 10 }}>
+            Start here
+          </div>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 28, fontWeight: 800, color: "#fff", marginBottom: 8, letterSpacing: "-0.02em" }}>
+            Your path to fairer hiring
+          </h2>
+          <p style={{ color: C.mist, fontSize: 15, maxWidth: 440, margin: "0 auto" }}>
+            Each tool builds on the last. Follow the steps below or jump in anywhere.
           </p>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 0, flexWrap: "wrap", justifyContent: "center" }}>
+
+        <div style={{ display: "flex", alignItems: "stretch", gap: 0, position: "relative", justifyContent: "center" }}>
+          {/* Gradient connector line */}
+          <div style={{
+            position: "absolute",
+            top: 36, left: "15%", right: "15%",
+            height: 2,
+            background: `linear-gradient(90deg, ${C.teal}, #8B5CF6, ${C.emerald})`,
+            opacity: 0.35,
+            pointerEvents: "none",
+          }} />
+
           {[
-            { step: "1", icon: "🔍", label: "Fix your JD", sub: "Run the JD Bias Reducer to detect and rewrite biased language", page: "reducer", accent: C.teal },
-            { step: "2", icon: "🤖", label: "Compare AI outcomes", sub: "Use the Hiring AI to see how bias changes candidate rankings in practice", page: "hiring", accent: "#8B5CF6" },
-            { step: "3", icon: "📊", label: "Score your org", sub: "Paste multiple JDs into the Fair Hiring Index to see your overall fairness score", page: "fairindex", accent: C.emerald },
+            { num: "01", icon: "🔍", label: "Fix your JD", sub: "Detect & rewrite biased language before it shrinks your candidate pool.", page: "reducer", accent: C.teal },
+            { num: "02", icon: "🤖", label: "Compare AI outcomes", sub: "See how bias shifts rankings — traditional AI vs. our bias-aware pipeline.", page: "hiring", accent: "#8B5CF6" },
+            { num: "03", icon: "📊", label: "Score your org", sub: "Aggregate fairness across all your JDs into one benchmark score.", page: "fairindex", accent: C.emerald },
           ].map((s, i) => (
-            <div key={s.step} style={{ display: "flex", alignItems: "center" }}>
-              <div
-                onClick={() => setPage(s.page)}
-                style={{
-                  cursor: "pointer",
-                  textAlign: "center",
-                  padding: "20px 24px",
-                  borderRadius: 14,
-                  border: `1px solid ${C.ghost}`,
-                  background: C.surface,
-                  width: 200,
-                  transition: "border-color 0.18s",
-                }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = s.accent + "80"}
-                onMouseLeave={e => e.currentTarget.style.borderColor = C.ghost}
-              >
-                <div style={{
-                  width: 36, height: 36, borderRadius: "50%",
-                  background: s.accent + "20",
-                  border: `1px solid ${s.accent}40`,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 18, margin: "0 auto 10px",
-                }}>{s.icon}</div>
-                <div style={{ fontSize: 11, fontWeight: 700, color: s.accent, letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 4 }}>Step {s.step}</div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: "#fff", marginBottom: 6 }}>{s.label}</div>
-                <p style={{ fontSize: 12, color: C.mist, lineHeight: 1.55 }}>{s.sub}</p>
-              </div>
-              {i < 2 && (
-                <div style={{ color: C.silver, fontSize: 18, padding: "0 12px", flexShrink: 0 }}>→</div>
-              )}
+            <div
+              key={s.num}
+              onClick={() => setPage(s.page)}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = s.accent + "14";
+                e.currentTarget.style.borderColor = s.accent + "60";
+                e.currentTarget.style.transform = "translateY(-4px)";
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.borderColor = C.ghost;
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+              style={{
+                cursor: "pointer",
+                flex: 1,
+                maxWidth: 280,
+                textAlign: "center",
+                padding: "28px 24px 24px",
+                borderRadius: 16,
+                border: `1px solid ${C.ghost}`,
+                background: "transparent",
+                position: "relative",
+                transition: "all 0.2s ease",
+                margin: "0 8px",
+              }}
+            >
+              {/* Big step number */}
+              <div style={{
+                fontFamily: "'Fraunces', serif",
+                fontSize: 48,
+                fontWeight: 800,
+                lineHeight: 1,
+                marginBottom: 16,
+                background: `linear-gradient(135deg, ${s.accent}, ${s.accent}66)`,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}>{s.num}</div>
+
+              {/* Icon */}
+              <div style={{
+                width: 52, height: 52, borderRadius: 14,
+                background: s.accent + "18",
+                border: `1px solid ${s.accent}40`,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 24, margin: "0 auto 16px",
+                boxShadow: `0 0 20px ${s.accent}20`,
+              }}>{s.icon}</div>
+
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 8 }}>{s.label}</div>
+              <p style={{ fontSize: 13, color: C.mist, lineHeight: 1.6, marginBottom: 16 }}>{s.sub}</p>
+              <span style={{ fontSize: 12, fontWeight: 700, color: s.accent, letterSpacing: "0.04em" }}>
+                Go →
+              </span>
             </div>
           ))}
         </div>
