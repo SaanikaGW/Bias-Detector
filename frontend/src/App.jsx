@@ -443,8 +443,8 @@ function HomePage({ setPage }) {
         <div style={{ display: "flex", alignItems: "center", gap: 0, flexWrap: "wrap", justifyContent: "center" }}>
           {[
             { step: "1", icon: "🔍", label: "Fix your JD", sub: "Run the JD Bias Reducer to detect and rewrite biased language", page: "reducer", accent: C.teal },
-            { step: "2", icon: "📊", label: "Score your org", sub: "Paste multiple JDs into the Fair Hiring Index to see your overall fairness score", page: "fairindex", accent: C.emerald },
-            { step: "3", icon: "🤖", label: "Compare AI outcomes", sub: "Use the Hiring AI to see how bias changes candidate rankings in practice", page: "hiring", accent: "#8B5CF6" },
+            { step: "2", icon: "🤖", label: "Compare AI outcomes", sub: "Use the Hiring AI to see how bias changes candidate rankings in practice", page: "hiring", accent: "#8B5CF6" },
+            { step: "3", icon: "📊", label: "Score your org", sub: "Paste multiple JDs into the Fair Hiring Index to see your overall fairness score", page: "fairindex", accent: C.emerald },
           ].map((s, i) => (
             <div key={s.step} style={{ display: "flex", alignItems: "center" }}>
               <div
