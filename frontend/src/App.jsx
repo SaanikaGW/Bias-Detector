@@ -972,6 +972,7 @@ function FairIndexPage() {
   const [loading, setLoading] = useState(false);
 
   const WEIGHTS = { explicit_gender: 1.0, stereotype: 0.8, age_bias: 0.7, requirements_bias: 0.6 };
+  const MAX_JD = 3000;
 
   function addJd() {
     setJds(prev => [...prev, { text: "", id: Date.now() }]);
@@ -1030,10 +1031,15 @@ function FairIndexPage() {
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             {jds.map((jd, i) => (
               <div key={jd.id}>
-                <SectionLabel>JD #{i + 1}</SectionLabel>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <SectionLabel>JD #{i + 1}</SectionLabel>
+                  <span style={{ fontSize: 11, color: jd.text.length > MAX_JD * 0.9 ? C.rose : C.silver }}>
+                    {jd.text.length} / {MAX_JD}
+                  </span>
+                </div>
                 <textarea
                   value={jd.text}
-                  onChange={e => setJds(prev => prev.map(j => j.id === jd.id ? { ...j, text: e.target.value } : j))}
+                  onChange={e => setJds(prev => prev.map(j => j.id === jd.id ? { ...j, text: e.target.value.slice(0, MAX_JD) } : j))}
                   placeholder="Paste job description…"
                   style={{
                     width: "100%", minHeight: 100, marginTop: 4,
@@ -1078,6 +1084,7 @@ function FairIndexPage() {
           )}
           {scores && (
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              {/* FHI Score */}
               <Card style={{ textAlign: "center", borderTop: `3px solid ${fhiColor}` }}>
                 <SectionLabel>Fair Hiring Index</SectionLabel>
                 <div style={{ fontFamily: "'Fraunces', serif", fontSize: 80, fontWeight: 800, color: fhiColor, lineHeight: 1, marginTop: 8, textShadow: `0 0 40px ${fhiColor}60` }}>
@@ -1091,19 +1098,91 @@ function FairIndexPage() {
                 </div>
               </Card>
 
-              {scores.results.map((r, i) => (
-                <Card key={i} style={{ borderLeft: `3px solid ${r.bias_level === "low" ? C.emerald : r.bias_level === "medium" ? C.amber : C.rose}` }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                    <span style={{ fontWeight: 700, fontSize: 13, color: "#fff" }}>JD #{i + 1}</span>
-                    <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 700, color: r.bias_score > 0.5 ? C.rose : r.bias_score > 0.25 ? C.amber : C.emerald }}>
-                      {Math.round(r.bias_score * 100)}% bias
-                    </span>
+              {/* Interpretation */}
+              <Card style={{ padding: "16px 20px" }}>
+                <SectionLabel>What this means</SectionLabel>
+                <p style={{ fontSize: 13, color: C.slate, lineHeight: 1.7, marginTop: 6 }}>
+                  {scores.fhi >= 75
+                    ? "Your hiring language is largely inclusive. Small refinements to the flagged phrases below may help attract an even broader candidate pool."
+                    : scores.fhi >= 50
+                    ? "Some patterns of exclusionary language detected. Companies at this level typically see 15–30% fewer applications from underrepresented groups. Prioritize the flagged phrases below."
+                    : "Multiple bias patterns detected across your job descriptions. This significantly reduces applicant diversity. Use the JD Bias Reducer to rewrite each affected description."}
+                </p>
+                {scores.fhi < 75 && (
+                  <div style={{ marginTop: 10, fontSize: 12, color: C.teal, fontWeight: 700 }}>
+                    → Run each flagged JD through the Bias Reducer for an inclusive rewrite.
                   </div>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                    {r.categories?.length ? r.categories.map(c => <Pill key={c} color={C.mist}>{c.replace(/_/g, " ")}</Pill>) : <Pill color={C.emerald}>clean</Pill>}
-                  </div>
-                </Card>
-              ))}
+                )}
+              </Card>
+
+              {/* Per-JD breakdown */}
+              {scores.results.map((r, i) => {
+                const levelColor = r.bias_level === "low" ? C.emerald : r.bias_level === "medium" ? C.amber : C.rose;
+                return (
+                  <Card key={i} style={{ borderLeft: `3px solid ${levelColor}` }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                      <span style={{ fontWeight: 700, fontSize: 13, color: "#fff" }}>JD #{i + 1}</span>
+                      <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 700, color: levelColor }}>
+                        {Math.round(r.bias_score * 100)}% bias
+                      </span>
+                    </div>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: r.highlights?.length ? 10 : 0 }}>
+                      {r.categories?.length ? r.categories.map(c => <Pill key={c} color={C.mist}>{c.replace(/_/g, " ")}</Pill>) : <Pill color={C.emerald}>clean</Pill>}
+                    </div>
+                    {r.highlights?.length > 0 && (
+                      <div style={{ marginBottom: r.suggestions?.length ? 8 : 0 }}>
+                        <SectionLabel>Flagged Phrases</SectionLabel>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 4 }}>
+                          {r.highlights.slice(0, 4).map((h, j) => <HighlightChip key={j} span={h.span} type={h.type} />)}
+                          {r.highlights.length > 4 && (
+                            <span style={{ fontSize: 12, color: C.silver, alignSelf: "center" }}>+{r.highlights.length - 4} more</span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {r.suggestions?.length > 0 && (
+                      <div style={{ padding: "8px 10px", background: `${C.teal}08`, border: `1px solid ${C.teal}20`, borderRadius: 6, fontSize: 12, color: C.slate, lineHeight: 1.55 }}>
+                        <span style={{ fontWeight: 700, color: C.teal }}>Suggestion: </span>{r.suggestions[0]}
+                      </div>
+                    )}
+                  </Card>
+                );
+              })}
+
+              {/* Priority improvements */}
+              {(() => {
+                const ADVICE = {
+                  explicit_gender: "Avoid gendered job titles and pronouns. Use 'they/them' or gender-neutral terms like 'engineer' instead of 'salesman'.",
+                  stereotype: "Remove culturally coded language (e.g. 'rockstar', 'ninja', 'culture fit') that skews toward specific demographics.",
+                  age_bias: "Avoid phrases implying age preference (e.g. 'young', 'recent graduate', 'digital native'). Focus on experience, not tenure.",
+                  requirements_bias: "Audit degree and years-of-experience requirements. Use skills-based criteria where a degree isn't strictly necessary.",
+                };
+                const catCounts = {};
+                scores.results.forEach(r => r.categories?.forEach(c => { catCounts[c] = (catCounts[c] || 0) + 1; }));
+                const sorted = Object.entries(catCounts).sort((a, b) => (WEIGHTS[b[0]] || 0.5) - (WEIGHTS[a[0]] || 0.5));
+                if (!sorted.length) return null;
+                return (
+                  <Card>
+                    <SectionLabel>Priority Improvements</SectionLabel>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
+                      {sorted.map(([cat, count]) => {
+                        const dotColor = cat === "explicit_gender" ? C.rose : cat === "stereotype" ? C.amber : cat === "age_bias" ? "#F97316" : "#8B5CF6";
+                        return (
+                          <div key={cat} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 12px", background: C.surface, borderRadius: 8, border: `1px solid ${C.ghost}` }}>
+                            <div style={{ minWidth: 8, height: 8, borderRadius: "50%", background: dotColor, marginTop: 4, flexShrink: 0 }} />
+                            <div>
+                              <div style={{ fontWeight: 700, fontSize: 12, color: "#fff", marginBottom: 3 }}>
+                                {cat.replace(/_/g, " ")} · {count} JD{count > 1 ? "s" : ""}
+                              </div>
+                              <div style={{ fontSize: 12, color: C.mist, lineHeight: 1.55 }}>{ADVICE[cat] || "Review flagged phrases above."}</div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </Card>
+                );
+              })()}
             </div>
           )}
         </div>

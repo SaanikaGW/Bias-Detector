@@ -2,6 +2,9 @@
 BIOS Check Careers — Flask Backend
 """
 import os
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 load_dotenv()
 from flask import Flask, request, jsonify
@@ -12,6 +15,23 @@ from agents import SuggestionAgent, RewriteAgent, PIIStripper, FitEvaluator
 app = Flask(__name__)
 _cors_origin = os.environ.get("CORS_ORIGIN", "*")
 CORS(app, origins=_cors_origin)
+
+
+def _send_contact_email(name: str, sender_email: str, category: str, message: str) -> None:
+    smtp_user = os.getenv("SMTP_USER")
+    smtp_pass = os.getenv("SMTP_APP_PASSWORD")
+    recipient = os.getenv("CONTACT_EMAIL", smtp_user)
+    if not smtp_user or not smtp_pass:
+        return
+    msg = MIMEMultipart()
+    msg["From"] = smtp_user
+    msg["To"] = recipient
+    msg["Subject"] = f"[BIOS Check] {category} — {name}"
+    body = f"From: {name} <{sender_email}>\nCategory: {category}\n\n{message}"
+    msg.attach(MIMEText(body, "plain"))
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+        server.login(smtp_user, smtp_pass)
+        server.sendmail(smtp_user, recipient, msg.as_string())
 
 # ── Bias Reducer ─────────────────────────────────────────────────────────────
 
@@ -107,8 +127,11 @@ def contact():
     if not data or not required.issubset(data):
         return jsonify({"error": "Missing required fields"}), 400
 
-    # TODO: store to Firebase or send email
     print(f"[Contact] {data['name']} <{data['email']}> — {data['category']}")
+    try:
+        _send_contact_email(data["name"], data["email"], data["category"], data["message"])
+    except Exception as e:
+        print(f"[Contact] Email delivery failed: {e}")
     return jsonify({"success": True, "message": "Thank you! We'll be in touch."})
 
 
