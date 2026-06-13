@@ -1380,7 +1380,7 @@ function AboutPage() {
 
 function ContactPage() {
   // STEP: Go to forms.google.com → create form → Send → Embed (</>) → copy the src="..." URL and paste below
-  const GOOGLE_FORM_SRC = "https://docs.google.com/forms/d/e/REPLACE_WITH_YOUR_FORM_ID/viewform?embedded=true";
+  const GOOGLE_FORM_SRC = "https://docs.google.com/forms/d/e/1FAIpQLSfYfRGCYAwyZtF0HSkqgf-0eF8P6emtfpYXqBwXEf0_MXKj5w/viewform?embedded=true";
 
   return (
     <div style={{ maxWidth: 660, margin: "0 auto", padding: "60px 32px" }}>
@@ -1396,7 +1396,7 @@ function ContactPage() {
         <iframe
           src={GOOGLE_FORM_SRC}
           width="100%"
-          height="640"
+          height="1008"
           frameBorder="0"
           marginHeight="0"
           marginWidth="0"
