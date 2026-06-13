@@ -1380,7 +1380,7 @@ function AboutPage() {
 
 function ContactPage() {
   // STEP: Go to forms.google.com → create form → Send → Embed (</>) → copy the src="..." URL and paste below
-  const GOOGLE_FORM_SRC = "https://docs.google.com/forms/d/e/1FAIpQLSfYfRGCYAwyZtF0HSkqgf-0eF8P6emtfpYXqBwXEf0_MXKj5w/viewform?embedded=true";
+  const GOOGLE_FORM_SRC = "https://docs.google.com/forms/d/e/1FAIpQLSfYfRGCYAwyZtF0HSkqgf-0eF8P6emtfpYXqBwXEf0_MXKj5w/viewform";
 
   return (
     <div style={{ maxWidth: 660, margin: "0 auto", padding: "60px 32px" }}>
