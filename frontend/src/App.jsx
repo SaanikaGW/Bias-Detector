@@ -1379,45 +1379,11 @@ function AboutPage() {
 // ── Contact ───────────────────────────────────────────────────────────────────
 
 function ContactPage() {
-  const [form, setForm]       = useState({ name: "", email: "", category: "General", message: "", consent: false });
-  const [sent, setSent]       = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState("");
-
-  async function handleSubmit() {
-    if (!form.name || !form.email || !form.message || !form.consent) return;
-    setLoading(true); setError("");
-    try {
-      const res  = await fetch(`${API}/api/contact/submit`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Submission failed");
-      setSent(true);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const inputStyle = {
-    width: "100%",
-    border: `1.5px solid ${C.ghost}`,
-    borderRadius: 10,
-    padding: "11px 14px",
-    fontSize: 14,
-    color: C.slate,
-    outline: "none",
-    background: C.surface,
-    fontFamily: "'DM Sans', sans-serif",
-    transition: "border-color 0.15s",
-  };
+  // STEP: Go to forms.google.com → create form → Send → Embed (</>) → copy the src="..." URL and paste below
+  const GOOGLE_FORM_SRC = "https://docs.google.com/forms/d/e/REPLACE_WITH_YOUR_FORM_ID/viewform?embedded=true";
 
   return (
-    <div style={{ maxWidth: 560, margin: "0 auto", padding: "60px 32px" }}>
+    <div style={{ maxWidth: 660, margin: "0 auto", padding: "60px 32px" }}>
       <div className="fade-up" style={{ marginBottom: 36, textAlign: "center" }}>
         <Pill>Get in Touch</Pill>
         <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 36, fontWeight: 800, marginTop: 16, marginBottom: 10, color: "#fff", letterSpacing: "-0.02em" }}>
@@ -1426,56 +1392,22 @@ function ContactPage() {
         <p style={{ color: C.mist, fontSize: 15 }}>Feedback, research questions, or collaboration inquiries.</p>
       </div>
 
-      {sent ? (
-        <Card className="fade-up" style={{ textAlign: "center", padding: "48px 32px" }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>✓</div>
-          <div style={{ fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700, marginBottom: 8, color: "#fff" }}>Message Sent</div>
-          <p style={{ color: C.mist, fontSize: 14 }}>Thank you! We'll be in touch soon.</p>
-        </Card>
-      ) : (
-        <Card className="fade-up">
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <div>
-                <SectionLabel>Name</SectionLabel>
-                <input style={inputStyle} value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Your name" />
-              </div>
-              <div>
-                <SectionLabel>Email</SectionLabel>
-                <input type="email" style={inputStyle} value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} placeholder="you@example.com" />
-              </div>
-            </div>
-            <div>
-              <SectionLabel>Category</SectionLabel>
-              <select style={inputStyle} value={form.category} onChange={e => setForm(p => ({ ...p, category: e.target.value }))}>
-                {["General", "Research", "Bug Report", "Collaboration", "Other"].map(c => <option key={c}>{c}</option>)}
-              </select>
-            </div>
-            <div>
-              <SectionLabel>Message</SectionLabel>
-              <textarea style={{ ...inputStyle, minHeight: 130, resize: "vertical" }} value={form.message} onChange={e => setForm(p => ({ ...p, message: e.target.value }))} placeholder="Your message…" />
-            </div>
-            <label style={{ display: "flex", gap: 10, alignItems: "flex-start", cursor: "pointer" }}>
-              <input
-                type="checkbox"
-                checked={form.consent}
-                onChange={e => setForm(p => ({ ...p, consent: e.target.checked }))}
-                style={{ marginTop: 3, accentColor: C.teal }}
-              />
-              <span style={{ fontSize: 13, color: C.mist, lineHeight: 1.5 }}>
-                I consent to having my contact information used to respond to this inquiry.
-                I understand this data is not stored beyond the initial response.
-              </span>
-            </label>
-            {error && <div style={{ padding: "8px 12px", background: `${C.rose}12`, borderRadius: 8, color: C.rose, fontSize: 13 }}>{error}</div>}
-            <Btn
-              onClick={handleSubmit}
-              disabled={loading || !form.name || !form.email || !form.message || !form.consent}
-            >
-              {loading ? <><Spinner /> Sending…</> : "Send Message"}
-            </Btn>
-          </div>
-        </Card>
+      <Card className="fade-up" style={{ padding: 0, overflow: "hidden", border: `1px solid ${C.ghost}` }}>
+        <iframe
+          src={GOOGLE_FORM_SRC}
+          width="100%"
+          height="640"
+          frameBorder="0"
+          marginHeight="0"
+          marginWidth="0"
+          title="Contact Form"
+          style={{ display: "block" }}
+        >
+          Loading form…
+        </iframe>
+      </Card>
+    </div>
+  );
       )}
     </div>
   );
