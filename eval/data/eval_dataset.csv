@@ -1,0 +1,158 @@
+Text,expected,category,example_type
+Aggressive sales strategy,none,none,calibration
+Aggressive personality required,biased,masculine_coded,calibration
+Strong communication skills,none,none,calibration
+Rockstar engineer,biased,masculine_coded,calibration
+Native English speaker,biased,exclusionary,calibration
+Professional English proficiency,none,none,calibration
+Chairman,biased,gendered_language,calibration
+Chairperson,none,none,calibration
+"Work hard, play hard",biased,exclusionary,calibration
+Collaborative team environment,none,none,calibration
+Drive aggressive year-over-year growth in the enterprise segment.,none,none,fp_trap
+Our pricing is highly competitive within the market.,none,none,fp_trap
+Emotional intelligence is central to this coaching role.,none,none,fp_trap
+"Competitive compensation, equity, and a 401(k) match.",none,none,fp_trap
+This role supports our 24/7 network operations center on a rotating shift schedule.,none,none,fp_trap
+Must be able to lift 20 kg as part of warehouse safety requirements.,none,none,fp_trap
+Nurture our partner ecosystem through quarterly business reviews.,none,none,fp_trap
+Fluent English and Spanish required for this bilingual support role.,none,none,fp_trap
+The chairperson emerita will advise the committee.,none,none,fp_trap
+Alpha and beta releases ship monthly to production.,none,none,fp_trap
+Experience running competitive analyses against market leaders.,none,none,fp_trap
+Physical demands include standing for up to six hours per shift.,none,none,fp_trap
+You will champion our accessibility roadmap across teams.,none,none,fp_trap
+Ideal for someone without outside obligations competing for their time.,biased,caregiver_bias,fn_trap
+Candidates should have an unbroken record of full-time employment.,biased,caregiver_bias,fn_trap
+"We expect total buy-in: nights, weekends, whatever it takes.",biased,caregiver_bias,fn_trap
+Our team skews young and we like it that way.,biased,age_coded,fn_trap
+"Preference for those early in their careers, ideally just out of university.",biased,age_coded,fn_trap
+Stamina to keep up with our twenty-something founders is essential.,biased,age_coded,fn_trap
+Looking for a gal Friday to keep the office running smoothly.,biased,gendered_language,fn_trap
+The right guy for this role has deep Kubernetes experience.,biased,gendered_language,fn_trap
+This position suits a man of considerable technical depth.,biased,gendered_language,fn_trap
+You'll fit right in if you thrive on late nights at the office bar.,biased,exclusionary,fn_trap
+English so natural that clients assume you grew up speaking it.,biased,exclusionary,fn_trap
+"A quiet, agreeable disposition suits our front desk.",biased,feminine_coded,subtle_bias
+Command-and-control leadership style preferred.,biased,stereotype,subtle_bias
+Only serious contenders who check every box should reach out.,biased,qualification_inflation,subtle_bias
+Someone polished and put-together to represent us at galas.,biased,appearance_bias,subtle_bias
+Your calendar should belong to the company during launch season.,biased,caregiver_bias,subtle_bias
+Male sales representative required for territory expansion.,biased,gendered_language,explicit_bias
+The foreman will assign his crew daily quotas.,biased,gendered_language,explicit_bias
+Chairman wanted for the advisory board.,biased,gendered_language,explicit_bias
+Hiring a young saleswoman for our boutique.,biased,age_coded,explicit_bias
+Applicants over 40 need not apply.,biased,age_coded,explicit_bias
+Attractive female hostesses only.,biased,appearance_bias,explicit_bias
+"No mothers of young children, please.",biased,caregiver_bias,explicit_bias
+Rockstar ninja developer with killer instinct wanted.,biased,masculine_coded,explicit_bias
+"A fearless, hard-charging operator who plays to win.",biased,masculine_coded,masculine_coded
+"Hungry, relentless hustlers thrive here.",biased,masculine_coded,masculine_coded
+We want assertive dealmakers with real swagger.,biased,masculine_coded,masculine_coded
+A sweet-tempered assistant with a soothing phone manner.,biased,feminine_coded,feminine_coded
+"Warm, bubbly energy at the reception desk at all times.",biased,feminine_coded,feminine_coded
+"Design, build, and maintain CI/CD pipelines.",none,none,neutral
+Partner with product managers on quarterly roadmaps.,none,none,neutral
+Five or more years of experience with distributed systems.,none,none,neutral
+Excellent written communication and documentation habits.,none,none,neutral
+Respond to customer tickets within agreed SLAs.,none,none,neutral
+Willingness to travel up to 10% for team offsites.,none,none,neutral
+"Experience with React, TypeScript, and GraphQL.",none,none,neutral
+Prepare monthly financial statements and variance analyses.,none,none,neutral
+We are an equal opportunity employer; we welcome applicants of all genders.,none,none,inclusive
+"If you don't meet every requirement, we still encourage you to apply.",none,none,inclusive
+"Flexible hours, hybrid work, and generous parental leave.",none,none,inclusive
+"Salary range: $95,000 to $115,000, shared in the spirit of pay transparency.",none,none,inclusive
+Reasonable accommodations are available throughout the interview process.,none,none,inclusive
+We hire for skills — a degree or equivalent practical experience both count.,none,none,inclusive
+Our chairperson hosts open office hours for all staff.,none,none,inclusive
+We're hiring a data ninja to build our analytics infrastructure from scratch.,biased,masculine_coded,holdout_test
+We need a strong manpower pipeline to support our Q3 expansion.,biased,gendered_language,holdout_test
+He or she must submit weekly status reports.,biased,gendered_language,holdout_test
+The candidate will conduct quarterly performance reviews and provide structured feedback to direct reports.,none,none,holdout_test
+Business-level English and any second language is a plus.,none,none,holdout_test
+Relevant certifications such as PMP or PRINCE2 are advantageous but not required.,none,none,holdout_test
+Bubbly front-desk personality with endless patience.,biased,feminine_coded,holdout_test
+No gaps in your employment history will be accepted.,biased,caregiver_bias,holdout_test
+We encourage applications from individuals with disabilities and are happy to discuss reasonable adjustments.,none,none,holdout_test
+Avoid hysterical reactions when clients escalate.,biased,stereotype,holdout_test
+A gentle touch and warm presence with every guest.,biased,feminine_coded,holdout_test
+Candidates who have previously taken career breaks for family reasons will not be shortlisted.,biased,caregiver_bias,holdout_test
+You will be the office mom who keeps everyone happy.,biased,feminine_coded,holdout_test
+We are looking for a sharp-elbowed operator who can navigate political environments.,biased,masculine_coded,holdout_test
+Excellent communication skills are essential for this role.,none,none,holdout_test
+"The customer success role calls for a vivacious, attractive individual with a magnetic personality.",biased,appearance_bias,holdout_test
+Fearless self-promoter who commands the room.,biased,masculine_coded,holdout_test
+A competitive benefits package.,none,none,holdout_test
+We will not consider candidates who have previously reduced their hours due to family obligations.,biased,caregiver_bias,holdout_test
+MBA required; no equivalent experience considered.,biased,qualification_inflation,holdout_test
+"A presentable, photogenic appearance is required.",biased,appearance_bias,holdout_test
+We welcome applications from candidates with non-traditional career paths.,none,none,holdout_test
+Only aggressive people succeed on this team.,biased,masculine_coded,holdout_test
+"We need a warm, motherly office manager to keep the team cohesive.",biased,stereotype,holdout_test
+This is a family-friendly company — we ask that candidates do not have young children at home.,biased,caregiver_bias,holdout_test
+The candidate will oversee our accessibility compliance programme and audit our digital products.,none,none,holdout_test
+We are hiring a quantity surveyor with experience in NEC contracts and infrastructure delivery.,none,none,holdout_test
+We want a go-getter who will hustle for market share in a crowded landscape.,biased,masculine_coded,holdout_test
+We provide a mentorship programme for all new joiners to support their professional development.,none,none,holdout_test
+Only apply if your schedule is completely free of caregiving duties.,biased,caregiver_bias,holdout_test
+Experienced project manager.,none,none,holdout_test
+Applicants must meet all requirements without exception.,biased,qualification_inflation,holdout_test
+The candidate will support the product team with user acceptance testing and quality assurance.,none,none,holdout_test
+The chairperson will lead the quarterly board meetings.,none,none,holdout_test
+Must be willing to work weekends without additional compensation.,biased,caregiver_bias,holdout_test
+This role requires someone who has demonstrated sustained full-time commitment throughout their career.,biased,caregiver_bias,holdout_test
+A take-no-prisoners management style is expected.,biased,stereotype,holdout_test
+Attractive appearance required.,biased,appearance_bias,holdout_test
+You will join an on-call rotation of one week per month.,none,none,holdout_test
+We value candidates who bring diverse perspectives and lived experience to the team.,none,none,holdout_test
+"Twenty-plus years of experience required, no exceptions.",biased,qualification_inflation,holdout_test
+"Bossy candidates need not apply, especially women.",biased,stereotype,holdout_test
+Professional English proficiency is required for client work.,none,none,holdout_test
+Dominant personalities thrive on our trading desk.,biased,masculine_coded,holdout_test
+We require someone who will not need to take time off for fertility treatments.,biased,caregiver_bias,holdout_test
+Foreman position available.,biased,gendered_language,holdout_test
+Strong preference for candidates with a take-no-prisoners attitude.,biased,stereotype,holdout_test
+This is a role for a true coding wizard with deep systems knowledge.,biased,masculine_coded,holdout_test
+Sink or swim onboarding — only the tough survive.,biased,exclusionary,holdout_test
+The successful candidate will lead a team of designers through end-to-end product development cycles.,none,none,holdout_test
+His team will grow from five to twelve engineers.,biased,gendered_language,holdout_test
+This position requires a strong analytical mindset and attention to detail.,none,none,holdout_test
+We are looking for a fatherly mentor to lead our graduate intake program.,biased,stereotype,holdout_test
+The right man for the job knows networking hardware.,biased,gendered_language,holdout_test
+Our logistics team needs a delivery boy for local courier runs.,biased,gendered_language,holdout_test
+Height requirement: at least five foot seven.,biased,appearance_bias,holdout_test
+Looking for an independent thinker who is not afraid to ruffle feathers.,biased,masculine_coded,holdout_test
+"We want someone who leads from the front — bold, brash, and unapologetic.",biased,stereotype,holdout_test
+We are looking for a UX researcher to conduct user interviews and synthesise insights into design recommendations.,none,none,holdout_test
+We welcome applications from candidates who have taken career breaks and are returning to work.,none,none,holdout_test
+We want a strong patriarch figure to anchor our family-owned business.,biased,stereotype,holdout_test
+This role is open to candidates at all career stages with relevant expertise.,none,none,holdout_test
+Candidates should have experience coordinating international logistics and managing customs documentation.,none,none,holdout_test
+Work-hard-play-hard mentality.,biased,exclusionary,holdout_test
+Candidates who are pregnant or recently pregnant may not have the capacity for this high-pressure role.,biased,caregiver_bias,holdout_test
+A youthful culture fueled by energy drinks and ping pong.,biased,age_coded,holdout_test
+The candidate will design and implement machine learning pipelines for real-time prediction systems.,none,none,holdout_test
+Candidates should be prepared to uproot their lives and relocate internationally within 30 days.,biased,caregiver_bias,holdout_test
+"The spokesperson must have a polished, put-together appearance that reflects corporate gravitas.",biased,appearance_bias,holdout_test
+A seasoned craftsman takes pride in his work.,biased,gendered_language,holdout_test
+The salesman will manage the northern territory.,biased,gendered_language,holdout_test
+We offer parental leave equally to all parents regardless of gender.,none,none,holdout_test
+Flexibility to work long hours whenever we need you.,biased,caregiver_bias,holdout_test
+We want a champion who will lead from the front and inspire through action.,biased,masculine_coded,holdout_test
+"The successful candidate will have a commanding presence and a deep, authoritative voice.",biased,stereotype,holdout_test
+High-energy young hustlers wanted for the launch team.,biased,age_coded,holdout_test
+We are seeking a nurse with experience in acute care and medication management.,none,none,holdout_test
+We are looking for someone fully committed — maternity leave will not be supported in this role.,biased,caregiver_bias,holdout_test
+"Looking for a tall, elegant female to host our VIP lounge events.",biased,appearance_bias,holdout_test
+We need an analytical powerhouse who can wrestle insight from complex data.,biased,masculine_coded,holdout_test
+Salesman wanted.,biased,gendered_language,holdout_test
+We work hard and play hard — happy hour every Friday.,biased,exclusionary,holdout_test
+Alpha males wanted.,biased,masculine_coded,holdout_test
+We are looking for a solicitor with experience in employment law and discrimination claims.,none,none,holdout_test
+We will not be able to guarantee a return-to-work role following any maternity absence.,biased,caregiver_bias,holdout_test
+Digital native.,biased,age_coded,holdout_test
+"A born leader with a commanding, forceful presence.",biased,stereotype,holdout_test
+We are hiring a bricklayer — male applicants preferred for this physically demanding role.,biased,gendered_language,holdout_test
+We are seeking a male personal trainer for our women-only gym floor.,biased,gendered_language,holdout_test
+Every foreman oversees his own crew.,biased,gendered_language,holdout_test

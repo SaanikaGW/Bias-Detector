@@ -9,8 +9,8 @@ from dotenv import load_dotenv
 load_dotenv()
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from detector import analyze_jd
-from agents import SuggestionAgent, RewriteAgent, PIIStripper, FitEvaluator
+from detection.pipeline import analyze as analyze_pipeline
+from agents import PIIStripper, FitEvaluator
 
 app = Flask(__name__)
 _cors_origin = os.environ.get("CORS_ORIGIN", "*")
@@ -41,32 +41,24 @@ def analyze():
     if not data or "text" not in data:
         return jsonify({"error": "Missing 'text' field"}), 400
 
-    text      = data["text"].strip()
-    tone      = data.get("tone")
-    seniority = data.get("seniority")
+    text = data["text"].strip()
 
     if len(text) < 10:
         return jsonify({"error": "Text too short"}), 400
 
-    # Step 1: run rule-based + semantic detector
-    detection = analyze_jd(text)
+    # v2.0 hybrid pipeline: Layer 1 rules -> Layer 2 contextual classifier
+    # (the decision-makers) -> Layer 3 LLM explanations/rewrites (downstream
+    # only, with offline template fallback). The response contains both the
+    # v2 contract (issues, scores, rewritten_jd) and every v1 field
+    # (bias_score, bias_level, categories, highlights, suggestions) so
+    # existing consumers keep working.
+    try:
+        result = analyze_pipeline(text)
+    except Exception as e:
+        print(f"[analyze] pipeline error: {e}")
+        return jsonify({"error": "Analysis failed. Please try again."}), 500
 
-    # Step 2: call GenAI for suggestions (downstream only — no re-detection)
-    suggestion_agent = SuggestionAgent()
-    suggestions = suggestion_agent.generate(text, detection["highlights"])
-
-    # Step 3: call GenAI for rewrite
-    rewrite_agent = RewriteAgent()
-    rewritten_jd  = rewrite_agent.generate(text, detection, suggestions)
-
-    return jsonify({
-        "bias_score":   detection["bias_score"],
-        "bias_level":   detection["bias_level"],
-        "categories":   detection["categories"],
-        "highlights":   detection["highlights"],
-        "suggestions":  suggestions,
-        "rewritten_jd": rewritten_jd,
-    })
+    return jsonify(result)
 
 
 # ── Hiring AI ─────────────────────────────────────────────────────────────────

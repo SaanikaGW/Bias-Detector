@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "BIOS Career Check",
+  "version": "2.0.0",
+  "description": "Detect and reduce gender bias in job descriptions before they go live. Analyzes the page or your pasted text, explains why each phrase matters, and suggests inclusive rewrites.",
+  "minimum_chrome_version": "116",
+
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "BIOS Career Check — analyze this job description"
+  },
+
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+
+  "side_panel": {
+    "default_path": "sidepanel/panel.html"
+  },
+
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "sidePanel",
+    "contextMenus",
+    "storage"
+  ],
+
+  "host_permissions": []
+}

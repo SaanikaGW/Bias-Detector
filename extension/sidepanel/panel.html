@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>BIOS Career Check</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>body { padding: 14px; min-width: 300px; }</style>
+</head>
+<body>
+  <h1><span class="logo">⚖️</span> BIOS Career Check</h1>
+  <p class="muted" style="margin:6px 0 10px">
+    Detect gender-coded language, learn why it matters, and get an inclusive
+    rewrite that keeps every real requirement.
+  </p>
+
+  <div class="row">
+    <button id="analyze-page" class="btn">🔍 Analyze Current Page</button>
+    <button id="analyze-selection" class="btn ghost">Analyze Selection</button>
+  </div>
+
+  <div style="margin-top:10px">
+    <textarea id="manual" placeholder="…or paste a job description here"></textarea>
+    <div class="row" style="margin-top:6px">
+      <button id="analyze-paste" class="btn ghost">Analyze pasted text</button>
+    </div>
+  </div>
+
+  <div id="status" style="margin-top:10px"></div>
+  <div id="result"></div>
+
+  <div class="settings">
+    <label for="api-base">Analysis API address (your BIOS Check server)</label>
+    <input type="text" id="api-base" placeholder="http://localhost:5001">
+    <div class="row" style="margin-top:6px">
+      <button id="save-api" class="btn ghost">Save</button>
+      <span id="api-saved" class="muted"></span>
+    </div>
+    <p class="muted" style="margin-top:8px">
+      Text is sent only to the server above for analysis, only when you click
+      Analyze. See PRIVACY.md in the project for details.
+    </p>
+  </div>
+
+  <script type="module" src="panel.js"></script>
+</body>
+</html>

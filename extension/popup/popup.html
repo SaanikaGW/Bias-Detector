@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>BIOS Career Check</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>body { width: 340px; padding: 12px; }</style>
+</head>
+<body>
+  <h1><span class="logo">⚖️</span> BIOS Career Check</h1>
+  <p class="muted" style="margin:6px 0 10px">
+    Check this job posting for gender-coded language before it goes live.
+  </p>
+
+  <div class="row">
+    <button id="analyze-page" class="btn">🔍 Analyze Current Page</button>
+    <button id="analyze-selection" class="btn ghost">Analyze Selected Text</button>
+  </div>
+  <div class="row" style="margin-top:8px">
+    <button id="open-panel" class="btn ghost">Open side panel (paste &amp; full results)</button>
+  </div>
+
+  <div id="status" style="margin-top:10px"></div>
+  <div id="result" style="margin-top:8px"></div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

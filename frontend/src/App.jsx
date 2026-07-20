@@ -1,29 +1,63 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
+// Shared client module — synced from /shared/biosClient.js (the same source
+// the Chrome extension uses). Edit /shared/biosClient.js and run `make ext`;
+// `make check-shared` fails CI if the copies ever drift.
+import { analyzeText, downloadReport, catColor, SEV_COLORS } from "./shared/biosClient.js";
 
 const API = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:5001";
 
-// ── Design tokens (dark theme) ────────────────────────────────────────────────
-const C = {
-  ink:      "#FFFFFF",
-  slate:    "#CBD5E1",
-  mist:     "#94A3B8",
-  silver:   "#64748B",
-  ghost:    "#1E293B",
-  snow:     "#060D1F",
-  surface:  "#0B1525",
-  teal:     "#0EA5E9",
-  tealDark: "#0284C7",
-  emerald:  "#10B981",
-  amber:    "#F59E0B",
-  rose:     "#F43F5E",
-  card:     "rgba(11,20,40,0.92)",
+// ── Design tokens ─────────────────────────────────────────────────────────────
+// Two palettes sharing the same brand hues (teal/emerald, Fraunces + DM Sans).
+// C is mutated by applyTheme() and the whole tree re-renders via a key swap in
+// App — a deliberately small-footprint way to theme 1400 lines of inline styles.
+const THEMES = {
+  dark: {
+    ink:      "#FFFFFF",
+    slate:    "#CBD5E1",
+    mist:     "#94A3B8",
+    silver:   "#64748B",
+    ghost:    "#1E293B",
+    snow:     "#060D1F",
+    surface:  "#0B1525",
+    teal:     "#0EA5E9",
+    tealDark: "#0284C7",
+    emerald:  "#10B981",
+    amber:    "#F59E0B",
+    rose:     "#F43F5E",
+    card:     "rgba(11,20,40,0.92)",
+    navBg:    "rgba(6,13,31,0.92)",
+    footerBg: "rgba(6,13,31,0.6)",
+  },
+  light: {
+    ink:      "#0F172A",
+    slate:    "#334155",
+    mist:     "#475569",
+    silver:   "#64748B",
+    ghost:    "#E2E8F0",
+    snow:     "#F8FAFC",
+    surface:  "#FFFFFF",
+    teal:     "#0284C7",
+    tealDark: "#0369A1",
+    emerald:  "#059669",
+    amber:    "#D97706",
+    rose:     "#E11D48",
+    card:     "rgba(255,255,255,0.94)",
+    navBg:    "rgba(248,250,252,0.92)",
+    footerBg: "rgba(241,245,249,0.8)",
+  },
 };
+
+const C = { ...THEMES.dark };
+
+function applyTheme(mode) {
+  Object.assign(C, THEMES[mode] || THEMES.dark);
+}
 
 const fontLink = `
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 `;
 
-const globalStyles = `
+const globalStyles = () => `
   ${fontLink}
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -65,6 +99,24 @@ const globalStyles = `
     transform: translateY(-3px);
     box-shadow: 0 8px 40px rgba(14,165,233,0.18);
     border-color: rgba(14,165,233,0.4) !important;
+  }
+
+  /* Accessibility: visible keyboard focus everywhere */
+  button:focus-visible, textarea:focus-visible, input:focus-visible,
+  select:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid ${C.teal};
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+  mark.bias-hl {
+    background: ${C.rose}26;
+    color: inherit;
+    border-bottom: 2px solid ${C.rose};
+    border-radius: 3px;
+    padding: 0 2px;
   }
 `;
 
@@ -123,7 +175,7 @@ function Btn({ children, onClick, variant = "primary", disabled, style = {} }) {
   const variants = {
     primary: {
       background: `linear-gradient(135deg, ${C.teal}, ${C.tealDark})`,
-      color: "#fff",
+      color: "#FFFFFF", // stays white on the teal gradient in both themes
       boxShadow: "0 4px 20px rgba(14,165,233,0.4)",
     },
     outline: {
@@ -138,7 +190,7 @@ function Btn({ children, onClick, variant = "primary", disabled, style = {} }) {
     },
     danger: {
       background: C.rose,
-      color: "#fff",
+      color: "#FFFFFF",
     },
   };
   return (
@@ -148,9 +200,13 @@ function Btn({ children, onClick, variant = "primary", disabled, style = {} }) {
   );
 }
 
-function ScoreMeter({ score, label }) {
-  const pct   = Math.round(score * 100);
-  const color = pct < 25 ? C.emerald : pct < 60 ? C.amber : C.rose;
+function ScoreMeter({ score, label, invert = false }) {
+  // Accepts either 0–1 (legacy) or 0–100 (v2) scores.
+  const pct = Math.round(score <= 1 ? score * 100 : score);
+  // invert=true → higher is better (Inclusive Language Score)
+  const color = invert
+    ? (pct >= 75 ? C.emerald : pct >= 45 ? C.amber : C.rose)
+    : (pct < 25 ? C.emerald : pct < 60 ? C.amber : C.rose);
   return (
     <div style={{ textAlign: "center" }}>
       <div style={{ position: "relative", width: 120, height: 120, margin: "0 auto 12px" }}>
@@ -244,7 +300,7 @@ function SectionLabel({ children }) {
 
 // ── Nav ───────────────────────────────────────────────────────────────────────
 
-function Nav({ page, setPage }) {
+function Nav({ page, setPage, theme, toggleTheme }) {
   const items = [
     { id: "home",      label: "Home" },
     { id: "reducer",   label: "JD Bias Reducer" },
@@ -256,12 +312,12 @@ function Nav({ page, setPage }) {
   return (
     <nav style={{
       position: "sticky", top: 0, zIndex: 100,
-      background: "rgba(6,13,31,0.92)",
+      background: C.navBg,
       backdropFilter: "blur(16px)",
       borderBottom: `1px solid ${C.ghost}`,
-      display: "flex", alignItems: "center",
-      padding: "0 40px",
-      height: 60,
+      display: "flex", alignItems: "center", flexWrap: "wrap",
+      padding: "6px 24px",
+      minHeight: 60,
       gap: 2,
     }}>
       <div
@@ -280,7 +336,7 @@ function Nav({ page, setPage }) {
           fontFamily: "'Fraunces', serif",
           fontWeight: 700,
           fontSize: 17,
-          color: "#fff",
+          color: C.ink,
           letterSpacing: "-0.01em",
         }}>BIOS Check</span>
       </div>
@@ -288,6 +344,7 @@ function Nav({ page, setPage }) {
         <button
           key={it.id}
           onClick={() => setPage(it.id)}
+          aria-current={page === it.id ? "page" : undefined}
           style={{
             background: page === it.id ? `${C.teal}18` : "transparent",
             color: page === it.id ? C.teal : C.mist,
@@ -303,6 +360,22 @@ function Nav({ page, setPage }) {
           {it.label}
         </button>
       ))}
+      <button
+        onClick={toggleTheme}
+        aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+        title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+        style={{
+          background: "transparent",
+          border: `1px solid ${C.ghost}`,
+          borderRadius: 8,
+          padding: "5px 10px",
+          fontSize: 14,
+          marginLeft: 8,
+          color: C.mist,
+        }}
+      >
+        {theme === "dark" ? "☀️" : "🌙"}
+      </button>
     </nav>
   );
 }
@@ -363,7 +436,7 @@ function HomePage({ setPage }) {
           marginTop: 24,
           marginBottom: 24,
           letterSpacing: "-0.03em",
-          color: "#fff",
+          color: C.ink,
         }}>
           Fair hiring starts<br />
           <span style={{
@@ -380,8 +453,9 @@ function HomePage({ setPage }) {
           lineHeight: 1.7,
           fontWeight: 300,
         }}>
-          AI hiring tools inherit gender bias from their training data. BIOS Check makes that
-          bias <em>visible</em>, measurable, and fixable — at every step of the process.
+          Detect and reduce gender bias before your job posting goes live. BIOS Check
+          analyzes your language, explains <em>why</em> each phrase matters — backed by
+          research — and generates an inclusive rewrite that keeps every real requirement.
         </p>
         <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap" }}>
           <Btn
@@ -394,6 +468,60 @@ function HomePage({ setPage }) {
             Learn More
           </Btn>
         </div>
+      </div>
+
+      {/* Why it matters + how it works + example result */}
+      <div className="fade-up-2" style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+        gap: 20,
+        marginBottom: 56,
+      }}>
+        <Card>
+          <SectionLabel>Why it matters</SectionLabel>
+          <div style={{ fontFamily: "'Fraunces', serif", fontSize: 19, fontWeight: 700, color: C.ink, marginBottom: 10 }}>
+            Biased wording shrinks your candidate pool before anyone applies
+          </div>
+          <p style={{ fontSize: 13.5, color: C.slate, lineHeight: 1.7 }}>
+            Research on gender-coded job ads found that masculine-coded wording makes women
+            rate a job as less appealing — without changing whether they feel able to do it.
+            And when postings read as all-or-nothing wish lists, women tend to apply only
+            when they meet nearly every requirement, while men apply at far lower thresholds.
+            The language, not the job, filters people out.
+          </p>
+        </Card>
+        <Card>
+          <SectionLabel>How the analysis works</SectionLabel>
+          <div style={{ fontFamily: "'Fraunces', serif", fontSize: 19, fontWeight: 700, color: C.ink, marginBottom: 10 }}>
+            Three layers, no black box
+          </div>
+          {[
+            ["1. Rules", "157 curated, research-grounded patterns across nine bias categories flag candidate phrases."],
+            ["2. Context classifier", "A trained model reads the whole sentence — so “aggressive strategy” passes while “aggressive personality” is flagged."],
+            ["3. AI explanations", "AI explains each confirmed issue and rewrites it, preserving the real job requirements. It never adds or removes flags."],
+          ].map(([t, d]) => (
+            <div key={t} style={{ display: "flex", gap: 10, marginBottom: 8 }}>
+              <span style={{ color: C.teal, fontWeight: 700, fontSize: 13, whiteSpace: "nowrap" }}>{t}</span>
+              <span style={{ fontSize: 13, color: C.slate, lineHeight: 1.6 }}>{d}</span>
+            </div>
+          ))}
+        </Card>
+        <Card>
+          <SectionLabel>Example result</SectionLabel>
+          <div style={{ fontFamily: "'Fraunces', serif", fontSize: 19, fontWeight: 700, color: C.ink, marginBottom: 10 }}>
+            “Seeking a <span style={{ borderBottom: `2px solid ${C.rose}` }}>rockstar salesman</span>,
+            available <span style={{ borderBottom: `2px solid ${C.rose}` }}>24/7</span>”
+          </div>
+          <div style={{ padding: "10px 12px", borderRadius: 8, background: `${C.emerald}12`,
+                        border: `1px solid ${C.emerald}33`, fontSize: 13.5, color: C.ink, marginBottom: 10 }}>
+            <span style={{ color: C.emerald, fontWeight: 700 }}>Rewrite: </span>
+            “Seeking a high-performing salesperson; participates in a scheduled on-call rotation”
+          </div>
+          <p style={{ fontSize: 12.5, color: C.mist, lineHeight: 1.6 }}>
+            Each flag comes with the research behind it, a severity and confidence rating,
+            and a rewrite that keeps the actual requirement — never just “this is biased.”
+          </p>
+        </Card>
       </div>
 
       {/* Feature cards */}
@@ -421,7 +549,7 @@ function HomePage({ setPage }) {
               fontFamily: "'Fraunces', serif",
               fontSize: 21,
               fontWeight: 700,
-              color: "#fff",
+              color: C.ink,
               marginBottom: 10,
             }}>{f.title}</div>
             <p style={{ fontSize: 14, color: C.slate, lineHeight: 1.7, marginBottom: 20 }}>{f.desc}</p>
@@ -450,7 +578,7 @@ function HomePage({ setPage }) {
           <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: C.teal, marginBottom: 10 }}>
             Start here
           </div>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 28, fontWeight: 800, color: "#fff", marginBottom: 8, letterSpacing: "-0.02em" }}>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 28, fontWeight: 800, color: C.ink, marginBottom: 8, letterSpacing: "-0.02em" }}>
             Your path to fairer hiring
           </h2>
           <p style={{ color: C.mist, fontSize: 15, maxWidth: 440, margin: "0 auto" }}>
@@ -473,7 +601,7 @@ function HomePage({ setPage }) {
             { num: "01", icon: "🔍", label: "Fix your JD", sub: "Detect & rewrite biased language before it shrinks your candidate pool.", page: "reducer", accent: C.teal },
             { num: "02", icon: "🤖", label: "Compare AI outcomes", sub: "See how bias shifts rankings — traditional AI vs. our bias-aware pipeline.", page: "hiring", accent: "#8B5CF6" },
             { num: "03", icon: "📊", label: "Score your org", sub: "Aggregate fairness across all your JDs into one benchmark score.", page: "fairindex", accent: C.emerald },
-          ].map((s, i) => (
+          ].map((s) => (
             <div
               key={s.num}
               onClick={() => setPage(s.page)}
@@ -523,7 +651,7 @@ function HomePage({ setPage }) {
                 boxShadow: `0 0 20px ${s.accent}20`,
               }}>{s.icon}</div>
 
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", marginBottom: 8 }}>{s.label}</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: C.ink, marginBottom: 8 }}>{s.label}</div>
               <p style={{ fontSize: 13, color: C.mist, lineHeight: 1.6, marginBottom: 16 }}>{s.sub}</p>
               <span style={{ fontSize: 12, fontWeight: 700, color: s.accent, letterSpacing: "0.04em" }}>
                 Go →
@@ -538,27 +666,127 @@ function HomePage({ setPage }) {
 
 // ── JD Bias Reducer ───────────────────────────────────────────────────────────
 
+function SeverityDot({ severity }) {
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 5,
+                   fontSize: 11, fontWeight: 700, color: SEV_COLORS[severity],
+                   textTransform: "uppercase", letterSpacing: "0.06em" }}>
+      <span style={{ width: 8, height: 8, borderRadius: 99,
+                     background: SEV_COLORS[severity] }} />
+      {severity}
+    </span>
+  );
+}
+
+function ConfidenceBar({ value }) {
+  const pct = Math.round(value * 100);
+  return (
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+          title={`Detection confidence: ${pct}%`}>
+      <span style={{ width: 52, height: 5, borderRadius: 99, background: C.ghost, overflow: "hidden" }}>
+        <span style={{ display: "block", width: `${pct}%`, height: "100%",
+                       borderRadius: 99, background: C.teal }} />
+      </span>
+      <span style={{ fontSize: 11, color: C.silver }}>{pct}%</span>
+    </span>
+  );
+}
+
+function IssueCard({ issue }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ border: `1px solid ${C.ghost}`, borderLeft: `3px solid ${catColor(issue.category)}`,
+                  borderRadius: 10, padding: "12px 14px", marginBottom: 10, background: C.surface }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center",
+                    gap: 10, flexWrap: "wrap" }}>
+        <span style={{ fontWeight: 700, fontSize: 14, color: C.ink }}>“{issue.span}”</span>
+        <span style={{ display: "inline-flex", gap: 12, alignItems: "center" }}>
+          <SeverityDot severity={issue.severity} />
+          <ConfidenceBar value={issue.confidence} />
+        </span>
+      </div>
+      <div style={{ marginTop: 6 }}>
+        <Pill color={catColor(issue.category)}>{issue.category_label || issue.category}</Pill>
+      </div>
+      <p style={{ fontSize: 13, color: C.slate, lineHeight: 1.6, marginTop: 8 }}>
+        {issue.explanation}
+      </p>
+      {issue.rewrite && (
+        <div style={{ marginTop: 8, padding: "8px 10px", borderRadius: 8,
+                      background: `${C.emerald}12`, border: `1px solid ${C.emerald}33`,
+                      fontSize: 13, color: C.ink }}>
+          <span style={{ color: C.emerald, fontWeight: 700 }}>Try instead: </span>
+          {issue.rewrite}
+          {issue.expected_improvement && (
+            <div style={{ fontSize: 12, color: C.mist, marginTop: 4 }}>{issue.expected_improvement}</div>
+          )}
+        </div>
+      )}
+      {(issue.research_rationale || issue.impact) && (
+        <button onClick={() => setOpen(o => !o)} aria-expanded={open}
+                style={{ background: "none", border: "none", color: C.teal, fontSize: 12,
+                         fontWeight: 700, padding: "6px 0 0", fontFamily: "'DM Sans', sans-serif" }}>
+          {open ? "▾ Hide the research" : "▸ Why this matters (research)"}
+        </button>
+      )}
+      {open && (
+        <div style={{ fontSize: 12.5, color: C.mist, lineHeight: 1.6, marginTop: 6,
+                      borderTop: `1px dashed ${C.ghost}`, paddingTop: 8 }}>
+          {issue.impact && <p style={{ marginBottom: 6 }}>{issue.impact}</p>}
+          {issue.research_rationale && <p>{issue.research_rationale}</p>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function HighlightedText({ text, issues }) {
+  const spans = (issues || [])
+    .filter(i => Number.isInteger(i.start) && Number.isInteger(i.end) && i.end > i.start)
+    .sort((a, b) => a.start - b.start);
+  const parts = [];
+  let cursor = 0;
+  spans.forEach((iss, k) => {
+    if (iss.start < cursor) return; // skip overlaps
+    if (iss.start > cursor) parts.push(<span key={`t${k}`}>{text.slice(cursor, iss.start)}</span>);
+    parts.push(
+      <mark key={`m${k}`} className="bias-hl"
+            title={`${iss.category_label || iss.category} — ${iss.severity} severity`}>
+        {text.slice(iss.start, iss.end)}
+      </mark>
+    );
+    cursor = iss.end;
+  });
+  parts.push(<span key="tail">{text.slice(cursor)}</span>);
+  return (
+    <div style={{ background: C.surface, borderRadius: 8, padding: "14px 16px",
+                  whiteSpace: "pre-wrap", fontSize: 13.5, lineHeight: 1.8,
+                  border: `1px solid ${C.ghost}`, color: C.slate }}>
+      {parts}
+    </div>
+  );
+}
+
+// buildReport/downloadReport now come from ../../shared/biosClient.js — the
+// same module the Chrome extension imports (single source of truth).
+
 function ReducerPage() {
   const [text, setText]       = useState("");
   const [result, setResult]   = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState("");
-  const [tab, setTab]         = useState("suggestions");
+  const [tab, setTab]         = useState("issues");
+  const [copied, setCopied]   = useState(false);
   const MAX = 3000;
 
   async function handleAnalyze() {
     if (!text.trim()) return;
     setLoading(true); setError(""); setResult(null);
     try {
-      const res  = await fetch(`${API}/api/bias-reducer/analyze`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Analysis failed");
+      // Shared client (same code path as the Chrome extension).
+      const data = await analyzeText(API, text);
       setResult(data);
-      setTab("suggestions");
+      setTab("issues");
     } catch (e) {
       setError(e.message);
     } finally {
@@ -572,7 +800,7 @@ function ReducerPage() {
   return (
     <div style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 32px" }}>
       <div className="fade-up" style={{ marginBottom: 36, textAlign: "center" }}>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, marginBottom: 10, color: "#fff", letterSpacing: "-0.02em" }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, marginBottom: 10, color: C.ink, letterSpacing: "-0.02em" }}>
           JD Bias Reducer
         </h1>
         <p style={{ color: C.slate, fontSize: 16, maxWidth: 520, margin: "0 auto 8px" }}>
@@ -583,12 +811,12 @@ function ReducerPage() {
         </p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24 }}>
         {/* Left — Input */}
         <div className="fade-up">
           <Card>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <label style={{ fontWeight: 700, fontSize: 14, color: "#fff" }}>Job Description</label>
+              <label style={{ fontWeight: 700, fontSize: 14, color: C.ink }}>Job Description</label>
               <span style={{ fontSize: 12, color: text.length > MAX * 0.9 ? C.rose : C.silver }}>
                 {text.length} / {MAX}
               </span>
@@ -642,50 +870,61 @@ function ReducerPage() {
           )}
           {result && (
             <Card>
-              {/* Score summary */}
-              <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 20, padding: "16px", background: C.surface, borderRadius: 10, border: `1px solid ${C.ghost}` }}>
-                <ScoreMeter score={result.bias_score} label="Bias Score" />
-                <div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                    <span style={{
-                      fontSize: 13,
-                      fontWeight: 700,
-                      color: levelColor[result.bias_level] || C.mist,
-                      background: (levelColor[result.bias_level] || C.mist) + "18",
-                      padding: "3px 10px",
-                      borderRadius: 6,
-                    }}>
-                      {levelIcon[result.bias_level]} {result.bias_level?.toUpperCase()} BIAS
-                    </span>
-                  </div>
+              {/* Score summary — two scores, derived transparently */}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center",
+                            gap: 28, marginBottom: 14, padding: "16px", background: C.surface,
+                            borderRadius: 10, border: `1px solid ${C.ghost}`, flexWrap: "wrap" }}>
+                <ScoreMeter
+                  score={result.scores?.gender_bias_score ?? result.bias_score}
+                  label="Gender Bias Score" />
+                {result.scores && (
+                  <ScoreMeter score={result.scores.inclusive_language_score}
+                              label="Inclusive Language Score" invert />
+                )}
+                <div style={{ minWidth: 160 }}>
+                  <span style={{
+                    fontSize: 13, fontWeight: 700,
+                    color: levelColor[result.bias_level] || C.mist,
+                    background: (levelColor[result.bias_level] || C.mist) + "18",
+                    padding: "3px 10px", borderRadius: 6, display: "inline-block", marginBottom: 8,
+                  }}>
+                    {levelIcon[result.bias_level]} {result.bias_level?.toUpperCase()} BIAS
+                  </span>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {(result.categories || []).map(cat => (
-                      <Pill key={cat} color={
-                        cat === "explicit_gender" ? C.rose :
-                        cat === "stereotype"       ? C.amber :
-                        cat === "age_bias"         ? "#F97316" : "#8B5CF6"
-                      }>{cat.replace(/_/g, " ")}</Pill>
+                      <Pill key={cat} color={catColor(cat)}>{cat.replace(/_/g, " ")}</Pill>
                     ))}
                     {result.categories?.length === 0 && <Pill color={C.emerald}>No bias detected</Pill>}
                   </div>
+                  {result.scores?.derivation && (
+                    <div style={{ fontSize: 11, color: C.silver, marginTop: 8, maxWidth: 220, lineHeight: 1.5 }}
+                         title={result.scores.derivation.formula}>
+                      Scores are computed from the issues below — severity × confidence ×
+                      category weight. Nothing is a black box.
+                    </div>
+                  )}
                 </div>
               </div>
 
-              {/* Flagged spans */}
-              {result.highlights?.length > 0 && (
-                <div style={{ marginBottom: 16 }}>
-                  <SectionLabel>Flagged Phrases</SectionLabel>
+              {/* Inclusive signals already present */}
+              {result.inclusive_signals?.length > 0 && (
+                <div style={{ marginBottom: 14 }}>
+                  <SectionLabel>Inclusive signals already in your posting</SectionLabel>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {result.highlights.map((h, i) => <HighlightChip key={i} span={h.span} type={h.type} />)}
+                    {result.inclusive_signals.map(sig => (
+                      <Pill key={sig.id} color={C.emerald}>✓ {sig.label}</Pill>
+                    ))}
                   </div>
                 </div>
               )}
 
               {/* Tabs */}
-              <div style={{ display: "flex", gap: 2, borderBottom: `1px solid ${C.ghost}`, marginBottom: 16 }}>
-                {["suggestions", "rewrite"].map(t => (
-                  <button key={t} onClick={() => setTab(t)} style={{
-                    padding: "7px 16px",
+              <div role="tablist" style={{ display: "flex", gap: 2, borderBottom: `1px solid ${C.ghost}`, marginBottom: 16 }}>
+                {[["issues", `⚑ Issues (${(result.issues || result.suggestions || []).length})`],
+                  ["original", "🔍 Highlighted"],
+                  ["rewrite", "✏️ Improved JD"]].map(([t, label]) => (
+                  <button key={t} role="tab" aria-selected={tab === t} onClick={() => setTab(t)} style={{
+                    padding: "7px 14px",
                     fontSize: 13,
                     fontWeight: tab === t ? 700 : 400,
                     color: tab === t ? C.teal : C.mist,
@@ -696,23 +935,29 @@ function ReducerPage() {
                     transition: "all 0.15s",
                     fontFamily: "'DM Sans', sans-serif",
                   }}>
-                    {t === "suggestions" ? "💡 Suggestions" : "✏️ Rewritten JD"}
+                    {label}
                   </button>
                 ))}
               </div>
 
-              <div style={{ maxHeight: 280, overflowY: "auto", fontSize: 14, lineHeight: 1.7, color: C.slate }}>
-                {tab === "suggestions" && (
-                  result.suggestions?.length > 0
-                    ? <ul style={{ paddingLeft: 0, listStyle: "none" }}>
-                        {result.suggestions.map((s, i) => (
-                          <li key={i} style={{ padding: "7px 0", borderBottom: `1px solid ${C.ghost}`, display: "flex", gap: 8 }}>
-                            <span style={{ color: C.teal, fontWeight: 700, minWidth: 18 }}>→</span>
-                            <span>{s}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    : <EmptyState icon="✓" title="No suggestions needed" body="This job description appears inclusive." />
+              <div style={{ maxHeight: 340, overflowY: "auto", fontSize: 14, lineHeight: 1.7, color: C.slate }}>
+                {tab === "issues" && (
+                  result.issues?.length > 0
+                    ? result.issues.map((iss, i) => <IssueCard key={i} issue={iss} />)
+                    : result.suggestions?.length > 0
+                      ? <ul style={{ paddingLeft: 0, listStyle: "none" }}>
+                          {result.suggestions.map((s, i) => (
+                            <li key={i} style={{ padding: "7px 0", borderBottom: `1px solid ${C.ghost}`, display: "flex", gap: 8 }}>
+                              <span style={{ color: C.teal, fontWeight: 700, minWidth: 18 }}>→</span>
+                              <span>{s}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      : <EmptyState icon="✓" title="No issues found"
+                          body="This job description reads as inclusive. Nice work — post away." />
+                )}
+                {tab === "original" && (
+                  <HighlightedText text={text} issues={result.issues || []} />
                 )}
                 {tab === "rewrite" && (
                   result.rewritten_jd
@@ -727,6 +972,20 @@ function ReducerPage() {
                       }}>{result.rewritten_jd}</div>
                     : <EmptyState icon="✏️" title="Rewrite pending" body="Rewritten JD will appear here." />
                 )}
+              </div>
+
+              {/* Actions */}
+              <div style={{ display: "flex", gap: 10, marginTop: 16, flexWrap: "wrap" }}>
+                <Btn variant="outline" disabled={!result.rewritten_jd}
+                     onClick={async () => {
+                       await navigator.clipboard.writeText(result.rewritten_jd || "");
+                       setCopied(true); setTimeout(() => setCopied(false), 1800);
+                     }}>
+                  {copied ? "✓ Copied" : "⧉ Copy improved JD"}
+                </Btn>
+                <Btn variant="ghost" onClick={() => downloadReport(text, result)}>
+                  ⭳ Download report
+                </Btn>
               </div>
             </Card>
           )}
@@ -771,7 +1030,7 @@ function HiringAIPage() {
   return (
     <div style={{ maxWidth: 1200, margin: "0 auto", padding: "48px 32px" }}>
       <div className="fade-up" style={{ marginBottom: 36, textAlign: "center" }}>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, marginBottom: 10, color: "#fff", letterSpacing: "-0.02em" }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, marginBottom: 10, color: C.ink, letterSpacing: "-0.02em" }}>
           Bias-Aware Hiring AI
         </h1>
         <p style={{ color: C.slate, fontSize: 16, maxWidth: 560, margin: "0 auto 14px" }}>
@@ -808,7 +1067,7 @@ function HiringAIPage() {
 
       {step === 1 && (
         <Card className="fade-up">
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, marginBottom: 6, color: "#fff" }}>Step 1 — Paste Job Description</h2>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, marginBottom: 6, color: C.ink }}>Step 1 — Paste Job Description</h2>
           <p style={{ fontSize: 13, color: C.mist, marginBottom: 16 }}>Use a bias-reduced JD from the Bias Reducer for best results.</p>
           <textarea
             value={jd}
@@ -829,7 +1088,7 @@ function HiringAIPage() {
 
       {step === 2 && (
         <Card className="fade-up">
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, marginBottom: 6, color: "#fff" }}>Step 2 — Paste Resume</h2>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, marginBottom: 6, color: C.ink }}>Step 2 — Paste Resume</h2>
           <p style={{ fontSize: 13, color: C.mist, marginBottom: 16 }}>
             Paste the candidate's resume text. PII will be automatically stripped before evaluation.
           </p>
@@ -861,14 +1120,14 @@ function HiringAIPage() {
       {step === 3 && result && (
         <div className="fade-up">
           {/* Comparison panel */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 20, marginBottom: 24 }}>
             {[
               { label: "Traditional AI", color: C.rose, data: result.traditional, icon: "📉" },
               { label: "Bias-Aware AI (BIOS Check)", color: C.emerald, data: result.bias_aware, icon: "✦" },
             ].map(({ label, color, data, icon }) => (
               <Card key={label} style={{ borderTop: `3px solid ${color}` }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-                  <span style={{ fontWeight: 700, fontSize: 14, color: "#fff" }}>{icon} {label}</span>
+                  <span style={{ fontWeight: 700, fontSize: 14, color: C.ink }}>{icon} {label}</span>
                   <span style={{
                     fontFamily: "'Fraunces', serif",
                     fontSize: 28,
@@ -900,7 +1159,7 @@ function HiringAIPage() {
               {result.score_delta}
             </div>
             <div>
-              <div style={{ color: "#fff", fontWeight: 700, fontSize: 16, marginBottom: 4 }}>Score Delta</div>
+              <div style={{ color: C.ink, fontWeight: 700, fontSize: 16, marginBottom: 4 }}>Score Delta</div>
               <div style={{ color: C.slate, fontSize: 14 }}>
                 {parseFloat(result.score_delta) >= 0
                   ? "Our bias-aware system ranked this candidate higher than traditional AI would have."
@@ -912,7 +1171,7 @@ function HiringAIPage() {
           {/* Skill matches */}
           {result.bias_aware?.skill_matches?.length > 0 && (
             <Card style={{ marginBottom: 24 }}>
-              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, marginBottom: 16, color: "#fff" }}>Skill Match Breakdown</h3>
+              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, marginBottom: 16, color: C.ink }}>Skill Match Breakdown</h3>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {result.bias_aware.skill_matches.map((m, i) => (
                   <div key={i} style={{
@@ -924,7 +1183,7 @@ function HiringAIPage() {
                     border: `1px solid ${C.ghost}`,
                   }}>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 700, fontSize: 13, color: "#fff", marginBottom: 3 }}>{m.requirement}</div>
+                      <div style={{ fontWeight: 700, fontSize: 13, color: C.ink, marginBottom: 3 }}>{m.requirement}</div>
                       <div style={{ fontSize: 12, color: C.mist }}>{m.evidence}</div>
                     </div>
                     <Pill color={matchColor[m.match] || C.silver}>{m.match}</Pill>
@@ -937,7 +1196,7 @@ function HiringAIPage() {
           {/* PII suppressed */}
           {result.bias_aware?.bias_signals_suppressed?.length > 0 && (
             <Card>
-              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 16, fontWeight: 700, marginBottom: 10, color: "#fff" }}>🔒 Bias Signals Suppressed</h3>
+              <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 16, fontWeight: 700, marginBottom: 10, color: C.ink }}>🔒 Bias Signals Suppressed</h3>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {result.bias_aware.bias_signals_suppressed.map((s, i) => (
                   <span key={i} style={{
@@ -1013,7 +1272,7 @@ function FairIndexPage() {
   return (
     <div style={{ maxWidth: 1000, margin: "0 auto", padding: "48px 32px" }}>
       <div className="fade-up" style={{ marginBottom: 36, textAlign: "center" }}>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, marginBottom: 10, color: "#fff", letterSpacing: "-0.02em" }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, marginBottom: 10, color: C.ink, letterSpacing: "-0.02em" }}>
           Fair Hiring Index
         </h1>
         <p style={{ color: C.slate, fontSize: 16, maxWidth: 540, margin: "0 auto" }}>
@@ -1022,10 +1281,10 @@ function FairIndexPage() {
         </p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24 }}>
         {/* Input */}
         <Card className="fade-up">
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, marginBottom: 16, color: "#fff" }}>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, marginBottom: 16, color: C.ink }}>
             Batch Job Descriptions
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -1121,7 +1380,7 @@ function FairIndexPage() {
                 return (
                   <Card key={i} style={{ borderLeft: `3px solid ${levelColor}` }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                      <span style={{ fontWeight: 700, fontSize: 13, color: "#fff" }}>JD #{i + 1}</span>
+                      <span style={{ fontWeight: 700, fontSize: 13, color: C.ink }}>JD #{i + 1}</span>
                       <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 700, color: levelColor }}>
                         {Math.round(r.bias_score * 100)}% bias
                       </span>
@@ -1171,7 +1430,7 @@ function FairIndexPage() {
                           <div key={cat} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 12px", background: C.surface, borderRadius: 8, border: `1px solid ${C.ghost}` }}>
                             <div style={{ minWidth: 8, height: 8, borderRadius: "50%", background: dotColor, marginTop: 4, flexShrink: 0 }} />
                             <div>
-                              <div style={{ fontWeight: 700, fontSize: 12, color: "#fff", marginBottom: 3 }}>
+                              <div style={{ fontWeight: 700, fontSize: 12, color: C.ink, marginBottom: 3 }}>
                                 {cat.replace(/_/g, " ")} · {count} JD{count > 1 ? "s" : ""}
                               </div>
                               <div style={{ fontSize: 12, color: C.mist, lineHeight: 1.55 }}>{ADVICE[cat] || "Review flagged phrases above."}</div>
@@ -1239,7 +1498,7 @@ function AboutPage() {
           marginTop: 20,
           marginBottom: 24,
           letterSpacing: "-0.03em",
-          color: "#fff",
+          color: C.ink,
           lineHeight: 1.1,
         }}>
           Measuring what matters.
@@ -1270,7 +1529,7 @@ function AboutPage() {
             fontWeight: 700,
             marginTop: 14,
             marginBottom: 10,
-            color: "#fff",
+            color: C.ink,
           }}>Why does this matter?</h2>
           <p style={{ fontSize: 14, color: C.mist, lineHeight: 1.75 }}>
             Studies show that gendered language in job postings reduces the applicant pool by up to 42%
@@ -1290,7 +1549,7 @@ function AboutPage() {
 
       {/* Feature deep-dives */}
       <div className="fade-up-3" style={{ marginBottom: 56 }}>
-        <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 28, fontWeight: 800, marginBottom: 28, color: "#fff", textAlign: "center" }}>
+        <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 28, fontWeight: 800, marginBottom: 28, color: C.ink, textAlign: "center" }}>
           What each tool does
         </h2>
         <div style={{ display: "grid", gap: 24 }}>
@@ -1304,7 +1563,7 @@ function AboutPage() {
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: 20,
                 }}>{f.icon}</div>
-                <span style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, color: "#fff" }}>{f.title}</span>
+                <span style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, color: C.ink }}>{f.title}</span>
                 <Pill color={f.statusColor}>{f.status}</Pill>
               </div>
 
@@ -1337,7 +1596,7 @@ function AboutPage() {
         border: `1px solid ${C.teal}20`,
       }}>
         <div>
-          <div style={{ fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700, color: "#fff", marginBottom: 6 }}>
+          <div style={{ fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700, color: C.ink, marginBottom: 6 }}>
             Curious about the methodology?
           </div>
           <p style={{ fontSize: 14, color: C.mist, lineHeight: 1.6 }}>
@@ -1363,7 +1622,7 @@ function AboutPage() {
             boxShadow: `0 0 24px ${C.teal}50`,
           }}>👩‍💻</div>
           <div>
-            <div style={{ color: "#fff", fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, marginBottom: 4 }}>
+            <div style={{ color: C.ink, fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, marginBottom: 4 }}>
               Saanika
             </div>
             <div style={{ color: C.mist, fontSize: 13, lineHeight: 1.6 }}>
@@ -1386,7 +1645,7 @@ function ContactPage() {
     <div style={{ maxWidth: 660, margin: "0 auto", padding: "60px 32px" }}>
       <div className="fade-up" style={{ marginBottom: 36, textAlign: "center" }}>
         <Pill>Get in Touch</Pill>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 36, fontWeight: 800, marginTop: 16, marginBottom: 10, color: "#fff", letterSpacing: "-0.02em" }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 36, fontWeight: 800, marginTop: 16, marginBottom: 10, color: C.ink, letterSpacing: "-0.02em" }}>
           Contact Us
         </h1>
         <p style={{ color: C.mist, fontSize: 15 }}>Feedback, research questions, or collaboration inquiries.</p>
@@ -1414,6 +1673,10 @@ function ContactPage() {
 
 export default function App() {
   const [page, setPage] = useState("home");
+  const [theme, setTheme] = useState(() =>
+    window.matchMedia?.("(prefers-color-scheme: light)")?.matches ? "light" : "dark");
+
+  applyTheme(theme); // mutate the shared palette before this render pass
 
   const pages = {
     home:      <HomePage setPage={setPage} />,
@@ -1425,9 +1688,11 @@ export default function App() {
   };
 
   return (
-    <>
-      <style>{globalStyles}</style>
-      <Nav page={page} setPage={setPage} />
+    // key={theme} forces a full re-render so every inline style rereads C
+    <div key={theme}>
+      <style>{globalStyles()}</style>
+      <Nav page={page} setPage={setPage} theme={theme}
+           toggleTheme={() => setTheme(t => t === "dark" ? "light" : "dark")} />
       <main style={{ minHeight: "calc(100vh - 60px)" }}>
         {pages[page] || pages.home}
       </main>
@@ -1441,7 +1706,7 @@ export default function App() {
         gap: 12,
         fontSize: 13,
         color: C.silver,
-        background: "rgba(6,13,31,0.6)",
+        background: C.footerBg,
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <div style={{
@@ -1468,6 +1733,6 @@ export default function App() {
           ))}
         </div>
       </footer>
-    </>
+    </div>
   );
 }

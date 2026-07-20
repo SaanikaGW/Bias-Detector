@@ -1,0 +1,2642 @@
+{
+ "version": "2.0",
+ "note": "Editable source of truth for Layer 1. severity: 1=low 2=medium 3=high. 'ambiguous' entries are adjudicated by the Layer 2 contextual classifier. 'veto' regexes suppress a hit when the sentence clearly uses the term benignly.",
+ "categories": {
+  "masculine_coded": {
+   "label": "Masculine-coded wording",
+   "weight": 0.8,
+   "research": "Research on gender-coded job ads (Gaucher, Friesen & Kay, 2011, Journal of Personality and Social Psychology) found that ads dense in masculine-coded words made women rate the job as less appealing and feel less belonging — without changing whether they felt able to do the job. The wording, not the work, drives self-selection out.",
+   "impact": "Masculine-coded trait words signal a male-typed culture, so qualified women are measurably less likely to apply — the posting filters people before skills are ever compared."
+  },
+  "feminine_coded": {
+   "label": "Feminine-coded wording",
+   "weight": 0.5,
+   "research": "The same 2011 gender-coding research found feminine-coded wording has a weaker deterrent effect on men than masculine coding has on women, but stacking stereotypically feminine trait words still frames a role by personality type rather than skill, and can signal lower status or pay for the role.",
+   "impact": "Heavily feminine-coded trait language types the role by personality rather than skill and can subtly signal lower status, narrowing who pictures themselves in it."
+  },
+  "gendered_language": {
+   "label": "Gendered pronouns & titles",
+   "weight": 1.0,
+   "research": "Studies of gendered job titles and pronouns going back to Bem & Bem's 1970s experiments show that gendered wording ('salesman', 'he will…') measurably reduces applications from the excluded gender; many jurisdictions' equal-employment guidance now explicitly recommends neutral titles.",
+   "impact": "A gendered title or pronoun tells half your candidate pool the default hire isn't them — the single most direct and most fixable form of gender coding."
+  },
+  "stereotype": {
+   "label": "Gender & leadership stereotypes",
+   "weight": 0.85,
+   "research": "Research on agentic/communal stereotypes (e.g., Eagly's role-congruity work) shows trait demands like 'dominant' or 'commanding' evoke a male-typed prototype of leadership, while women who display the same traits are penalized as 'abrasive' — so such wording deters women twice over.",
+   "impact": "Stereotyped trait demands describe a persona, not a competency, and the persona is gender-typed — qualified candidates who don't match the persona self-select out."
+  },
+  "caregiver_bias": {
+   "label": "Caregiver / family-responsibility bias",
+   "weight": 0.9,
+   "research": "Motherhood-penalty research (Correll, Benard & Paik, 2007, American Journal of Sociology) shows mothers are rated less competent and committed from identical materials. Wording that demands 'total dedication' or penalizes career gaps imports that bias into the ad itself and disproportionately screens out women, who still carry most caregiving load.",
+   "impact": "Demands framed around unlimited availability or unbroken work history screen for absence of caregiving duties, not ability to do the job — disproportionately excluding women and parents."
+  },
+  "age_coded": {
+   "label": "Age-coded wording",
+   "weight": 0.7,
+   "research": "Age-discrimination audit studies (e.g., Neumark, Burn & Button's large resume-correspondence study) show older applicants — especially older women — receive markedly fewer callbacks; phrases like 'digital native' are flagged by the EEOC-adjacent guidance as proxies for youth.",
+   "impact": "Youth-proxy wording deters experienced applicants and creates legal exposure, since it functions as an age screen unrelated to actual job requirements."
+  },
+  "appearance_bias": {
+   "label": "Appearance bias",
+   "weight": 0.7,
+   "research": "Appearance requirements are applied and policed more heavily against women (grooming-code case law and lookism research consistently show gendered enforcement), and are rarely genuine job requirements.",
+   "impact": "Appearance demands shift evaluation from skills to looks, are enforced more harshly against women, and discourage anyone who suspects they won't match an unstated 'look'."
+  },
+  "exclusionary": {
+   "label": "Exclusionary wording",
+   "weight": 0.75,
+   "research": "Language-requirement guidance (including from the EEOC) distinguishes fluency needed for the job from 'native speaker' demands, which exclude fully proficient speakers by origin. Culture-signal phrases like 'work hard, play hard' correlate with male-typed, monoculture workplaces in organizational research on culture-fit hiring.",
+   "impact": "These phrases exclude on identity or lifestyle rather than capability — proficient non-native speakers, caregivers, and anyone outside the after-hours social culture read them as 'not for you'."
+  },
+  "qualification_inflation": {
+   "label": "Qualification inflation",
+   "weight": 0.6,
+   "research": "A widely cited Hewlett-Packard internal finding (popularized by Mohr, Harvard Business Review, 2014) and later LinkedIn behavioral data indicate women tend to apply only when they meet close to all listed requirements, while men apply at much lower thresholds — so inflated 'must-have' lists disproportionately shrink the female applicant pool.",
+   "impact": "Every non-essential 'must' removes more qualified women than men from your pipeline, because application thresholds differ by gender."
+  }
+ },
+ "patterns": [
+  {
+   "id": "mc-aggressive",
+   "pattern": "\\baggressive(?:ly|ness)?\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.65,
+   "ambiguous": true,
+   "veto": [
+    "(strateg|pricing|market|growth|target|timeline|deadline|expansion|plan\\b|plans\\b|campaign|goal)"
+   ],
+   "why": "'Aggressive' as a personal trait is one of the strongest masculine-coded words; describing strategy or targets as aggressive is fine.",
+   "alternatives": [
+    "proactive",
+    "determined",
+    "results-focused"
+   ],
+   "gain": "Keeps the drive, drops the gender coding."
+  },
+  {
+   "id": "mc-dominant",
+   "pattern": "\\bdominant\\b|\\bdominate\\b|\\bdomination\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.7,
+   "ambiguous": true,
+   "veto": [
+    "market[-\\s]dominant position"
+   ],
+   "why": "'Dominant/dominate' is masculine-coded trait language.",
+   "alternatives": [
+    "leading",
+    "influential",
+    "market-leading"
+   ],
+   "gain": "Same ambition, wider appeal."
+  },
+  {
+   "id": "mc-competitive-person",
+   "pattern": "\\bcompetitive\\b",
+   "category": "masculine_coded",
+   "severity": 1,
+   "confidence": 0.55,
+   "ambiguous": true,
+   "veto": [
+    "competitive\\s+(salary|pay|compensation|benefits|package|rate|wage|pricing|price|market|landscape|advantage|analysis)",
+    "(pricing|prices?|rates?|offer(?:ing)?s?)\\s+(is|are|remains?)\\s+(highly\\s+)?competitive",
+    "competitive\\s+(within|in)\\s+the\\s+market"
+   ],
+   "why": "'Competitive' as a required personality trait is masculine-coded; 'competitive salary' is not.",
+   "alternatives": [
+    "motivated",
+    "goal-oriented"
+   ],
+   "gain": "Keeps the performance bar without the trait demand."
+  },
+  {
+   "id": "mc-rockstar",
+   "pattern": "\\brock[\\s\\-]?star\\b",
+   "category": "masculine_coded",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Rockstar' is hyper-masculine-coded job jargon and signals a bravado culture.",
+   "alternatives": [
+    "skilled",
+    "high-performing",
+    "experienced"
+   ],
+   "gain": "Research-linked masculine jargon removed; requirement unchanged."
+  },
+  {
+   "id": "mc-ninja",
+   "pattern": "\\bninja\\b",
+   "category": "masculine_coded",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Ninja' is masculine-coded jargon.",
+   "alternatives": [
+    "expert",
+    "specialist"
+   ],
+   "gain": "Plain skill language broadens applicants."
+  },
+  {
+   "id": "mc-guru",
+   "pattern": "\\bguru\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Guru' is coded jargon that also borrows a religious title.",
+   "alternatives": [
+    "expert",
+    "authority"
+   ],
+   "gain": "Clearer and more inclusive."
+  },
+  {
+   "id": "mc-wizard",
+   "pattern": "\\bwizard\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Wizard' is masculine-coded jargon.",
+   "alternatives": [
+    "expert",
+    "specialist"
+   ],
+   "gain": "Plain language, same bar."
+  },
+  {
+   "id": "mc-superstar",
+   "pattern": "\\bsuper\\s?star\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Superstar' is coded bravado jargon.",
+   "alternatives": [
+    "top performer",
+    "excellent"
+   ],
+   "gain": "Describes the standard, not a persona."
+  },
+  {
+   "id": "mc-superhero",
+   "pattern": "\\bsuper\\s?hero\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Superhero' framing is coded and inflates the role.",
+   "alternatives": [
+    "dedicated professional"
+   ],
+   "gain": "Sets realistic, inclusive expectations."
+  },
+  {
+   "id": "mc-warrior",
+   "pattern": "\\bwarrior\\b",
+   "category": "masculine_coded",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Combat metaphors are strongly masculine-coded.",
+   "alternatives": [
+    "advocate",
+    "committed professional"
+   ],
+   "gain": "Removes combat framing."
+  },
+  {
+   "id": "mc-alpha",
+   "pattern": "\\balpha\\b",
+   "category": "masculine_coded",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [
+    "alpha\\s+(test|version|release|build|stage)",
+    "alpha\\s+and\\s+beta"
+   ],
+   "why": "'Alpha' personality language is explicitly male-typed dominance framing.",
+   "alternatives": [
+    "confident leader"
+   ],
+   "gain": "Leadership without dominance coding."
+  },
+  {
+   "id": "mc-hustle",
+   "pattern": "\\bhustl(?:e|er|ing)\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.75,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Hustle' culture language is masculine-coded and signals overwork.",
+   "alternatives": [
+    "dedicated",
+    "hard-working"
+   ],
+   "gain": "Work ethic stated without overwork signal."
+  },
+  {
+   "id": "mc-crush",
+   "pattern": "\\bcrush(?:ing)?\\s+(it|goals|targets|quota|the\\s+competition)\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Violent achievement metaphors ('crush it') are masculine-coded.",
+   "alternatives": [
+    "exceed goals",
+    "deliver outstanding results"
+   ],
+   "gain": "Same ambition, neutral phrasing."
+  },
+  {
+   "id": "mc-killer",
+   "pattern": "\\bkiller\\s+(instinct|attitude|drive)\\b|\\bkill\\s+it\\b",
+   "category": "masculine_coded",
+   "severity": 3,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Killer instinct' is violent, masculine-coded trait language.",
+   "alternatives": [
+    "strong drive to succeed"
+   ],
+   "gain": "Drive without violence metaphor."
+  },
+  {
+   "id": "mc-fearless",
+   "pattern": "\\bfearless(?:ly|ness)?\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.75,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Fearless' is masculine-coded trait language.",
+   "alternatives": [
+    "bold",
+    "willing to take initiative"
+   ],
+   "gain": "Initiative stated inclusively."
+  },
+  {
+   "id": "mc-assertive",
+   "pattern": "\\bassertive(?:ly|ness)?\\b",
+   "category": "masculine_coded",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": true,
+   "veto": [],
+   "why": "'Assertive' is masculine-coded; women displaying assertiveness are also judged more harshly, a double bind.",
+   "alternatives": [
+    "confident communicator",
+    "comfortable voicing ideas"
+   ],
+   "gain": "Communication skill without the double bind."
+  },
+  {
+   "id": "mc-decisive",
+   "pattern": "\\bdecisive(?:ly|ness)?\\b",
+   "category": "masculine_coded",
+   "severity": 1,
+   "confidence": 0.5,
+   "ambiguous": true,
+   "veto": [],
+   "why": "'Decisive' is mildly masculine-coded when stacked with other agentic traits.",
+   "alternatives": [
+    "sound judgment",
+    "makes timely decisions"
+   ],
+   "gain": "Behavior instead of persona."
+  },
+  {
+   "id": "mc-driven-person",
+   "pattern": "\\bhard[\\s\\-]driving\\b|\\bhard[\\s\\-]charging\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Hard-charging/hard-driving' is masculine-coded intensity language.",
+   "alternatives": [
+    "highly motivated"
+   ],
+   "gain": "Motivation without intensity coding."
+  },
+  {
+   "id": "mc-outspoken",
+   "pattern": "\\boutspoken\\b",
+   "category": "masculine_coded",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Outspoken' is masculine-coded and penalized in women (double bind).",
+   "alternatives": [
+    "shares ideas openly"
+   ],
+   "gain": "Behavioral phrasing avoids the double bind."
+  },
+  {
+   "id": "mc-headstrong",
+   "pattern": "\\bheadstrong\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.7,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Headstrong' is masculine-coded trait language.",
+   "alternatives": [
+    "persistent"
+   ],
+   "gain": "Persistence without coding."
+  },
+  {
+   "id": "mc-relentless",
+   "pattern": "\\brelentless(?:ly)?\\b",
+   "category": "masculine_coded",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": true,
+   "veto": [],
+   "why": "'Relentless' is masculine-coded intensity language.",
+   "alternatives": [
+    "persistent",
+    "dedicated"
+   ],
+   "gain": "Same persistence, softer coding."
+  },
+  {
+   "id": "mc-cutthroat",
+   "pattern": "\\bcut[\\s\\-]?throat\\b",
+   "category": "masculine_coded",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Cutthroat' signals a combative, male-typed culture.",
+   "alternatives": [
+    "high-performing",
+    "fast-moving"
+   ],
+   "gain": "Pace and standards without combat culture."
+  },
+  {
+   "id": "mc-thickskin",
+   "pattern": "\\bthick[\\s\\-]skin(?:ned)?\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Thick skin required' signals a harsh culture and deters under-represented candidates who already face more criticism.",
+   "alternatives": [
+    "comfortable giving and receiving direct feedback"
+   ],
+   "gain": "Feedback culture stated constructively."
+  },
+  {
+   "id": "mc-trenches",
+   "pattern": "\\bin\\s+the\\s+trenches\\b",
+   "category": "masculine_coded",
+   "severity": 1,
+   "confidence": 0.7,
+   "ambiguous": false,
+   "veto": [],
+   "why": "War metaphor; mildly masculine-coded.",
+   "alternatives": [
+    "hands-on"
+   ],
+   "gain": "Plain description of the work."
+  },
+  {
+   "id": "mc-battle",
+   "pattern": "\\bbattle[\\s\\-]tested\\b|\\bwar\\s+room\\b",
+   "category": "masculine_coded",
+   "severity": 1,
+   "confidence": 0.7,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Combat metaphors are masculine-coded.",
+   "alternatives": [
+    "proven under pressure"
+   ],
+   "gain": "Same signal, neutral image."
+  },
+  {
+   "id": "mc-gogetter",
+   "pattern": "\\bgo[\\s\\-]getter\\b",
+   "category": "masculine_coded",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Go-getter' is mildly masculine-coded persona language.",
+   "alternatives": [
+    "self-motivated"
+   ],
+   "gain": "Behavioral phrasing."
+  },
+  {
+   "id": "mc-highoctane",
+   "pattern": "\\bhigh[\\s\\-]octane\\b",
+   "category": "masculine_coded",
+   "severity": 1,
+   "confidence": 0.7,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'High-octane' is masculine-coded intensity jargon.",
+   "alternatives": [
+    "fast-paced"
+   ],
+   "gain": "Pace without jargon."
+  },
+  {
+   "id": "mc-stud",
+   "pattern": "\\bstud\\b|\\bbeast\\s+mode\\b|\\bbeast\\b",
+   "category": "masculine_coded",
+   "severity": 3,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [
+    "beast\\s+of\\s+burden"
+   ],
+   "why": "'Stud/beast' is explicitly male-typed slang.",
+   "alternatives": [
+    "top performer"
+   ],
+   "gain": "Professional and inclusive."
+  },
+  {
+   "id": "mc-boys-club",
+   "pattern": "\\bone\\s+of\\s+the\\s+boys\\b|\\bboys[’']?\\s+club\\b",
+   "category": "masculine_coded",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Directly frames the team as male.",
+   "alternatives": [
+    "a close-knit team"
+   ],
+   "gain": "Team culture without gender framing."
+  },
+  {
+   "id": "mc-swagger",
+   "pattern": "\\bswagger\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.75,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Swagger' is masculine-coded persona language.",
+   "alternatives": [
+    "confidence"
+   ],
+   "gain": "Confidence without persona."
+  },
+  {
+   "id": "mc-firepower",
+   "pattern": "\\bfire\\s?power\\b",
+   "category": "masculine_coded",
+   "severity": 1,
+   "confidence": 0.7,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Weapon metaphor; masculine-coded.",
+   "alternatives": [
+    "capability",
+    "capacity"
+   ],
+   "gain": "Neutral capability language."
+  },
+  {
+   "id": "mc-sharp-elbows",
+   "pattern": "\\bsharp[\\s\\-]elbow(?:s|ed)?\\b",
+   "category": "masculine_coded",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Sharp-elbowed' celebrates combative workplace politics — masculine-coded trait language.",
+   "alternatives": [
+    "skilled at navigating complex organizations"
+   ],
+   "gain": "Same skill, no combat framing."
+  },
+  {
+   "id": "fc-nurturing",
+   "pattern": "\\bnurtur(?:e|ing)\\b",
+   "category": "feminine_coded",
+   "severity": 2,
+   "confidence": 0.7,
+   "ambiguous": true,
+   "veto": [
+    "nurtur\\w*\\s+(talent|leads|pipeline|relationships|accounts|growth|culture)"
+   ],
+   "why": "'Nurturing' as a required trait is feminine-coded; nurturing talent or client relationships as an activity is fine.",
+   "alternatives": [
+    "supportive",
+    "invested in team growth"
+   ],
+   "gain": "Activity framing instead of persona."
+  },
+  {
+   "id": "fc-bubbly",
+   "pattern": "\\bbubbly\\b",
+   "category": "feminine_coded",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Bubbly personality' is feminine-coded and often a proxy for hiring young women into front-of-house roles.",
+   "alternatives": [
+    "friendly and professional"
+   ],
+   "gain": "Service standard without persona proxy."
+  },
+  {
+   "id": "fc-sweet",
+   "pattern": "\\bsweet[\\s\\-](personality|demeanor|nature|tempered|natured)\\b",
+   "category": "feminine_coded",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Sweet' as a job requirement is feminine-coded persona language.",
+   "alternatives": [
+    "courteous"
+   ],
+   "gain": "Professional standard."
+  },
+  {
+   "id": "fc-soothing",
+   "pattern": "\\bsoothing\\s+(phone\\s+)?(manner|voice|presence)\\b",
+   "category": "feminine_coded",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Soothing voice/manner' is feminine-coded persona language historically used to type roles female.",
+   "alternatives": [
+    "calm, professional phone manner"
+   ],
+   "gain": "Skill-based standard."
+  },
+  {
+   "id": "fc-cheerful",
+   "pattern": "\\bcheerful\\s+(demeanor|personality|disposition)\\b",
+   "category": "feminine_coded",
+   "severity": 2,
+   "confidence": 0.75,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Demanded cheerfulness is feminine-coded emotional labor.",
+   "alternatives": [
+    "positive, professional manner"
+   ],
+   "gain": "Professional standard without emotional-labor demand."
+  },
+  {
+   "id": "fc-gentle",
+   "pattern": "\\bgentle\\s+(manner|nature|personality|touch)\\b",
+   "category": "feminine_coded",
+   "severity": 2,
+   "confidence": 0.7,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Gentle nature' is feminine-coded trait language.",
+   "alternatives": [
+    "patient",
+    "considerate"
+   ],
+   "gain": "Skill-based phrasing."
+  },
+  {
+   "id": "fc-softspoken",
+   "pattern": "\\bsoft[\\s\\-]spoken\\b",
+   "category": "feminine_coded",
+   "severity": 2,
+   "confidence": 0.75,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Soft-spoken' is feminine-coded and irrelevant to competence.",
+   "alternatives": [
+    "clear communicator"
+   ],
+   "gain": "Competence-based."
+  },
+  {
+   "id": "fc-motherhen",
+   "pattern": "\\bmother\\s+hen\\b|\\boffice\\s+mom\\b|\\bden\\s+mother\\b",
+   "category": "feminine_coded",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Explicitly casts the role as maternal.",
+   "alternatives": [
+    "team coordinator",
+    "operations lead"
+   ],
+   "gain": "Role title reflects the actual work."
+  },
+  {
+   "id": "fc-empathetic",
+   "pattern": "\\bempath(?:y|etic|ic)\\b",
+   "category": "feminine_coded",
+   "severity": 1,
+   "confidence": 0.45,
+   "ambiguous": true,
+   "veto": [],
+   "why": "Empathy is a legitimate skill; flag only when stacked as a persona requirement alongside other feminine-coded traits.",
+   "alternatives": [
+    "strong listening skills"
+   ],
+   "gain": "Skill framing (often fine as-is)."
+  },
+  {
+   "id": "fc-warm",
+   "pattern": "\\bwarm\\s+(?:and\\s+\\w+\\s+)?(personality|demeanor|presence)\\b",
+   "category": "feminine_coded",
+   "severity": 2,
+   "confidence": 0.7,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Warm personality' as a requirement is feminine-coded.",
+   "alternatives": [
+    "welcoming and professional"
+   ],
+   "gain": "Standard, not persona."
+  },
+  {
+   "id": "fc-pleasant",
+   "pattern": "\\bpleasant\\s+(personality|demeanor|manner|voice)\\b",
+   "category": "feminine_coded",
+   "severity": 2,
+   "confidence": 0.7,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Pleasant personality/voice' is feminine-coded and historically used to type roles female.",
+   "alternatives": [
+    "professional communication style"
+   ],
+   "gain": "Skill-based requirement."
+  },
+  {
+   "id": "fc-bubbly2",
+   "pattern": "\\bpeppy\\b|\\bperky\\b",
+   "category": "feminine_coded",
+   "severity": 3,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Peppy/perky' is feminine-coded persona slang.",
+   "alternatives": [
+    "energetic and professional"
+   ],
+   "gain": "Neutral energy."
+  },
+  {
+   "id": "fc-caring-nature",
+   "pattern": "\\bcaring\\s+(nature|personality|disposition)\\b",
+   "category": "feminine_coded",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": true,
+   "veto": [],
+   "why": "'Caring nature' is feminine-coded when demanded as personality; care skills for care roles are legitimate.",
+   "alternatives": [
+    "committed to patient/client wellbeing"
+   ],
+   "gain": "Ties care to the job's real duty."
+  },
+  {
+   "id": "gl-he-pronoun",
+   "pattern": "\\bhe\\s+(will|must|should|is\\s+expected|has|manages|leads|oversees)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Male pronoun assumes the hire is a man.",
+   "alternatives": [
+    "they will",
+    "the successful candidate will"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-she-pronoun",
+   "pattern": "\\bshe\\s+(will|must|should|is\\s+expected|has|manages|leads|oversees)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Female pronoun assumes the hire is a woman.",
+   "alternatives": [
+    "they will",
+    "the successful candidate will"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-his",
+   "pattern": "\\bhis\\s+(team|responsibilities|duties|role|performance|reports)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Male possessive pronoun genders the role.",
+   "alternatives": [
+    "their"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-her",
+   "pattern": "\\bher\\s+(team|responsibilities|duties|role|performance|reports)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Female possessive pronoun genders the role.",
+   "alternatives": [
+    "their"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-heshe",
+   "pattern": "\\bhe/she\\b|\\bs/he\\b|\\bhe\\s+or\\s+she\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'He/she' excludes non-binary candidates; 'they' is simpler and inclusive.",
+   "alternatives": [
+    "they"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-chairman",
+   "pattern": "\\bchairman\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "chairperson",
+    "chair"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-chairwoman",
+   "pattern": "\\bchairwoman\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "chairperson",
+    "chair"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-salesman",
+   "pattern": "\\bsales(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "salesperson",
+    "sales representative"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-saleswoman",
+   "pattern": "\\bsales(?:woman|women)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "salesperson",
+    "sales representative"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-businessman",
+   "pattern": "\\bbusiness(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "business professional"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-businesswoman",
+   "pattern": "\\bbusiness(?:woman|women)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "business professional"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-spokesman",
+   "pattern": "\\bspokes(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "spokesperson"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-spokeswoman",
+   "pattern": "\\bspokes(?:woman|women)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "spokesperson"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-foreman",
+   "pattern": "\\bfore(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "supervisor",
+    "site lead"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-mailman",
+   "pattern": "\\bmail(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "mail carrier"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-policeman",
+   "pattern": "\\bpolice(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "police officer"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-fireman",
+   "pattern": "\\bfire(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "firefighter"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-stewardess",
+   "pattern": "\\bsteward(?:ess|esses)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "flight attendant"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-waitress",
+   "pattern": "\\bwaitress(?:es)?\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "server"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-hostess",
+   "pattern": "\\bhostess(?:es)?\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "host"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-handyman",
+   "pattern": "\\bhandy(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "maintenance technician"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-craftsman",
+   "pattern": "\\bcrafts(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "artisan",
+    "craftsperson"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-draftsman",
+   "pattern": "\\bdrafts(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "drafter"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-middleman",
+   "pattern": "\\bmiddle(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered term.",
+   "alternatives": [
+    "intermediary"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-tradesman",
+   "pattern": "\\btrades(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "tradesperson",
+    "skilled trades professional"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-journeyman",
+   "pattern": "\\bjourney(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "journey-level professional"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-repairman",
+   "pattern": "\\brepair(?:man|men)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title.",
+   "alternatives": [
+    "repair technician"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-manpower",
+   "pattern": "\\bman\\s?power\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered term for workforce.",
+   "alternatives": [
+    "workforce",
+    "staffing"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-manhours",
+   "pattern": "\\bman[\\s\\-]?hours?\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered unit of work.",
+   "alternatives": [
+    "person-hours",
+    "work hours"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-mankind",
+   "pattern": "\\bmankind\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered term.",
+   "alternatives": [
+    "humanity",
+    "people"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-manmade",
+   "pattern": "\\bman[\\s\\-]?made\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered term.",
+   "alternatives": [
+    "artificial",
+    "manufactured"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-rightman",
+   "pattern": "\\bright\\s+man\\s+for\\s+the\\s+job\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Assumes the hire is a man.",
+   "alternatives": [
+    "right person for the job"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-careergirl",
+   "pattern": "\\bcareer\\s+girl\\b|\\boffice\\s+girl\\b|\\bgirl\\s+friday\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Diminishing gendered term.",
+   "alternatives": [
+    "professional",
+    "administrative assistant"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-guys",
+   "pattern": "\\bteam\\s+of\\s+guys\\b|\\bthe\\s+guys\\b|\\bour\\s+guys\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Guys' frames the team as male.",
+   "alternatives": [
+    "the team",
+    "our people"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-workmanship",
+   "pattern": "\\bworkmanship\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered term.",
+   "alternatives": [
+    "craftsmanship quality",
+    "quality of work"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-freshman",
+   "pattern": "\\bfreshman\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered term.",
+   "alternatives": [
+    "first-year"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-waiter-only",
+   "pattern": "\\bwaiter\\s+wanted\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered title in hiring context.",
+   "alternatives": [
+    "server wanted"
+   ],
+   "gain": "Neutral wording keeps the full candidate pool."
+  },
+  {
+   "id": "gl-male-preferred",
+   "pattern": "\\b(male|female)s?\\s+(candidates?\\s+)?(only|preferred|desired)\\b|\\bprefer\\s+(male|female)s?\\b",
+   "category": "gendered_language",
+   "severity": 3,
+   "confidence": 0.99,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Explicit gender preference — likely unlawful in most jurisdictions as well as exclusionary.",
+   "alternatives": [
+    "remove the gender requirement entirely"
+   ],
+   "gain": "Removes explicit (and likely illegal) exclusion."
+  },
+  {
+   "id": "gl-gendered-role-adj",
+   "pattern": "\\b(male|female)\\s+(sales\\s+)?(candidates?|applicants?|staff|employees?|workers?|representatives?|assistants?|engineers?|nurses?|attendants?|receptionists?|managers?)\\b",
+   "category": "gendered_language",
+   "severity": 3,
+   "confidence": 0.97,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Specifying the gender of the hire ('male sales representative') is explicit gender screening.",
+   "alternatives": [
+    "drop the gender adjective"
+   ],
+   "gain": "Removes explicit (and likely illegal) exclusion."
+  },
+  {
+   "id": "gl-delivery-boy",
+   "pattern": "\\b(delivery|office|shop|paper|errand)\\s+(boy|girl)\\b",
+   "category": "gendered_language",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered (and diminishing) job title.",
+   "alternatives": [
+    "courier",
+    "assistant"
+   ],
+   "gain": "Neutral title keeps the full candidate pool."
+  },
+  {
+   "id": "gl-gal-friday",
+   "pattern": "\\bgal\\s+friday\\b",
+   "category": "gendered_language",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gendered, diminishing role framing.",
+   "alternatives": [
+    "administrative assistant"
+   ],
+   "gain": "Professional, neutral title."
+  },
+  {
+   "id": "gl-right-guy",
+   "pattern": "\\bright\\s+(guy|gal)\\s+for\\s+(the|this)\\s+(job|role|position)\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Assumes the hire's gender.",
+   "alternatives": [
+    "right person for the role"
+   ],
+   "gain": "Neutral wording."
+  },
+  {
+   "id": "gl-suits-a-man",
+   "pattern": "\\b(suits?|needs?|for)\\s+a\\s+(man|woman)\\s+(of|who|with)\\b",
+   "category": "gendered_language",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Frames the role as belonging to one gender.",
+   "alternatives": [
+    "suits a professional with"
+   ],
+   "gain": "Same standard, no gender assumption."
+  },
+  {
+   "id": "gl-young-man-woman",
+   "pattern": "\\byoung\\s+(man|woman|men|women|lady|ladies|gentleman|gentlemen)\\b",
+   "category": "gendered_language",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Combines gender and age preference.",
+   "alternatives": [
+    "motivated candidates"
+   ],
+   "gain": "Removes double exclusion."
+  },
+  {
+   "id": "gl-gentlemen",
+   "pattern": "\\bgentlemen\\b|\\bgentleman\\b",
+   "category": "gendered_language",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Addresses candidates as male.",
+   "alternatives": [
+    "professionals"
+   ],
+   "gain": "Neutral address."
+  },
+  {
+   "id": "st-emotional",
+   "pattern": "\\bemotional\\b",
+   "category": "stereotype",
+   "severity": 2,
+   "confidence": 0.6,
+   "ambiguous": true,
+   "veto": [
+    "emotional\\s+(intelligence|support|wellbeing|well-being|resilience|labor)"
+   ],
+   "why": "'Not emotional' / 'emotional' as a screen invokes the stereotype of women as too emotional; 'emotional intelligence' is a legitimate skill.",
+   "alternatives": [
+    "composed under pressure"
+   ],
+   "gain": "States the real requirement."
+  },
+  {
+   "id": "st-bossy",
+   "pattern": "\\bbossy\\b",
+   "category": "stereotype",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Bossy' is a gendered pejorative applied to women leaders.",
+   "alternatives": [
+    "directive"
+   ],
+   "gain": "Removes gendered pejorative."
+  },
+  {
+   "id": "st-abrasive",
+   "pattern": "\\babrasive\\b",
+   "category": "stereotype",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Abrasive' is disproportionately applied to women in reviews (per analyses of performance-review language).",
+   "alternatives": [
+    "direct"
+   ],
+   "gain": "Neutral description."
+  },
+  {
+   "id": "st-manly",
+   "pattern": "\\bmanly\\b|\\bmacho\\b",
+   "category": "stereotype",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Explicit male stereotype.",
+   "alternatives": [
+    "professional"
+   ],
+   "gain": "Removes explicit stereotype."
+  },
+  {
+   "id": "st-womanly",
+   "pattern": "\\bwomanly\\b|\\bfeminine\\s+(touch|charm|grace)\\b",
+   "category": "stereotype",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Explicit female stereotype.",
+   "alternatives": [
+    "professional"
+   ],
+   "gain": "Removes explicit stereotype."
+  },
+  {
+   "id": "st-motherly",
+   "pattern": "\\bmotherly\\b|\\bmaternal\\s+(instinct|nature)\\b",
+   "category": "stereotype",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Casts the role as maternal — gender + caregiver stereotype.",
+   "alternatives": [
+    "supportive"
+   ],
+   "gain": "Skill framing."
+  },
+  {
+   "id": "st-fatherly",
+   "pattern": "\\bfatherly\\b|\\bpaternal\\b",
+   "category": "stereotype",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Male-parent stereotype.",
+   "alternatives": [
+    "mentoring"
+   ],
+   "gain": "Skill framing."
+  },
+  {
+   "id": "st-dominant-leader",
+   "pattern": "\\b(dominant|commanding|forceful)\\s+leader(?:ship)?\\b",
+   "category": "stereotype",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Dominance-framed leadership evokes a male leadership prototype (role-congruity research).",
+   "alternatives": [
+    "decisive, collaborative leadership"
+   ],
+   "gain": "Leadership defined by outcomes, not dominance."
+  },
+  {
+   "id": "st-command-control",
+   "pattern": "\\bcommand[\\s\\-]and[\\s\\-]control\\b",
+   "category": "stereotype",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Command-and-control' leadership invokes a dominance-based, male-typed leadership prototype.",
+   "alternatives": [
+    "clear, accountable leadership"
+   ],
+   "gain": "Leadership defined by outcomes, not dominance."
+  },
+  {
+   "id": "st-commanding-presence",
+   "pattern": "\\bcommanding\\s+presence\\b|\\bauthoritative\\s+voice\\b",
+   "category": "stereotype",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Commanding presence' and 'authoritative voice' are evaluated against a male prototype and are not job skills.",
+   "alternatives": [
+    "communicates with credibility"
+   ],
+   "gain": "Assessable behavior, no prototype."
+  },
+  {
+   "id": "st-command-respect",
+   "pattern": "\\bcommands?\\s+respect\\b",
+   "category": "stereotype",
+   "severity": 2,
+   "confidence": 0.75,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Commands respect' invokes dominance-based leadership, a male-typed prototype.",
+   "alternatives": [
+    "earns trust across teams"
+   ],
+   "gain": "Trust-based leadership framing."
+  },
+  {
+   "id": "st-born-leader",
+   "pattern": "\\bborn\\s+leader\\b|\\bnatural[\\s\\-]born\\s+leader\\b",
+   "category": "stereotype",
+   "severity": 1,
+   "confidence": 0.65,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Born leader' implies leadership is an innate persona (stereotypically male-typed) rather than a skill.",
+   "alternatives": [
+    "proven leadership skills"
+   ],
+   "gain": "Assessable requirement."
+  },
+  {
+   "id": "st-executive-presence",
+   "pattern": "\\bexecutive\\s+presence\\b",
+   "category": "stereotype",
+   "severity": 1,
+   "confidence": 0.55,
+   "ambiguous": true,
+   "veto": [],
+   "why": "'Executive presence' is vague, unassessable, and in practice evaluated against a male prototype.",
+   "alternatives": [
+    "communicates credibly with senior stakeholders"
+   ],
+   "gain": "Concrete, assessable behavior."
+  },
+  {
+   "id": "st-gravitas",
+   "pattern": "\\bgravitas\\b",
+   "category": "stereotype",
+   "severity": 1,
+   "confidence": 0.55,
+   "ambiguous": true,
+   "veto": [],
+   "why": "'Gravitas' is a vague prototype-based demand applied unevenly by gender.",
+   "alternatives": [
+    "credibility with senior audiences"
+   ],
+   "gain": "Concrete behavior."
+  },
+  {
+   "id": "st-iron-fist",
+   "pattern": "\\biron\\s+fist\\b|\\btake[\\s\\-]no[\\s\\-]prisoners\\b",
+   "category": "stereotype",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Dominance/combat leadership stereotype.",
+   "alternatives": [
+    "holds the team to high standards"
+   ],
+   "gain": "Standards without dominance."
+  },
+  {
+   "id": "st-manup",
+   "pattern": "\\bman\\s+up\\b|\\bgrow\\s+a\\s+pair\\b",
+   "category": "stereotype",
+   "severity": 3,
+   "confidence": 0.98,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Explicitly genders toughness.",
+   "alternatives": [
+    "be resilient"
+   ],
+   "gain": "Removes explicit gendering."
+  },
+  {
+   "id": "st-hysterical",
+   "pattern": "\\bhysterical\\b|\\bhysteria\\b",
+   "category": "stereotype",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Historically gendered pejorative.",
+   "alternatives": [
+    "calm under pressure (state the positive requirement)"
+   ],
+   "gain": "Neutral requirement."
+  },
+  {
+   "id": "st-strongman",
+   "pattern": "\\bstrong\\s+man\\b",
+   "category": "stereotype",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Genders strength.",
+   "alternatives": [
+    "strong candidate"
+   ],
+   "gain": "Neutral."
+  },
+  {
+   "id": "st-assertive-man",
+   "pattern": "\\bassertive\\s+(man|male|guy)\\b",
+   "category": "stereotype",
+   "severity": 3,
+   "confidence": 0.98,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Genders assertiveness explicitly.",
+   "alternatives": [
+    "confident communicator"
+   ],
+   "gain": "Neutral skill."
+  },
+  {
+   "id": "cb-nofamily",
+   "pattern": "\\bno\\s+(family|personal|caregiving|childcare)\\s+(commitments?|responsibilit(?:y|ies)|obligations?)\\b",
+   "category": "caregiver_bias",
+   "severity": 3,
+   "confidence": 0.98,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Directly screens out caregivers — disproportionately women, and likely unlawful in many places.",
+   "alternatives": [
+    "remove; state the actual schedule requirement instead"
+   ],
+   "gain": "Legal, inclusive, and clearer about the real demand."
+  },
+  {
+   "id": "cb-fully-dedicated",
+   "pattern": "\\b(must\\s+be\\s+)?(fully|totally|completely)\\s+(dedicated|committed)\\b",
+   "category": "caregiver_bias",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Total dedication' is a proxy for unlimited availability, which screens for absence of caregiving duties.",
+   "alternatives": [
+    "committed to delivering results during working hours"
+   ],
+   "gain": "Commitment framed by output, not availability."
+  },
+  {
+   "id": "cb-lifestyle-fit",
+   "pattern": "\\blifestyle\\s+fit\\b",
+   "category": "caregiver_bias",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Lifestyle fit' invites screening on family status rather than skills.",
+   "alternatives": [
+    "alignment with our working practices (state them)"
+   ],
+   "gain": "Transparent, skills-relevant criterion."
+  },
+  {
+   "id": "cb-247",
+   "pattern": "\\b(available\\s+)?24\\s*/\\s*7\\b|\\bavailable\\s+(at\\s+)?all\\s+times\\b|\\balways\\s+(on|available)\\b",
+   "category": "caregiver_bias",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": true,
+   "veto": [
+    "(support|service|system|platform|hotline|coverage|operations?)\\s+(is\\s+|runs?\\s+)?(available\\s+)?24\\s*/\\s*7",
+    "24\\s*/\\s*7\\s+(\\w+\\s+){0,2}(support|service|system|operations?|center|centre|coverage|monitoring|network)",
+    "(rotating|rotation|shift)\\s+schedule"
+   ],
+   "why": "Demanding personal 24/7 availability screens out caregivers; describing a 24/7 service with defined shifts is fine.",
+   "alternatives": [
+    "participates in an on-call rotation (approx. X nights/month)"
+   ],
+   "gain": "Real requirement, honestly scoped."
+  },
+  {
+   "id": "cb-nogaps",
+   "pattern": "\\bno\\s+(employment\\s+|work\\s+|career\\s+)?gaps\\b|\\bgaps?\\s+in\\s+(employment|work|career)\\s+history\\b|\\bcontinuous\\s+(employment|work)\\s+history\\b",
+   "category": "caregiver_bias",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Career-gap screens penalize parenting and caregiving breaks (mostly taken by women) with no evidence of job relevance.",
+   "alternatives": [
+    "remove; assess skills and recent accomplishments instead"
+   ],
+   "gain": "Wider pool, skills-based screen."
+  },
+  {
+   "id": "cb-career-break",
+   "pattern": "\\bno\\s+career\\s+breaks?\\b|\\bmust\\s+not\\s+have\\s+taken\\s+(a\\s+)?break\\b",
+   "category": "caregiver_bias",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Penalizes caregiving breaks directly.",
+   "alternatives": [
+    "remove"
+   ],
+   "gain": "Skills-based screen."
+  },
+  {
+   "id": "cb-work-first",
+   "pattern": "\\b(put\\s+)?work\\s+(comes\\s+)?first\\b|\\bjob\\s+comes\\s+first\\b|\\bwork\\s+is\\s+your\\s+life\\b",
+   "category": "caregiver_bias",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Demands work take priority over family — screens for absence of caregiving duties.",
+   "alternatives": [
+    "state actual hours and peak periods honestly"
+   ],
+   "gain": "Honest scope, no lifestyle screen."
+  },
+  {
+   "id": "cb-relocate-now",
+   "pattern": "\\bwilling\\s+to\\s+relocate\\s+immediately\\b|\\bimmediate\\s+relocation\\s+required\\b|\\brelocate\\s+(internationally\\s+)?within\\s+\\d+\\s+days\\b|\\buproot\\s+their\\s+li(?:fe|ves)\\b",
+   "category": "caregiver_bias",
+   "severity": 2,
+   "confidence": 0.75,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Immediate-relocation demands disproportionately exclude people with family ties; if relocation is real, give a timeline.",
+   "alternatives": [
+    "relocation to X required within N months (assistance provided)"
+   ],
+   "gain": "Keeps the requirement with humane scope."
+  },
+  {
+   "id": "cb-evenings-always",
+   "pattern": "\\bevenings?\\s+and\\s+weekends?\\s+(required\\s+)?(with\\s+)?no\\s+exceptions\\b",
+   "category": "caregiver_bias",
+   "severity": 2,
+   "confidence": 0.75,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Blanket 'no exceptions' availability screens caregivers; specify the actual schedule.",
+   "alternatives": [
+    "scheduled evening/weekend shifts (rota shared in advance)"
+   ],
+   "gain": "Real schedule, predictable for caregivers."
+  },
+  {
+   "id": "cb-unencumbered",
+   "pattern": "\\bunencumbered\\b|\\bfree\\s+(of|from)\\s+(family|personal|caregiving)\\s+(obligations?|duties|commitments?)\\b",
+   "category": "caregiver_bias",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Directly demands freedom from family obligations.",
+   "alternatives": [
+    "remove"
+   ],
+   "gain": "Removes unlawful-leaning screen."
+  },
+  {
+   "id": "cb-single-pref",
+   "pattern": "\\bsingle\\s+(candidates?\\s+)?(preferred|only)\\b|\\bunmarried\\b|\\bno\\s+(kids|children)\\b",
+   "category": "caregiver_bias",
+   "severity": 3,
+   "confidence": 0.99,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Marital/family-status screening — exclusionary and unlawful in many jurisdictions.",
+   "alternatives": [
+    "remove"
+   ],
+   "gain": "Legal and inclusive."
+  },
+  {
+   "id": "cb-no-parents",
+   "pattern": "\\bno\\s+(mothers?|fathers?|parents?)\\b",
+   "category": "caregiver_bias",
+   "severity": 3,
+   "confidence": 0.99,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Directly excludes parents — unlawful family-status discrimination in many jurisdictions.",
+   "alternatives": [
+    "remove"
+   ],
+   "gain": "Legal and inclusive."
+  },
+  {
+   "id": "cb-unbroken",
+   "pattern": "\\bunbroken\\b[^.\\n]{0,40}\\b(employment|work|career)\\b|\\b(employment|work|career)\\b[^.\\n]{0,20}\\bunbroken\\b",
+   "category": "caregiver_bias",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Unbroken employment record' penalizes caregiving breaks with no evidence of job relevance.",
+   "alternatives": [
+    "assess skills and recent accomplishments instead"
+   ],
+   "gain": "Skills-based screen, wider pool."
+  },
+  {
+   "id": "cb-weekends-unpaid",
+   "pattern": "\\bweekends?\\s+without\\s+(additional\\s+)?(compensation|pay|overtime)\\b",
+   "category": "caregiver_bias",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Unpaid weekend expectations disproportionately screen out caregivers.",
+   "alternatives": [
+    "paid weekend shifts on a published rota"
+   ],
+   "gain": "Honest, fair scheduling requirement."
+  },
+  {
+   "id": "cb-travel-100",
+   "pattern": "\\b100%\\s+travel\\b|\\btravel\\s+100%\\b",
+   "category": "caregiver_bias",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": true,
+   "veto": [],
+   "why": "Extreme travel demands exclude caregivers; if genuine, keep but state support offered.",
+   "alternatives": [
+    "extensive travel (~75–100%); itineraries shared N weeks ahead"
+   ],
+   "gain": "Requirement preserved, predictability added."
+  },
+  {
+   "id": "cb-flexible-forus",
+   "pattern": "\\bflexib(?:le|ility)\\s+(to\\s+work\\s+)?(long|extra|additional)\\s+hours\\b",
+   "category": "caregiver_bias",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": false,
+   "veto": [],
+   "why": "One-way 'flexibility' (for the employer) signals unpredictable hours that deter caregivers.",
+   "alternatives": [
+    "occasional overtime during launches (paid/TOIL)"
+   ],
+   "gain": "Honest, bounded expectation."
+  },
+  {
+   "id": "ac-over-need-not",
+   "pattern": "\\b(over|under|above|below)\\s+\\d{2}\\b[^.\\n]{0,40}\\bneed\\s+not\\s+apply\\b|\\bneed\\s+not\\s+apply\\s+if\\s+(over|under)\\s+\\d{2}\\b",
+   "category": "age_coded",
+   "severity": 3,
+   "confidence": 0.98,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Explicit age screen — unlawful in many jurisdictions.",
+   "alternatives": [
+    "remove"
+   ],
+   "gain": "Legal and inclusive."
+  },
+  {
+   "id": "ac-skews-young",
+   "pattern": "\\bskews?\\s+young\\b",
+   "category": "age_coded",
+   "severity": 2,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Advertising a young age profile signals older candidates aren't wanted.",
+   "alternatives": [
+    "describe the culture without age"
+   ],
+   "gain": "Culture signal without age screen."
+  },
+  {
+   "id": "ac-out-of-university",
+   "pattern": "\\b(just|straight|fresh|right)\\s+out\\s+of\\s+(university|college|school)\\b",
+   "category": "age_coded",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Youth proxy — 'just out of university' functions as an age cap.",
+   "alternatives": [
+    "early-career candidates welcome"
+   ],
+   "gain": "Experience band without age proxy."
+  },
+  {
+   "id": "ac-twentysomething",
+   "pattern": "\\btwenty[\\s\\-]somethings?\\b|\\bthirty[\\s\\-]somethings?\\b",
+   "category": "age_coded",
+   "severity": 2,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Describes the team or expectation by age bracket.",
+   "alternatives": [
+    "energetic team"
+   ],
+   "gain": "Culture described without age."
+  },
+  {
+   "id": "ac-digital-native",
+   "pattern": "\\bdigital\\s+native\\b",
+   "category": "age_coded",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Digital native' is a proxy for 'young' — an age screen, not a skill.",
+   "alternatives": [
+    "proficient with modern digital tools (name them)"
+   ],
+   "gain": "Names the real skill, drops the age proxy."
+  },
+  {
+   "id": "ac-young-energetic",
+   "pattern": "\\byoung\\s+(and\\s+)?(energetic|dynamic|vibrant|hungry)\\b",
+   "category": "age_coded",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Explicitly demands youth.",
+   "alternatives": [
+    "energetic"
+   ],
+   "gain": "Keeps energy, drops age."
+  },
+  {
+   "id": "ac-fresh-grad",
+   "pattern": "\\bfresh\\s+graduates?\\s+(only|preferred)\\b|\\brecent\\s+graduates?\\s+(only|preferred)\\b",
+   "category": "age_coded",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Restricting to fresh graduates functions as an age cap.",
+   "alternatives": [
+    "0–2 years' experience welcome"
+   ],
+   "gain": "Experience band without age proxy."
+  },
+  {
+   "id": "ac-under-age",
+   "pattern": "\\bunder\\s+\\d{2}\\s*(years\\s+old|yrs?)?\\s*(preferred|only)?\\b|\\b\\d{2}\\s+years?\\s+or\\s+younger\\b|\\bmaximum\\s+age\\b",
+   "category": "age_coded",
+   "severity": 3,
+   "confidence": 0.98,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Explicit age cap — unlawful in many jurisdictions.",
+   "alternatives": [
+    "remove"
+   ],
+   "gain": "Legal and inclusive."
+  },
+  {
+   "id": "ac-young-team",
+   "pattern": "\\b(join\\s+our\\s+)?young(?:,?\\s+\\w+)?\\s+team\\b|\\byouthful\\s+(team|culture|environment)\\b",
+   "category": "age_coded",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Advertising a 'young team' signals older candidates aren't wanted.",
+   "alternatives": [
+    "energetic, close-knit team"
+   ],
+   "gain": "Culture described without age."
+  },
+  {
+   "id": "ac-millennial",
+   "pattern": "\\bmillennial\\s+(mindset|energy|vibe)\\b|\\bgen[\\s\\-]?z\\s+(energy|vibe)\\b",
+   "category": "age_coded",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Generation labels are age proxies.",
+   "alternatives": [
+    "current with digital trends"
+   ],
+   "gain": "Skill, not birth year."
+  },
+  {
+   "id": "ac-born-after",
+   "pattern": "\\bborn\\s+(after|before)\\s+(19|20)\\d{2}\\b",
+   "category": "age_coded",
+   "severity": 3,
+   "confidence": 0.98,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Explicit age screen.",
+   "alternatives": [
+    "remove"
+   ],
+   "gain": "Legal and inclusive."
+  },
+  {
+   "id": "ac-highenergy-young",
+   "pattern": "\\bhigh[\\s\\-]energy\\s+young\\b",
+   "category": "age_coded",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Explicit youth demand.",
+   "alternatives": [
+    "high-energy"
+   ],
+   "gain": "Energy without age."
+  },
+  {
+   "id": "ac-newgrad-only",
+   "pattern": "\\bnew\\s+grads?\\s+only\\b",
+   "category": "age_coded",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Age-cap proxy.",
+   "alternatives": [
+    "early-career candidates welcome"
+   ],
+   "gain": "Inclusive experience band."
+  },
+  {
+   "id": "ac-overqualified",
+   "pattern": "\\boverqualified\\s+(candidates?\\s+)?(need\\s+not|will\\s+not|should\\s+not)\\b",
+   "category": "age_coded",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'No overqualified candidates' is commonly an age screen in disguise.",
+   "alternatives": [
+    "remove"
+   ],
+   "gain": "Skills-based screen."
+  },
+  {
+   "id": "ac-recent-college",
+   "pattern": "\\brecent\\s+college\\s+(grad|graduate)s?\\b",
+   "category": "age_coded",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": true,
+   "veto": [],
+   "why": "Fine for a defined new-grad program; an age proxy elsewhere.",
+   "alternatives": [
+    "early-career professionals"
+   ],
+   "gain": "Keeps program intent without age proxy."
+  },
+  {
+   "id": "ac-energetic-alone",
+   "pattern": "\\benergetic\\b",
+   "category": "age_coded",
+   "severity": 1,
+   "confidence": 0.4,
+   "ambiguous": true,
+   "veto": [],
+   "why": "'Energetic' alone is usually fine; it becomes an age proxy when stacked with youth signals.",
+   "alternatives": [
+    "motivated"
+   ],
+   "gain": "Usually fine as-is; Layer 2 decides from context."
+  },
+  {
+   "id": "ap-attractive",
+   "pattern": "\\battractive\\b|\\bgood[\\s\\-]looking\\b|\\bphotogenic\\b",
+   "category": "appearance_bias",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [
+    "attractive\\s+(salary|compensation|package|benefits|offer|opportunity|proposition)"
+   ],
+   "why": "Looks requirements are rarely job-relevant and are policed more heavily against women.",
+   "alternatives": [
+    "professional presentation"
+   ],
+   "gain": "Skills-relevant standard."
+  },
+  {
+   "id": "ap-wellgroomed",
+   "pattern": "\\bwell[\\s\\-]groomed\\b|\\bclean[\\s\\-]cut\\b",
+   "category": "appearance_bias",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": true,
+   "veto": [],
+   "why": "Grooming standards can be legitimate (client-facing/safety) but are enforced unevenly by gender; state specifics.",
+   "alternatives": [
+    "adheres to our dress and safety standards (linked)"
+   ],
+   "gain": "Specific, evenly-applicable standard."
+  },
+  {
+   "id": "ap-presentable",
+   "pattern": "\\bpresentable\\b",
+   "category": "appearance_bias",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": true,
+   "veto": [],
+   "why": "'Presentable' is vague and gender-unevenly enforced.",
+   "alternatives": [
+    "professional dress standard"
+   ],
+   "gain": "Specific standard."
+  },
+  {
+   "id": "ap-physfit",
+   "pattern": "\\bphysically\\s+fit\\b",
+   "category": "appearance_bias",
+   "severity": 1,
+   "confidence": 0.55,
+   "ambiguous": true,
+   "veto": [
+    "(lift|carry|move)\\s+\\d+\\s*(lbs?|kg|pounds)",
+    "physical\\s+demands?\\s+(include|of\\s+the\\s+role)"
+   ],
+   "why": "'Physically fit' is vague; if the job has physical demands, state them measurably.",
+   "alternatives": [
+    "able to lift 25 kg repeatedly during a shift"
+   ],
+   "gain": "Measurable requirement replaces vague screen."
+  },
+  {
+   "id": "ap-slim",
+   "pattern": "\\bslim\\b|\\bpetite\\b|\\bheight\\s*[:\\-]?\\s*\\d|\\bheight\\s+requirements?\\b|\\b(minimum|maximum)\\s+height\\b|\\bweight\\s+requirements?\\b",
+   "category": "appearance_bias",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Body-type requirements are appearance screens with disparate gender impact.",
+   "alternatives": [
+    "remove or state validated physical job demands"
+   ],
+   "gain": "Removes body-type screening."
+  },
+  {
+   "id": "ap-smile",
+   "pattern": "\\bgreat\\s+smile\\b|\\bwinning\\s+smile\\b",
+   "category": "appearance_bias",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Appearance demand, typically aimed at women in service roles.",
+   "alternatives": [
+    "friendly customer manner"
+   ],
+   "gain": "Service skill, not looks."
+  },
+  {
+   "id": "ap-youthful-look",
+   "pattern": "\\byouthful\\s+(appearance|look)\\b|\\byoung[\\s\\-]looking\\b",
+   "category": "appearance_bias",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Combines appearance and age screening.",
+   "alternatives": [
+    "remove"
+   ],
+   "gain": "Removes double screen."
+  },
+  {
+   "id": "ap-neat-appearance",
+   "pattern": "\\bneat\\s+(and\\s+tidy\\s+)?appearance\\b",
+   "category": "appearance_bias",
+   "severity": 1,
+   "confidence": 0.55,
+   "ambiguous": true,
+   "veto": [],
+   "why": "Vague appearance demand; specify the actual standard if one exists.",
+   "alternatives": [
+    "follows workplace dress code"
+   ],
+   "gain": "Specific standard."
+  },
+  {
+   "id": "ex-native-speaker",
+   "pattern": "\\bnative\\s+(english\\s+)?speaker\\b|\\benglish\\s+(as\\s+a\\s+)?(mother\\s+tongue|first\\s+language)\\b|\\bnative[\\s\\-]level\\s+english\\b",
+   "category": "exclusionary",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Native speaker' excludes fully proficient speakers by origin; the job needs proficiency, not birthplace. (EEOC guidance distinguishes fluency requirements from national-origin proxies.)",
+   "alternatives": [
+    "professional English proficiency (C1/C2)"
+   ],
+   "gain": "Keeps the real language bar, drops the origin screen."
+  },
+  {
+   "id": "ex-whph",
+   "pattern": "\\bwork\\s+hard[\\s,]*play\\s+hard\\b",
+   "category": "exclusionary",
+   "severity": 2,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Work hard, play hard' signals an after-hours social culture (often drinking-centered) that excludes caregivers and non-drinkers, and correlates with male-typed cultures.",
+   "alternatives": [
+    "we work hard and celebrate wins as a team"
+   ],
+   "gain": "Culture described without the after-hours screen."
+  },
+  {
+   "id": "ex-beer",
+   "pattern": "\\bbeer\\s+(on\\s+tap|fridge|o[’']?clock)\\b|\\bkegerator\\b|\\bhappy\\s+hours?\\b",
+   "category": "exclusionary",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": true,
+   "veto": [],
+   "why": "Alcohol-centered perks as headline culture signals exclude non-drinkers and caregivers; fine as one perk among many.",
+   "alternatives": [
+    "team events and celebrations"
+   ],
+   "gain": "Inclusive social signal."
+  },
+  {
+   "id": "ex-brotherhood",
+   "pattern": "\\bbrotherhood\\b|\\bfraternit(?:y|ies)\\b|\\bfrat\\s+(house|culture|vibe)\\b",
+   "category": "exclusionary",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Frames the workplace as a male social unit.",
+   "alternatives": [
+    "a tight-knit team"
+   ],
+   "gain": "Belonging without gendering."
+  },
+  {
+   "id": "ex-culture-fit",
+   "pattern": "\\bculture\\s+fit\\b|\\bcultural\\s+fit\\b",
+   "category": "exclusionary",
+   "severity": 1,
+   "confidence": 0.5,
+   "ambiguous": true,
+   "veto": [],
+   "why": "Unstructured 'culture fit' screens replicate the existing (often homogeneous) team; 'culture add' or explicit values are better.",
+   "alternatives": [
+    "alignment with our values (list them)"
+   ],
+   "gain": "Assessable values instead of similarity bias."
+  },
+  {
+   "id": "ex-boys-fit",
+   "pattern": "\\bfit\\s+in\\s+with\\s+the\\s+(boys|guys|lads)\\b",
+   "category": "exclusionary",
+   "severity": 3,
+   "confidence": 0.98,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Explicitly requires fitting a male group.",
+   "alternatives": [
+    "collaborate well with the team"
+   ],
+   "gain": "Removes explicit exclusion."
+  },
+  {
+   "id": "ex-bro",
+   "pattern": "\\bbro\\s+culture\\b|\\btech\\s+bros?\\b|\\bbrogrammer\\b",
+   "category": "exclusionary",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Male-typed culture signal.",
+   "alternatives": [
+    "collaborative engineering culture"
+   ],
+   "gain": "Inclusive culture signal."
+  },
+  {
+   "id": "ex-family-we-are",
+   "pattern": "\\bwe[’']?re\\s+(like\\s+)?a\\s+family\\b|\\bwork\\s+family\\b",
+   "category": "exclusionary",
+   "severity": 1,
+   "confidence": 0.5,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'We're a family' blurs boundaries and pressures unpaid overtime — deters people with actual family obligations.",
+   "alternatives": [
+    "a supportive, close-knit team"
+   ],
+   "gain": "Warmth without boundary-blurring."
+  },
+  {
+   "id": "ex-ablebodied",
+   "pattern": "\\bable[\\s\\-]bodied\\b",
+   "category": "exclusionary",
+   "severity": 3,
+   "confidence": 0.95,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Excludes disabled candidates categorically; state actual physical requirements.",
+   "alternatives": [
+    "able to perform the physical tasks listed (with or without accommodation)"
+   ],
+   "gain": "Legal, specific, inclusive."
+  },
+  {
+   "id": "ex-no-9to5",
+   "pattern": "\\bnot\\s+a\\s+9[\\s\\-]?(to|–|-)[\\s\\-]?5\\b|\\bthis\\s+isn[’']?t\\s+a\\s+9[\\s\\-]?(to|–|-)[\\s\\-]?5\\b",
+   "category": "exclusionary",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Signals unbounded hours — screens out caregivers without stating a real requirement.",
+   "alternatives": [
+    "core hours X–Y with occasional evening launches"
+   ],
+   "gain": "Honest hours, wider pool."
+  },
+  {
+   "id": "ex-work-weekends-social",
+   "pattern": "\\bmandatory\\s+(team\\s+)?(drinks|socials?|happy\\s+hours?)\\b",
+   "category": "exclusionary",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Mandatory social/drinking events exclude caregivers and non-drinkers.",
+   "alternatives": [
+    "optional team socials"
+   ],
+   "gain": "Social culture made optional."
+  },
+  {
+   "id": "ex-grit-hazing",
+   "pattern": "\\bsink\\s+or\\s+swim\\b|\\btrial\\s+by\\s+fire\\b|\\bbaptism\\s+(of|by)\\s+fire\\b",
+   "category": "exclusionary",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Hazing-style onboarding language deters candidates from under-supported groups.",
+   "alternatives": [
+    "structured onboarding with real ownership from week one"
+   ],
+   "gain": "Challenge without hazing signal."
+  },
+  {
+   "id": "qi-all-reqs",
+   "pattern": "\\bmust\\s+meet\\s+(all|100%|every(\\s+single)?\\s+one)\\s+(of\\s+)?(the\\s+)?(requirements?|qualifications?|criteria)\\b",
+   "category": "qualification_inflation",
+   "severity": 3,
+   "confidence": 0.9,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Demanding 100% of requirements shrinks the female applicant pool most, since women tend to apply only near full qualification.",
+   "alternatives": [
+    "if you meet most of these, we encourage you to apply"
+   ],
+   "gain": "Directly counteracts the documented application-threshold gap."
+  },
+  {
+   "id": "qi-only-qualified",
+   "pattern": "\\bonly\\s+(fully\\s+)?qualified\\s+candidates?\\s+(need|should)\\s+apply\\b|\\bdo\\s+not\\s+apply\\s+unless\\b",
+   "category": "qualification_inflation",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Gatekeeping phrasing deters near-qualified candidates unevenly by gender.",
+   "alternatives": [
+    "we welcome applicants who meet most requirements"
+   ],
+   "gain": "Keeps the bar, widens the funnel."
+  },
+  {
+   "id": "qi-expert-everything",
+   "pattern": "\\bexpert\\s+in\\s+(all|every|everything)\\b",
+   "category": "qualification_inflation",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Nobody is an expert in everything; inflated demands deter women disproportionately.",
+   "alternatives": [
+    "strong in several of: …"
+   ],
+   "gain": "Realistic requirements."
+  },
+  {
+   "id": "qi-worldclass",
+   "pattern": "\\bworld[\\s\\-]class\\b|\\bbest\\s+of\\s+the\\s+best\\b|\\btop\\s+1%\\b",
+   "category": "qualification_inflation",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Superlative bars are unassessable and deter candidates with realistic self-assessments.",
+   "alternatives": [
+    "excellent"
+   ],
+   "gain": "Assessable standard."
+  },
+  {
+   "id": "qi-ivy",
+   "pattern": "\\bivy\\s+league\\b|\\btop[\\s\\-]tier\\s+(university|school|college)\\b|\\bprestigious\\s+(university|institution|school)\\b|\\belite\\s+(university|school|college)\\b",
+   "category": "qualification_inflation",
+   "severity": 2,
+   "confidence": 0.85,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Pedigree screens exclude qualified candidates from less privileged paths and narrow diversity on every axis.",
+   "alternatives": [
+    "degree or equivalent practical experience"
+   ],
+   "gain": "Skills-based credential requirement."
+  },
+  {
+   "id": "qi-unicorn",
+   "pattern": "\\bunicorn\\s+candidate\\b|\\bpurple\\s+squirrel\\b",
+   "category": "qualification_inflation",
+   "severity": 1,
+   "confidence": 0.7,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'Unicorn' framing signals an inflated, unrealistic wish list.",
+   "alternatives": [
+    "strong generalist"
+   ],
+   "gain": "Realistic role definition."
+  },
+  {
+   "id": "qi-jack",
+   "pattern": "\\bjack\\s+of\\s+all\\s+trades\\b",
+   "category": "qualification_inflation",
+   "severity": 1,
+   "confidence": 0.7,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Inflated generalist demand — and 'jack' is also gendered.",
+   "alternatives": [
+    "versatile generalist"
+   ],
+   "gain": "Neutral and realistic."
+  },
+  {
+   "id": "qi-rockstar-team",
+   "pattern": "\\bA[\\s\\-]players?\\s+only\\b",
+   "category": "qualification_inflation",
+   "severity": 2,
+   "confidence": 0.8,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'A-players only' gatekeeping deters near-qualified applicants unevenly.",
+   "alternatives": [
+    "high standards, strong support"
+   ],
+   "gain": "Standards without gatekeeping."
+  },
+  {
+   "id": "qi-years-inflated",
+   "pattern": "\\b(1[5-9]|[2-9]\\d)\\+?\\s+years[’']?\\s+(of\\s+)?experience\\s+required\\b|\\b(fifteen|twenty|twenty[\\s\\-]five|thirty)[\\s\\-]?(plus|\\+)?\\s+years\\s+(of\\s+)?experience\\s+required\\b",
+   "category": "qualification_inflation",
+   "severity": 1,
+   "confidence": 0.55,
+   "ambiguous": true,
+   "veto": [],
+   "why": "Very long tenure demands are rarely evidence-based and function as both age and gender screens.",
+   "alternatives": [
+    "significant experience (10+ years) or equivalent depth"
+   ],
+   "gain": "Keeps seniority, drops arbitrary bar."
+  },
+  {
+   "id": "qi-advanced-degree",
+   "pattern": "\\b(advanced\\s+degree|master[’']?s(\\s+degree)?|mba)\\s+required\\b",
+   "category": "qualification_inflation",
+   "severity": 1,
+   "confidence": 0.5,
+   "ambiguous": true,
+   "veto": [],
+   "why": "Degree requirements not tied to job tasks shrink diverse pipelines; consider 'or equivalent experience'.",
+   "alternatives": [
+    "Master's degree or equivalent experience"
+   ],
+   "gain": "Skills-based alternative path."
+  },
+  {
+   "id": "qi-no-training",
+   "pattern": "\\bmust\\s+hit\\s+the\\s+ground\\s+running\\b|\\bno\\s+hand[\\s\\-]?holding\\b",
+   "category": "qualification_inflation",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": false,
+   "veto": [],
+   "why": "'No hand-holding' signals absent onboarding/support, deterring candidates from under-supported groups.",
+   "alternatives": [
+    "quick ramp-up with structured onboarding"
+   ],
+   "gain": "Support signal widens the pool."
+  },
+  {
+   "id": "qi-perfection",
+   "pattern": "\\bperfectionist\\b|\\bflawless\\s+execution\\b",
+   "category": "qualification_inflation",
+   "severity": 1,
+   "confidence": 0.6,
+   "ambiguous": false,
+   "veto": [],
+   "why": "Perfection demands raise the self-selection threshold unevenly by gender.",
+   "alternatives": [
+    "high attention to detail"
+   ],
+   "gain": "Realistic standard."
+  }
+ ],
+ "inclusive_signals": [
+  {
+   "id": "is-eeo",
+   "pattern": "\\bequal\\s+opportunit(?:y|ies)\\s+employer\\b|\\bEEO\\b",
+   "label": "Equal-opportunity statement",
+   "points": 8
+  },
+  {
+   "id": "is-encourage",
+   "pattern": "\\bencouraged?\\s+to\\s+apply\\b|\\bapply\\s+even\\s+if\\b|\\bdon[’']?t\\s+meet\\s+every\\b",
+   "label": "Encourages near-qualified applicants",
+   "points": 10
+  },
+  {
+   "id": "is-flex",
+   "pattern": "\\bflexible\\s+(work(?:ing)?|hours|schedule)\\b|\\bflex\\s+time\\b|\\bflexitime\\b",
+   "label": "Flexible working",
+   "points": 8
+  },
+  {
+   "id": "is-remote",
+   "pattern": "\\bremote(?:\\s|-)?(friendly|first|work)?\\b|\\bhybrid\\b|\\bwork\\s+from\\s+home\\b",
+   "label": "Remote/hybrid option",
+   "points": 6
+  },
+  {
+   "id": "is-parental",
+   "pattern": "\\bparental\\s+leave\\b|\\bmaternity\\b|\\bpaternity\\b|\\bfamily\\s+leave\\b",
+   "label": "Parental leave mentioned",
+   "points": 8
+  },
+  {
+   "id": "is-they",
+   "pattern": "\\bthey\\s+will\\b|\\bthe\\s+successful\\s+candidate\\s+will\\b",
+   "label": "Gender-neutral pronouns",
+   "points": 5
+  },
+  {
+   "id": "is-allgenders",
+   "pattern": "\\ball\\s+genders\\b|\\bregardless\\s+of\\s+gender\\b|\\bany\\s+gender\\b",
+   "label": "Explicit gender inclusion",
+   "points": 8
+  },
+  {
+   "id": "is-accommodation",
+   "pattern": "\\breasonable\\s+accommodations?\\b|\\baccessibilit(?:y|ies)\\b|\\baccommodations?\\s+available\\b",
+   "label": "Accessibility/accommodations",
+   "points": 6
+  },
+  {
+   "id": "is-underrep",
+   "pattern": "\\bunderrepresented\\b|\\bdiverse\\s+backgrounds?\\b|\\bdiversity\\s+and\\s+inclusion\\b|\\bD&I\\b|\\bDEI\\b",
+   "label": "Diversity commitment",
+   "points": 6
+  },
+  {
+   "id": "is-salary",
+   "pattern": "\\bsalary\\s+(range|band)\\b|\\b\\$\\s?\\d[\\d,]*\\s*(-|–|to)\\s*\\$\\s?\\d[\\d,]*\\b|\\bpay\\s+range\\b",
+   "label": "Pay transparency",
+   "points": 8
+  },
+  {
+   "id": "is-parttime",
+   "pattern": "\\bpart[\\s\\-]time\\s+(option|available|considered)\\b|\\bjob[\\s\\-]shar(?:e|ing)\\b",
+   "label": "Part-time/job-share option",
+   "points": 6
+  },
+  {
+   "id": "is-returners",
+   "pattern": "\\breturnship\\b|\\bcareer\\s+returners?\\b|\\breturning\\s+to\\s+work\\b",
+   "label": "Career-returner friendly",
+   "points": 8
+  },
+  {
+   "id": "is-neutral-titles",
+   "pattern": "\\bchairperson\\b|\\bspokesperson\\b|\\bsalesperson\\b|\\bfirefighter\\b|\\bpolice\\s+officer\\b|\\bmail\\s+carrier\\b|\\bserver\\b",
+   "label": "Gender-neutral job titles",
+   "points": 4
+  },
+  {
+   "id": "is-skills-based",
+   "pattern": "\\bor\\s+equivalent\\s+(practical\\s+)?experience\\b",
+   "label": "Skills-based alternative to credentials",
+   "points": 6
+  },
+  {
+   "id": "is-oncall-scoped",
+   "pattern": "\\bon[\\s\\-]call\\s+rotation\\b",
+   "label": "Honestly scoped on-call",
+   "points": 4
+  }
+ ]
+}

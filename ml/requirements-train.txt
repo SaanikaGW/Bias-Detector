@@ -1,0 +1,5 @@
+# Only needed to RETRAIN the Layer 2 classifier (ml/train_layer2.py).
+# The server never imports these — runtime inference is numpy-only.
+scikit-learn>=1.3.0
+pandas>=2.0.0
+numpy>=1.24.0
