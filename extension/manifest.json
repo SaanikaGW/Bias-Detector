@@ -27,5 +27,8 @@
     "storage"
   ],
 
-  "host_permissions": []
+  "host_permissions": [
+    "https://bios-carear-checkers-production.up.railway.app/*",
+    "http://localhost:5001/*"
+  ]
 }
