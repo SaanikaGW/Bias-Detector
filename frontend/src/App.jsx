@@ -1,8 +1,18 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 // Shared client module — synced from /shared/biosClient.js (the same source
 // the Chrome extension uses). Edit /shared/biosClient.js and run `make ext`;
 // `make check-shared` fails CI if the copies ever drift.
 import { analyzeText, downloadReport, catColor, SEV_COLORS } from "./shared/biosClient.js";
+// Fair Hiring Index v2.0: client-side PDF text extraction (batch upload,
+// lazy-loaded on first use so pdfjs-dist doesn't bloat the main bundle for
+// every visitor) and a localStorage-backed run history (metrics over time).
+import {
+  saveRun as saveFhiRun,
+  getHistory as getFhiHistory,
+  deleteRun as deleteFhiRun,
+  clearHistory as clearFhiHistory,
+  summarize as summarizeFhiHistory,
+} from "./shared/fhiHistory.js";
 
 const API = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:5001";
 
@@ -1225,37 +1235,169 @@ function HiringAIPage() {
 
 // ── Fair Index page ───────────────────────────────────────────────────────────
 
-function FairIndexPage() {
-  const [jds, setJds]         = useState([{ text: "", id: Date.now() }]);
-  const [scores, setScores]   = useState(null);
-  const [loading, setLoading] = useState(false);
+// ── Fair Hiring Index ──────────────────────────────────────────────────────
+// v2.0: was a single one-shot "paste JDs, get one score" calculator. Now a
+// two-view dashboard — Analyze (paste or upload PDFs in bulk) and Metrics
+// History (every run is saved locally so fairness trend is visible over
+// time) — sharing one FHI number that means the same thing in both places.
 
-  const WEIGHTS = { explicit_gender: 1.0, stereotype: 0.8, age_bias: 0.7, requirements_bias: 0.6 };
+const FHI_CATEGORY_META = {
+  masculine_coded:         { label: "Masculine-coded wording",                weight: 0.8,  color: "#F59E0B" },
+  feminine_coded:          { label: "Feminine-coded wording",                 weight: 0.5,  color: "#EC4899" },
+  gendered_language:       { label: "Gendered pronouns & titles",             weight: 1.0,  color: "#F43F5E" },
+  stereotype:              { label: "Gender & leadership stereotypes",        weight: 0.85, color: "#F97316" },
+  caregiver_bias:          { label: "Caregiver / family-responsibility bias", weight: 0.9,  color: "#8B5CF6" },
+  age_coded:               { label: "Age-coded wording",                      weight: 0.7,  color: "#EAB308" },
+  appearance_bias:         { label: "Appearance bias",                       weight: 0.7,  color: "#14B8A6" },
+  exclusionary:             { label: "Exclusionary wording",                  weight: 0.75, color: "#38BDF8" },
+  qualification_inflation: { label: "Qualification inflation",               weight: 0.6,  color: "#A78BFA" },
+};
+const fhiCatMeta = (cat) =>
+  FHI_CATEGORY_META[cat] || { label: cat.replace(/_/g, " "), weight: 0.6, color: C.mist };
+
+const FHI_ADVICE = {
+  masculine_coded: "Swap competitive/dominance language ('drive', 'dominate') for collaborative framing where the requirement is really about results, not aggression.",
+  feminine_coded: "Watch for over-softened language ('nurturing', 'supportive') standing in for the actual skill needed.",
+  gendered_language: "Replace gendered titles and pronouns ('chairman', 'he/his') with neutral equivalents ('chairperson', 'they/their').",
+  stereotype: "Remove culturally coded language ('rockstar', 'ninja', 'culture fit') that skews toward specific demographics.",
+  caregiver_bias: "Avoid implying family status matters ('no heavy outside commitments'); state availability requirements only if truly essential to the role.",
+  age_coded: "Avoid phrases implying age preference ('young', 'digital native', 'recent grad'). Anchor requirements to experience level, not age.",
+  appearance_bias: "Drop appearance-related expectations unless they're a genuine, disclosed occupational requirement.",
+  exclusionary: "Reconsider blanket phrases ('must be available 24/7') that disproportionately screen out caregivers and disabled candidates.",
+  qualification_inflation: "Audit degree/years-of-experience requirements; use skills-based criteria where a degree isn't strictly necessary.",
+};
+
+function TabButton({ active, onClick, children }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        padding: "9px 20px",
+        borderRadius: 10,
+        border: `1.5px solid ${active ? C.teal : C.ghost}`,
+        background: active ? `${C.teal}18` : "transparent",
+        color: active ? C.teal : C.mist,
+        fontFamily: "'DM Sans', sans-serif",
+        fontWeight: 700,
+        fontSize: 13,
+        cursor: "pointer",
+        transition: "all 0.15s",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** Tiny dependency-free SVG line chart for the FHI trend over time. */
+function TrendChart({ points }) {
+  const W = 600, H = 170, PAD = 30;
+  if (points.length < 2) {
+    return (
+      <div style={{ height: H, display: "flex", alignItems: "center", justifyContent: "center", color: C.silver, fontSize: 13, textAlign: "center", padding: "0 20px" }}>
+        Run at least two batches to see a trend line — you have {points.length}.
+      </div>
+    );
+  }
+  const xs = points.map((_, i) => PAD + (i * (W - PAD * 2)) / (points.length - 1));
+  const ys = points.map((p) => H - PAD - (p.fhi / 100) * (H - PAD * 2));
+  const path = xs.map((x, i) => `${i === 0 ? "M" : "L"}${x.toFixed(1)},${ys[i].toFixed(1)}`).join(" ");
+  const areaPath = `${path} L${xs[xs.length - 1].toFixed(1)},${H - PAD} L${xs[0].toFixed(1)},${H - PAD} Z`;
+
+  return (
+    <svg width="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet">
+      {[0, 25, 50, 75, 100].map((v) => {
+        const y = H - PAD - (v / 100) * (H - PAD * 2);
+        return (
+          <g key={v}>
+            <line x1={PAD} x2={W - PAD} y1={y} y2={y} stroke={C.ghost} strokeWidth="1" />
+            <text x={2} y={y + 3} fontSize="9" fill={C.silver}>{v}</text>
+          </g>
+        );
+      })}
+      <path d={areaPath} fill={`${C.emerald}18`} stroke="none" />
+      <path d={path} fill="none" stroke={C.emerald} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      {xs.map((x, i) => (
+        <circle key={i} cx={x} cy={ys[i]} r="4" fill={C.snow} stroke={C.emerald} strokeWidth="2" />
+      ))}
+    </svg>
+  );
+}
+
+function FairIndexAnalyze({ onSaved }) {
+  const [jds, setJds]           = useState([{ id: Date.now(), text: "", sourceName: null }]);
+  const [scores, setScores]     = useState(null);
+  const [loading, setLoading]   = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadErrors, setUploadErrors] = useState([]);
+  const fileInputRef = useRef(null);
   const MAX_JD = 3000;
 
   function addJd() {
-    setJds(prev => [...prev, { text: "", id: Date.now() }]);
+    setJds((prev) => [...prev, { id: Date.now(), text: "", sourceName: null }]);
+  }
+  function removeJd(id) {
+    setJds((prev) => (prev.length === 1 ? prev : prev.filter((j) => j.id !== id)));
+  }
+
+  async function handlePdfUpload(e) {
+    const files = e.target.files;
+    if (!files || !files.length) return;
+    setUploading(true);
+    setUploadErrors([]);
+    try {
+      const { extractPdfTextBatch } = await import("./shared/pdfExtract.js");
+      const { ok, failed } = await extractPdfTextBatch(files);
+      if (ok.length) {
+        setJds((prev) => {
+          const withoutBlankSeed = prev.filter((j) => j.text.trim() || j.sourceName);
+          const newRows = ok.map((r) => ({
+            id: Date.now() + Math.random(),
+            text: r.text.slice(0, MAX_JD),
+            sourceName: r.file.name,
+          }));
+          return [...withoutBlankSeed, ...newRows];
+        });
+      }
+      if (failed.length) setUploadErrors(failed.map((f) => `${f.file.name}: ${f.error}`));
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   }
 
   async function calculateFHI() {
-    const texts = jds.map(j => j.text.trim()).filter(Boolean);
-    if (!texts.length) return;
+    const entries = jds.filter((j) => j.text.trim());
+    if (!entries.length) return;
     setLoading(true);
     try {
-      const results = await Promise.all(texts.map(text =>
-        fetch(`${API}/api/bias-reducer/analyze`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text }),
-        }).then(r => r.json())
-      ));
+      const results = await Promise.all(
+        entries.map((j) =>
+          fetch(`${API}/api/bias-reducer/analyze`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: j.text }),
+          }).then((r) => r.json())
+        )
+      );
       const N = results.length;
-      const avg = results.reduce((acc, r) => {
-        const w = r.categories?.reduce((s, c) => s + (WEIGHTS[c] || 0.5), 0) || 0;
-        return acc + (r.bias_score * (w || 1));
-      }, 0) / N;
-      const fhi = Math.round(100 * (1 - Math.min(1, avg)));
-      setScores({ fhi, results, avg: round2(avg) });
+      const fhi = Math.round(
+        results.reduce((sum, r) => sum + (r.scores?.inclusive_language_score ?? (100 - (r.bias_score || 0) * 100)), 0) / N
+      );
+      const avgBias = Math.round(results.reduce((s, r) => s + (r.bias_score || 0) * 100, 0) / N);
+
+      const categoryCounts = {};
+      results.forEach((r) => (r.categories || []).forEach((c) => (categoryCounts[c] = (categoryCounts[c] || 0) + 1)));
+
+      setScores({ fhi, avgBias, results });
+      const saved = saveFhiRun({
+        fhi,
+        jdCount: N,
+        avgBiasScore: avgBias,
+        categoryCounts,
+        sources: entries.map((e) => e.sourceName || "pasted"),
+      });
+      onSaved?.(saved);
     } catch (e) {
       console.error(e);
     } finally {
@@ -1263,189 +1405,339 @@ function FairIndexPage() {
     }
   }
 
-  function round2(n) { return Math.round(n * 100) / 100; }
-
-  const fhiColor = scores
-    ? scores.fhi >= 75 ? C.emerald : scores.fhi >= 50 ? C.amber : C.rose
-    : C.silver;
+  const fhiColor = scores ? (scores.fhi >= 75 ? C.emerald : scores.fhi >= 50 ? C.amber : C.rose) : C.silver;
 
   return (
-    <div style={{ maxWidth: 1000, margin: "0 auto", padding: "48px 32px" }}>
-      <div className="fade-up" style={{ marginBottom: 36, textAlign: "center" }}>
-        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, marginBottom: 10, color: C.ink, letterSpacing: "-0.02em" }}>
-          Fair Hiring Index
-        </h1>
-        <p style={{ color: C.slate, fontSize: 16, maxWidth: 540, margin: "0 auto" }}>
-          Paste one or more job descriptions to get a single 0–100 fairness score.
-          Higher is fairer — scores are weighted by the severity of each bias type detected.
-        </p>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24 }}>
-        {/* Input */}
-        <Card className="fade-up">
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, marginBottom: 16, color: C.ink }}>
+    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24 }}>
+      {/* Input */}
+      <Card className="fade-up">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, color: C.ink, margin: 0 }}>
             Batch Job Descriptions
           </h2>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {jds.map((jd, i) => (
-              <div key={jd.id}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <SectionLabel>JD #{i + 1}</SectionLabel>
+          <span style={{ fontSize: 12, color: C.silver }}>{jds.filter((j) => j.text.trim()).length} loaded</span>
+        </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="application/pdf"
+          multiple
+          hidden
+          onChange={handlePdfUpload}
+        />
+        <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+          <Btn variant="outline" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+            {uploading ? <><Spinner /> Reading PDFs…</> : "📄 Upload PDFs"}
+          </Btn>
+          <Btn variant="ghost" onClick={addJd}>+ Add pasted JD</Btn>
+        </div>
+
+        {uploadErrors.length > 0 && (
+          <div style={{ marginBottom: 14, padding: "10px 12px", background: `${C.rose}12`, border: `1px solid ${C.rose}40`, borderRadius: 8 }}>
+            {uploadErrors.map((msg, i) => (
+              <div key={i} style={{ fontSize: 12, color: C.rose, lineHeight: 1.6 }}>{msg}</div>
+            ))}
+          </div>
+        )}
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {jds.map((jd, i) => (
+            <div key={jd.id}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <SectionLabel>
+                  {jd.sourceName ? `📄 ${jd.sourceName}` : `JD #${i + 1}`}
+                </SectionLabel>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ fontSize: 11, color: jd.text.length > MAX_JD * 0.9 ? C.rose : C.silver }}>
                     {jd.text.length} / {MAX_JD}
                   </span>
+                  {jds.length > 1 && (
+                    <button
+                      onClick={() => removeJd(jd.id)}
+                      title="Remove"
+                      style={{ background: "none", border: "none", color: C.silver, cursor: "pointer", fontSize: 14, lineHeight: 1, padding: 0 }}
+                    >✕</button>
+                  )}
                 </div>
-                <textarea
-                  value={jd.text}
-                  onChange={e => setJds(prev => prev.map(j => j.id === jd.id ? { ...j, text: e.target.value.slice(0, MAX_JD) } : j))}
-                  placeholder="Paste job description…"
-                  style={{
-                    width: "100%", minHeight: 100, marginTop: 4,
-                    border: `1.5px solid ${C.ghost}`, borderRadius: 8,
-                    padding: "10px 12px", fontSize: 13, lineHeight: 1.6,
-                    color: C.slate, resize: "vertical", outline: "none", background: C.surface,
-                  }}
-                />
               </div>
+              <textarea
+                value={jd.text}
+                onChange={(e) =>
+                  setJds((prev) => prev.map((j) => (j.id === jd.id ? { ...j, text: e.target.value.slice(0, MAX_JD) } : j)))
+                }
+                placeholder="Paste job description…"
+                style={{
+                  width: "100%", minHeight: 100, marginTop: 4,
+                  border: `1.5px solid ${C.ghost}`, borderRadius: 8,
+                  padding: "10px 12px", fontSize: 13, lineHeight: 1.6,
+                  color: C.slate, resize: "vertical", outline: "none", background: C.surface,
+                }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div style={{ marginTop: 14 }}>
+          <Btn onClick={calculateFHI} disabled={loading || !jds.some((j) => j.text.trim())} style={{ width: "100%", justifyContent: "center" }}>
+            {loading ? <><Spinner /> Calculating…</> : "Calculate Fair Hiring Index"}
+          </Btn>
+        </div>
+
+        <div style={{ marginTop: 20, padding: "16px", background: C.surface, borderRadius: 8, border: `1px solid ${C.ghost}` }}>
+          <SectionLabel>How the score is calculated</SectionLabel>
+          <div style={{ fontFamily: "monospace", fontSize: 13, color: C.slate, lineHeight: 1.9 }}>
+            FHI = average Inclusive Language Score across all analyzed JDs
+          </div>
+          <div style={{ fontSize: 11, color: C.mist, marginTop: 4, lineHeight: 1.6 }}>
+            Each JD's Inclusive Language Score already weighs every flagged phrase by severity,
+            model confidence, and category (below) — the same score shown on the Bias Reducer page.
+          </div>
+          <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {Object.entries(FHI_CATEGORY_META).map(([k, v]) => (
+              <span key={k} style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: `${v.color}18`, color: v.color }}>
+                {v.label}: {v.weight}×
+              </span>
             ))}
           </div>
-          <div style={{ marginTop: 14, display: "flex", gap: 10 }}>
-            <Btn variant="ghost" onClick={addJd}>+ Add JD</Btn>
-            <Btn onClick={calculateFHI} disabled={loading || !jds.some(j => j.text.trim())}>
-              {loading ? <><Spinner /> Calculating…</> : "Calculate FHI"}
-            </Btn>
-          </div>
+        </div>
+      </Card>
 
-          {/* Formula card */}
-          <div style={{ marginTop: 20, padding: "16px", background: C.surface, borderRadius: 8, border: `1px solid ${C.ghost}` }}>
-            <SectionLabel>How the score is calculated</SectionLabel>
-            <div style={{ fontFamily: "monospace", fontSize: 13, color: C.slate, lineHeight: 1.9 }}>
-              FHI = 100 × (1 − (1/N) × Σ(Bᵢ × Cᵢ))<br />
-              <span style={{ color: C.mist, fontSize: 11 }}>Bᵢ = bias score per JD · Cᵢ = category severity weight</span>
-            </div>
-            <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 6 }}>
-              {Object.entries(WEIGHTS).map(([k, v]) => (
-                <span key={k} style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: C.ghost, color: C.slate }}>
-                  {k.replace(/_/g, " ")}: {v}×
-                </span>
-              ))}
-            </div>
+      {/* Results */}
+      <div className="fade-up-2">
+        {!scores && (
+          <Card style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <EmptyState icon="📊" title="FHI will appear here" body="Paste or upload job descriptions, then calculate." />
+          </Card>
+        )}
+        {scores && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <Card style={{ textAlign: "center", borderTop: `3px solid ${fhiColor}` }}>
+              <SectionLabel>Fair Hiring Index</SectionLabel>
+              <div style={{ fontFamily: "'Fraunces', serif", fontSize: 80, fontWeight: 800, color: fhiColor, lineHeight: 1, marginTop: 8, textShadow: `0 0 40px ${fhiColor}60` }}>
+                {scores.fhi}
+              </div>
+              <div style={{ fontSize: 14, color: C.mist, marginTop: 6 }}>out of 100</div>
+              <div style={{ marginTop: 10 }}>
+                <Pill color={fhiColor}>
+                  {scores.fhi >= 75 ? "High Fairness" : scores.fhi >= 50 ? "Moderate Fairness" : "Low Fairness"}
+                </Pill>
+              </div>
+              <div style={{ fontSize: 12, color: C.silver, marginTop: 10 }}>Saved to Metrics History ✓</div>
+            </Card>
+
+            <Card style={{ padding: "16px 20px" }}>
+              <SectionLabel>What this means</SectionLabel>
+              <p style={{ fontSize: 13, color: C.slate, lineHeight: 1.7, marginTop: 6 }}>
+                {scores.fhi >= 75
+                  ? "Your hiring language is largely inclusive. Small refinements to the flagged phrases below may help attract an even broader candidate pool."
+                  : scores.fhi >= 50
+                  ? "Some patterns of exclusionary language detected. Companies at this level typically see 15–30% fewer applications from underrepresented groups. Prioritize the flagged phrases below."
+                  : "Multiple bias patterns detected across your job descriptions. This significantly reduces applicant diversity. Use the JD Bias Reducer to rewrite each affected description."}
+              </p>
+              {scores.fhi < 75 && (
+                <div style={{ marginTop: 10, fontSize: 12, color: C.teal, fontWeight: 700 }}>
+                  → Run each flagged JD through the Bias Reducer for an inclusive rewrite.
+                </div>
+              )}
+            </Card>
+
+            {scores.results.map((r, i) => {
+              const levelColor = r.bias_level === "low" ? C.emerald : r.bias_level === "medium" ? C.amber : C.rose;
+              return (
+                <Card key={i} style={{ borderLeft: `3px solid ${levelColor}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+                    <span style={{ fontWeight: 700, fontSize: 13, color: C.ink }}>
+                      {jds[i]?.sourceName ? `📄 ${jds[i].sourceName}` : `JD #${i + 1}`}
+                    </span>
+                    <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 700, color: levelColor }}>
+                      {Math.round(r.bias_score * 100)}% bias
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: r.highlights?.length ? 10 : 0 }}>
+                    {r.categories?.length
+                      ? r.categories.map((c) => <Pill key={c} color={fhiCatMeta(c).color}>{fhiCatMeta(c).label}</Pill>)
+                      : <Pill color={C.emerald}>clean</Pill>}
+                  </div>
+                  {r.highlights?.length > 0 && (
+                    <div style={{ marginBottom: r.suggestions?.length ? 8 : 0 }}>
+                      <SectionLabel>Flagged Phrases</SectionLabel>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 4 }}>
+                        {r.highlights.slice(0, 4).map((h, j) => <HighlightChip key={j} span={h.span} type={h.type} />)}
+                        {r.highlights.length > 4 && (
+                          <span style={{ fontSize: 12, color: C.silver, alignSelf: "center" }}>+{r.highlights.length - 4} more</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  {r.suggestions?.length > 0 && (
+                    <div style={{ padding: "8px 10px", background: `${C.teal}08`, border: `1px solid ${C.teal}20`, borderRadius: 6, fontSize: 12, color: C.slate, lineHeight: 1.55 }}>
+                      <span style={{ fontWeight: 700, color: C.teal }}>Suggestion: </span>{r.suggestions[0]}
+                    </div>
+                  )}
+                </Card>
+              );
+            })}
+
+            {(() => {
+              const catCounts = {};
+              scores.results.forEach((r) => r.categories?.forEach((c) => { catCounts[c] = (catCounts[c] || 0) + 1; }));
+              const sorted = Object.entries(catCounts).sort((a, b) => fhiCatMeta(b[0]).weight - fhiCatMeta(a[0]).weight);
+              if (!sorted.length) return null;
+              return (
+                <Card>
+                  <SectionLabel>Priority Improvements</SectionLabel>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
+                    {sorted.map(([cat, count]) => {
+                      const meta = fhiCatMeta(cat);
+                      return (
+                        <div key={cat} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 12px", background: C.surface, borderRadius: 8, border: `1px solid ${C.ghost}` }}>
+                          <div style={{ minWidth: 8, height: 8, borderRadius: "50%", background: meta.color, marginTop: 4, flexShrink: 0 }} />
+                          <div>
+                            <div style={{ fontWeight: 700, fontSize: 12, color: C.ink, marginBottom: 3 }}>
+                              {meta.label} · {count} JD{count > 1 ? "s" : ""}
+                            </div>
+                            <div style={{ fontSize: 12, color: C.mist, lineHeight: 1.55 }}>{FHI_ADVICE[cat] || "Review flagged phrases above."}</div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </Card>
+              );
+            })()}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function FairIndexHistory() {
+  const [runs, setRuns] = useState(() => getFhiHistory());
+  const summary = summarizeFhiHistory(runs);
+
+  function handleDelete(id) {
+    setRuns(deleteFhiRun(id));
+  }
+  function handleClear() {
+    if (!window.confirm("Clear all Fair Hiring Index history? This can't be undone.")) return;
+    clearFhiHistory();
+    setRuns([]);
+  }
+
+  if (!summary) {
+    return (
+      <Card>
+        <EmptyState icon="📈" title="No runs yet" body="Calculate a Fair Hiring Index on the Analyze tab to start tracking trend over time." />
+      </Card>
+    );
+  }
+
+  const trendColor = summary.trend > 0 ? C.emerald : summary.trend < 0 ? C.rose : C.silver;
+  const catSorted = Object.entries(summary.categoryTotals).sort((a, b) => b[1] - a[1]);
+  const maxCat = catSorted.length ? catSorted[0][1] : 1;
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+      {/* Summary row */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 14 }}>
+        {[
+          { label: "Runs logged", value: summary.totalRuns },
+          { label: "JDs analyzed", value: summary.totalJds },
+          { label: "Average FHI", value: summary.avgFhi },
+          { label: "Latest FHI", value: summary.latest.fhi, sub: summary.trend !== 0 ? `${summary.trend > 0 ? "+" : ""}${summary.trend} vs prior run` : "first run", subColor: trendColor },
+        ].map((s, i) => (
+          <Card key={i} style={{ padding: "18px 20px", textAlign: "center" }}>
+            <div style={{ fontFamily: "'Fraunces', serif", fontSize: 30, fontWeight: 800, color: C.ink }}>{s.value}</div>
+            <div style={{ fontSize: 11, color: C.silver, marginTop: 4, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.label}</div>
+            {s.sub && <div style={{ fontSize: 11, color: s.subColor || C.mist, marginTop: 6, fontWeight: 700 }}>{s.sub}</div>}
+          </Card>
+        ))}
+      </div>
+
+      {/* Trend chart */}
+      <Card>
+        <SectionLabel>FHI Trend</SectionLabel>
+        <TrendChart points={runs} />
+      </Card>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 20 }}>
+        {/* Category breakdown across all history */}
+        <Card>
+          <SectionLabel>Most frequent issues (all-time)</SectionLabel>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 10 }}>
+            {catSorted.length === 0 && <div style={{ fontSize: 13, color: C.silver }}>No issues logged yet — nice.</div>}
+            {catSorted.map(([cat, count]) => {
+              const meta = fhiCatMeta(cat);
+              return (
+                <div key={cat}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: C.slate, marginBottom: 4 }}>
+                    <span>{meta.label}</span>
+                    <span style={{ color: C.silver }}>{count}</span>
+                  </div>
+                  <div style={{ height: 6, borderRadius: 4, background: C.ghost, overflow: "hidden" }}>
+                    <div style={{ width: `${(count / maxCat) * 100}%`, height: "100%", background: meta.color }} />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </Card>
 
-        {/* Results */}
-        <div className="fade-up-2">
-          {!scores && (
-            <Card style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <EmptyState icon="📊" title="FHI will appear here" body="Add job descriptions and click Calculate FHI." />
-            </Card>
-          )}
-          {scores && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-              {/* FHI Score */}
-              <Card style={{ textAlign: "center", borderTop: `3px solid ${fhiColor}` }}>
-                <SectionLabel>Fair Hiring Index</SectionLabel>
-                <div style={{ fontFamily: "'Fraunces', serif", fontSize: 80, fontWeight: 800, color: fhiColor, lineHeight: 1, marginTop: 8, textShadow: `0 0 40px ${fhiColor}60` }}>
-                  {scores.fhi}
-                </div>
-                <div style={{ fontSize: 14, color: C.mist, marginTop: 6 }}>out of 100</div>
-                <div style={{ marginTop: 10 }}>
-                  <Pill color={fhiColor}>
-                    {scores.fhi >= 75 ? "High Fairness" : scores.fhi >= 50 ? "Moderate Fairness" : "Low Fairness"}
-                  </Pill>
-                </div>
-              </Card>
-
-              {/* Interpretation */}
-              <Card style={{ padding: "16px 20px" }}>
-                <SectionLabel>What this means</SectionLabel>
-                <p style={{ fontSize: 13, color: C.slate, lineHeight: 1.7, marginTop: 6 }}>
-                  {scores.fhi >= 75
-                    ? "Your hiring language is largely inclusive. Small refinements to the flagged phrases below may help attract an even broader candidate pool."
-                    : scores.fhi >= 50
-                    ? "Some patterns of exclusionary language detected. Companies at this level typically see 15–30% fewer applications from underrepresented groups. Prioritize the flagged phrases below."
-                    : "Multiple bias patterns detected across your job descriptions. This significantly reduces applicant diversity. Use the JD Bias Reducer to rewrite each affected description."}
-                </p>
-                {scores.fhi < 75 && (
-                  <div style={{ marginTop: 10, fontSize: 12, color: C.teal, fontWeight: 700 }}>
-                    → Run each flagged JD through the Bias Reducer for an inclusive rewrite.
+        {/* Run history table */}
+        <Card>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <SectionLabel>Run history</SectionLabel>
+            <button onClick={handleClear} style={{ background: "none", border: "none", color: C.rose, fontSize: 11, fontWeight: 700, cursor: "pointer" }}>
+              Clear all
+            </button>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 280, overflowY: "auto" }}>
+            {[...runs].reverse().map((r) => {
+              const color = r.fhi >= 75 ? C.emerald : r.fhi >= 50 ? C.amber : C.rose;
+              const topCat = Object.entries(r.categoryCounts || {}).sort((a, b) => b[1] - a[1])[0];
+              return (
+                <div key={r.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 10px", background: C.surface, borderRadius: 8, border: `1px solid ${C.ghost}` }}>
+                  <div>
+                    <div style={{ fontSize: 12, color: C.ink, fontWeight: 600 }}>
+                      {new Date(r.timestamp).toLocaleDateString()} · {r.jdCount} JD{r.jdCount > 1 ? "s" : ""}
+                    </div>
+                    <div style={{ fontSize: 11, color: C.mist }}>{topCat ? fhiCatMeta(topCat[0]).label : "No issues"}</div>
                   </div>
-                )}
-              </Card>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 800, color }}>{r.fhi}</span>
+                    <button onClick={() => handleDelete(r.id)} title="Delete run" style={{ background: "none", border: "none", color: C.silver, cursor: "pointer" }}>✕</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
 
-              {/* Per-JD breakdown */}
-              {scores.results.map((r, i) => {
-                const levelColor = r.bias_level === "low" ? C.emerald : r.bias_level === "medium" ? C.amber : C.rose;
-                return (
-                  <Card key={i} style={{ borderLeft: `3px solid ${levelColor}` }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-                      <span style={{ fontWeight: 700, fontSize: 13, color: C.ink }}>JD #{i + 1}</span>
-                      <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 700, color: levelColor }}>
-                        {Math.round(r.bias_score * 100)}% bias
-                      </span>
-                    </div>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: r.highlights?.length ? 10 : 0 }}>
-                      {r.categories?.length ? r.categories.map(c => <Pill key={c} color={C.mist}>{c.replace(/_/g, " ")}</Pill>) : <Pill color={C.emerald}>clean</Pill>}
-                    </div>
-                    {r.highlights?.length > 0 && (
-                      <div style={{ marginBottom: r.suggestions?.length ? 8 : 0 }}>
-                        <SectionLabel>Flagged Phrases</SectionLabel>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginTop: 4 }}>
-                          {r.highlights.slice(0, 4).map((h, j) => <HighlightChip key={j} span={h.span} type={h.type} />)}
-                          {r.highlights.length > 4 && (
-                            <span style={{ fontSize: 12, color: C.silver, alignSelf: "center" }}>+{r.highlights.length - 4} more</span>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                    {r.suggestions?.length > 0 && (
-                      <div style={{ padding: "8px 10px", background: `${C.teal}08`, border: `1px solid ${C.teal}20`, borderRadius: 6, fontSize: 12, color: C.slate, lineHeight: 1.55 }}>
-                        <span style={{ fontWeight: 700, color: C.teal }}>Suggestion: </span>{r.suggestions[0]}
-                      </div>
-                    )}
-                  </Card>
-                );
-              })}
-
-              {/* Priority improvements */}
-              {(() => {
-                const ADVICE = {
-                  explicit_gender: "Avoid gendered job titles and pronouns. Use 'they/them' or gender-neutral terms like 'engineer' instead of 'salesman'.",
-                  stereotype: "Remove culturally coded language (e.g. 'rockstar', 'ninja', 'culture fit') that skews toward specific demographics.",
-                  age_bias: "Avoid phrases implying age preference (e.g. 'young', 'recent graduate', 'digital native'). Focus on experience, not tenure.",
-                  requirements_bias: "Audit degree and years-of-experience requirements. Use skills-based criteria where a degree isn't strictly necessary.",
-                };
-                const catCounts = {};
-                scores.results.forEach(r => r.categories?.forEach(c => { catCounts[c] = (catCounts[c] || 0) + 1; }));
-                const sorted = Object.entries(catCounts).sort((a, b) => (WEIGHTS[b[0]] || 0.5) - (WEIGHTS[a[0]] || 0.5));
-                if (!sorted.length) return null;
-                return (
-                  <Card>
-                    <SectionLabel>Priority Improvements</SectionLabel>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 8 }}>
-                      {sorted.map(([cat, count]) => {
-                        const dotColor = cat === "explicit_gender" ? C.rose : cat === "stereotype" ? C.amber : cat === "age_bias" ? "#F97316" : "#8B5CF6";
-                        return (
-                          <div key={cat} style={{ display: "flex", gap: 10, alignItems: "flex-start", padding: "10px 12px", background: C.surface, borderRadius: 8, border: `1px solid ${C.ghost}` }}>
-                            <div style={{ minWidth: 8, height: 8, borderRadius: "50%", background: dotColor, marginTop: 4, flexShrink: 0 }} />
-                            <div>
-                              <div style={{ fontWeight: 700, fontSize: 12, color: C.ink, marginBottom: 3 }}>
-                                {cat.replace(/_/g, " ")} · {count} JD{count > 1 ? "s" : ""}
-                              </div>
-                              <div style={{ fontSize: 12, color: C.mist, lineHeight: 1.55 }}>{ADVICE[cat] || "Review flagged phrases above."}</div>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </Card>
-                );
-              })()}
-            </div>
-          )}
+function FairIndexPage() {
+  const [tab, setTab] = useState("analyze");
+  return (
+    <div style={{ maxWidth: 1000, margin: "0 auto", padding: "48px 32px" }}>
+      <div className="fade-up" style={{ marginBottom: 28, textAlign: "center" }}>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, marginBottom: 10, color: C.ink, letterSpacing: "-0.02em" }}>
+          Fair Hiring Index
+        </h1>
+        <p style={{ color: C.slate, fontSize: 16, maxWidth: 560, margin: "0 auto" }}>
+          Paste job descriptions or upload PDFs in bulk to get a single 0–100 fairness score —
+          then track it over time as your team's language improves.
+        </p>
+        <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 20 }}>
+          <TabButton active={tab === "analyze"} onClick={() => setTab("analyze")}>Analyze</TabButton>
+          <TabButton active={tab === "metrics"} onClick={() => setTab("metrics")}>📈 Metrics History</TabButton>
         </div>
       </div>
+
+      {tab === "analyze" ? <FairIndexAnalyze /> : <FairIndexHistory />}
     </div>
   );
 }
