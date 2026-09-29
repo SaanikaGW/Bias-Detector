@@ -781,24 +781,96 @@ function HighlightedText({ text, issues }) {
 // same module the Chrome extension imports (single source of truth).
 
 function ReducerPage() {
-  const [text, setText]       = useState("");
-  const [result, setResult]   = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState("");
-  const [tab, setTab]         = useState("issues");
-  const [copied, setCopied]   = useState(false);
+  const [jds, setJds]           = useState(() => [{ id: 1, text: "", sourceName: null }]);
+  const [activeId, setActiveId] = useState(1);
+  const [nextId, setNextId]     = useState(2);
+  const [results, setResults]   = useState({}); // id -> result
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState("");
+  const [tab, setTab]           = useState("issues");
+  const [copied, setCopied]     = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadErrors, setUploadErrors] = useState([]);
+  const fileInputRef = useRef(null);
   const MAX = 3000;
 
-  async function handleAnalyze() {
-    if (!text.trim()) return;
-    setLoading(true); setError(""); setResult(null);
+  const activeJd = jds.find((j) => j.id === activeId) || jds[0];
+  const text     = activeJd?.text || "";
+  const result   = results[activeJd?.id] || null;
+
+  function setText(newText) {
+    setJds((prev) => prev.map((j) => (j.id === activeJd.id ? { ...j, text: newText } : j)));
+  }
+
+  function addPastedJd() {
+    const id = nextId;
+    setNextId(id + 1);
+    setJds((prev) => [...prev, { id, text: "", sourceName: null }]);
+    setActiveId(id);
+  }
+
+  function removeJd(id) {
+    if (jds.length === 1) return;
+    setJds((prev) => prev.filter((j) => j.id !== id));
+    setResults((prev) => { const next = { ...prev }; delete next[id]; return next; });
+    if (activeId === id) {
+      const remaining = jds.filter((j) => j.id !== id);
+      setActiveId(remaining[0]?.id);
+    }
+  }
+
+  async function handlePdfUpload(e) {
+    const files = e.target.files;
+    if (!files || !files.length) return;
+    setUploading(true);
+    setUploadErrors([]);
     try {
-      // Shared client (same code path as the Chrome extension).
-      const data = await analyzeText(API, text);
-      setResult(data);
+      const { extractPdfTextBatch } = await import("./shared/pdfExtract.js");
+      const { ok, failed } = await extractPdfTextBatch(files);
+      if (ok.length) {
+        let firstNewId = null;
+        setJds((prev) => {
+          const withoutBlankSeed = prev.filter((j) => j.text.trim() || j.sourceName);
+          let id = nextId;
+          const newRows = ok.map((r) => {
+            const row = { id: id++, text: r.text.slice(0, MAX), sourceName: r.file.name };
+            if (firstNewId === null) firstNewId = row.id;
+            return row;
+          });
+          setNextId(id);
+          const merged = [...withoutBlankSeed, ...newRows];
+          return merged.length ? merged : [{ id: id++, text: "", sourceName: null }];
+        });
+        if (firstNewId !== null) setActiveId(firstNewId);
+      }
+      if (failed.length) setUploadErrors(failed.map((f) => `${f.file.name}: ${f.error}`));
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  async function handleAnalyze() {
+    const targets = jds.filter((j) => j.text.trim());
+    if (!targets.length) return;
+    setLoading(true); setError("");
+    try {
+      const entries = await Promise.all(targets.map(async (j) => {
+        try {
+          const data = await analyzeText(API, j.text);
+          return { id: j.id, data, err: null };
+        } catch (e) {
+          return { id: j.id, data: null, err: e.message };
+        }
+      }));
+      setResults((prev) => {
+        const next = { ...prev };
+        entries.forEach((e) => { if (e.data) next[e.id] = e.data; });
+        return next;
+      });
+      const failed = entries.find((e) => e.err);
+      if (failed) setError(`${jds.find((j) => j.id === failed.id)?.sourceName || "One JD"}: ${failed.err}`);
       setTab("issues");
-    } catch (e) {
-      setError(e.message);
     } finally {
       setLoading(false);
     }
@@ -814,7 +886,7 @@ function ReducerPage() {
           JD Bias Reducer
         </h1>
         <p style={{ color: C.slate, fontSize: 16, maxWidth: 520, margin: "0 auto 8px" }}>
-          Paste a job description. We'll detect bias, explain it, and rewrite it — inclusively.
+          Paste a job description, or upload several PDFs at once. We'll detect bias, explain it, and rewrite it — inclusively.
         </p>
         <p style={{ fontSize: 12, color: C.silver }}>
           ⚠ Do not input personal or identifying information.
@@ -825,8 +897,51 @@ function ReducerPage() {
         {/* Left — Input */}
         <div className="fade-up">
           <Card>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/pdf"
+              multiple
+              hidden
+              onChange={handlePdfUpload}
+            />
+            <div style={{ display: "flex", gap: 10, marginBottom: 14, flexWrap: "wrap" }}>
+              <Btn variant="outline" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+                {uploading ? <><Spinner /> Reading PDFs…</> : "📄 Upload PDFs"}
+              </Btn>
+              <Btn variant="ghost" onClick={addPastedJd}>+ Add pasted JD</Btn>
+            </div>
+
+            {uploadErrors.length > 0 && (
+              <div style={{ marginBottom: 14, padding: "10px 12px", background: `${C.rose}12`, border: `1px solid ${C.rose}40`, borderRadius: 8 }}>
+                {uploadErrors.map((msg, i) => (
+                  <div key={i} style={{ fontSize: 12, color: C.rose, lineHeight: 1.6 }}>{msg}</div>
+                ))}
+              </div>
+            )}
+
+            {jds.length > 1 && (
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+                {jds.map((j, i) => (
+                  <div key={j.id} style={{ display: "flex", alignItems: "center" }}>
+                    <TabButton active={j.id === activeId} onClick={() => setActiveId(j.id)}>
+                      {j.sourceName ? `📄 ${j.sourceName}` : `JD #${i + 1}`}
+                      {results[j.id] && " ✓"}
+                    </TabButton>
+                    <button
+                      onClick={() => removeJd(j.id)}
+                      title="Remove"
+                      style={{ background: "none", border: "none", color: C.silver, cursor: "pointer", fontSize: 13, marginLeft: -6, padding: "0 4px" }}
+                    >✕</button>
+                  </div>
+                ))}
+              </div>
+            )}
+
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-              <label style={{ fontWeight: 700, fontSize: 14, color: C.ink }}>Job Description</label>
+              <label style={{ fontWeight: 700, fontSize: 14, color: C.ink }}>
+                {activeJd?.sourceName ? `Job Description — 📄 ${activeJd.sourceName}` : "Job Description"}
+              </label>
               <span style={{ fontSize: 12, color: text.length > MAX * 0.9 ? C.rose : C.silver }}>
                 {text.length} / {MAX}
               </span>
@@ -855,10 +970,14 @@ function ReducerPage() {
               </div>
             )}
             <div style={{ marginTop: 14, display: "flex", gap: 10 }}>
-              <Btn onClick={handleAnalyze} disabled={loading || !text.trim()}>
-                {loading ? <><Spinner /> Analyzing…</> : "✦ Analyze"}
+              <Btn onClick={handleAnalyze} disabled={loading || !jds.some((j) => j.text.trim())}>
+                {loading ? <><Spinner /> Analyzing…</> : jds.length > 1 ? `✦ Analyze all (${jds.filter(j => j.text.trim()).length})` : "✦ Analyze"}
               </Btn>
-              <Btn variant="ghost" onClick={() => { setText(""); setResult(null); setError(""); }}>
+              <Btn variant="ghost" onClick={() => {
+                setText("");
+                setResults((prev) => { const next = { ...prev }; delete next[activeJd.id]; return next; });
+                setError("");
+              }}>
                 Clear
               </Btn>
             </div>
@@ -869,7 +988,7 @@ function ReducerPage() {
         <div className="fade-up-2">
           {!result && !loading && (
             <Card style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <EmptyState icon="🔍" title="Analysis will appear here" body="Paste a job description on the left and click Analyze." />
+              <EmptyState icon="🔍" title="Analysis will appear here" body="Paste or upload a job description on the left and click Analyze." />
             </Card>
           )}
           {loading && (
@@ -1324,7 +1443,75 @@ function TrendChart({ points }) {
   );
 }
 
+function TeamCompositionUpload({ compositionResult, compositionError, uploading, onUpload, onClear }) {
+  const fileInputRef = useRef(null);
+  return (
+    <div style={{ marginTop: 18, paddingTop: 18, borderTop: `1px dashed ${C.ghost}` }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+        <SectionLabel>Team Composition (optional)</SectionLabel>
+        {compositionResult && (
+          <button onClick={onClear} style={{ background: "none", border: "none", color: C.silver, fontSize: 11, cursor: "pointer" }}>Remove</button>
+        )}
+      </div>
+      <p style={{ fontSize: 12, color: C.mist, lineHeight: 1.6, marginBottom: 10 }}>
+        Upload a CSV with a category column (e.g. "Gender", "Department") — one row per team
+        member. We compute a real Representation Balance score from the actual counts and blend
+        it into your Fair Hiring Index. No file? FHI just uses the language score below.
+      </p>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".csv,text/csv"
+        hidden
+        onChange={onUpload}
+      />
+      <Btn variant="outline" onClick={() => fileInputRef.current?.click()} disabled={uploading}>
+        {uploading ? <><Spinner /> Reading CSV…</> : "📊 Upload Team Composition CSV"}
+      </Btn>
+
+      {compositionError && (
+        <div style={{ marginTop: 10, padding: "10px 12px", background: `${C.rose}12`, border: `1px solid ${C.rose}40`, borderRadius: 8, fontSize: 12, color: C.rose }}>
+          {compositionError}
+        </div>
+      )}
+
+      {compositionResult && (
+        <div style={{ marginTop: 12, padding: "12px", background: C.surface, borderRadius: 8, border: `1px solid ${C.ghost}` }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+            <span style={{ fontSize: 12, color: C.slate }}>
+              Balance from <strong style={{ color: C.ink }}>{compositionResult.columnUsed}</strong> column
+              {compositionResult.columnGuessed ? " (guessed — no obvious category column found)" : ""}
+              , {compositionResult.total} people across {compositionResult.categoryCount} group{compositionResult.categoryCount > 1 ? "s" : ""}
+            </span>
+            <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 800, fontSize: 20, color: compositionResult.balanceScore >= 70 ? C.emerald : compositionResult.balanceScore >= 40 ? C.amber : C.rose }}>
+              {compositionResult.balanceScore}
+            </span>
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {Object.entries(compositionResult.counts).map(([cat, count]) => (
+              <div key={cat}>
+                <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: C.mist, marginBottom: 2 }}>
+                  <span>{cat}</span><span>{count}</span>
+                </div>
+                <div style={{ height: 5, borderRadius: 3, background: C.ghost, overflow: "hidden" }}>
+                  <div style={{ width: `${(count / compositionResult.total) * 100}%`, height: "100%", background: C.teal }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function FairIndexAnalyze({ onSaved }) {
+  const [teamName, setTeamName] = useState("");
+  const [teamSize, setTeamSize] = useState("");
+  const [compositionResult, setCompositionResult] = useState(null);
+  const [compositionError, setCompositionError] = useState("");
+  const [compositionUploading, setCompositionUploading] = useState(false);
+
   const [jds, setJds]           = useState([{ id: Date.now(), text: "", sourceName: null }]);
   const [scores, setScores]     = useState(null);
   const [loading, setLoading]   = useState(false);
@@ -1338,6 +1525,24 @@ function FairIndexAnalyze({ onSaved }) {
   }
   function removeJd(id) {
     setJds((prev) => (prev.length === 1 ? prev : prev.filter((j) => j.id !== id)));
+  }
+
+  async function handleCompositionUpload(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setCompositionUploading(true);
+    setCompositionError("");
+    try {
+      const text = await file.text();
+      const { analyzeTeamComposition } = await import("./shared/teamComposition.js");
+      setCompositionResult(analyzeTeamComposition(text));
+    } catch (err) {
+      setCompositionError(err.message || "Couldn't read that CSV.");
+      setCompositionResult(null);
+    } finally {
+      setCompositionUploading(false);
+      e.target.value = "";
+    }
   }
 
   async function handlePdfUpload(e) {
@@ -1366,7 +1571,7 @@ function FairIndexAnalyze({ onSaved }) {
     }
   }
 
-  async function calculateFHI() {
+  async function submitAssessment() {
     const entries = jds.filter((j) => j.text.trim());
     if (!entries.length) return;
     setLoading(true);
@@ -1381,17 +1586,27 @@ function FairIndexAnalyze({ onSaved }) {
         )
       );
       const N = results.length;
-      const fhi = Math.round(
+      const languageFairness = Math.round(
         results.reduce((sum, r) => sum + (r.scores?.inclusive_language_score ?? (100 - (r.bias_score || 0) * 100)), 0) / N
       );
       const avgBias = Math.round(results.reduce((s, r) => s + (r.bias_score || 0) * 100, 0) / N);
+      const balanceScore = compositionResult?.balanceScore ?? null;
+      const fhi = balanceScore != null
+        ? Math.round(0.7 * languageFairness + 0.3 * balanceScore)
+        : languageFairness;
 
       const categoryCounts = {};
       results.forEach((r) => (r.categories || []).forEach((c) => (categoryCounts[c] = (categoryCounts[c] || 0) + 1)));
 
-      setScores({ fhi, avgBias, results });
+      const teamSizeNum = Number(teamSize) || 0;
+
+      setScores({ fhi, languageFairness, balanceScore, avgBias, results });
       const saved = saveFhiRun({
         fhi,
+        languageFairness,
+        balanceScore,
+        teamName: teamName.trim() || null,
+        teamSize: teamSizeNum,
         jdCount: N,
         avgBiasScore: avgBias,
         categoryCounts,
@@ -1411,9 +1626,49 @@ function FairIndexAnalyze({ onSaved }) {
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 24 }}>
       {/* Input */}
       <Card className="fade-up">
+        <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, color: C.ink, margin: "0 0 16px" }}>
+          Team Profile
+        </h2>
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: 12, marginBottom: 4 }}>
+          <div>
+            <SectionLabel>Team / org name (optional)</SectionLabel>
+            <input
+              value={teamName}
+              onChange={(e) => setTeamName(e.target.value.slice(0, 80))}
+              placeholder="e.g. Platform Engineering"
+              style={{ width: "100%", border: `1.5px solid ${C.ghost}`, borderRadius: 8, padding: "9px 12px", fontSize: 13, color: C.slate, outline: "none", background: C.surface }}
+            />
+          </div>
+          <div>
+            <SectionLabel>Team size</SectionLabel>
+            <input
+              type="number"
+              min="0"
+              value={teamSize}
+              onChange={(e) => setTeamSize(e.target.value)}
+              placeholder="# people"
+              style={{ width: "100%", border: `1.5px solid ${C.ghost}`, borderRadius: 8, padding: "9px 12px", fontSize: 13, color: C.slate, outline: "none", background: C.surface }}
+            />
+          </div>
+        </div>
+        <p style={{ fontSize: 11, color: C.silver, lineHeight: 1.6 }}>
+          Team size weights this assessment in your org-wide Metrics History — a biased posting
+          for a 50-person team moves the needle more than one for a team of 2.
+        </p>
+
+        <TeamCompositionUpload
+          compositionResult={compositionResult}
+          compositionError={compositionError}
+          uploading={compositionUploading}
+          onUpload={handleCompositionUpload}
+          onClear={() => { setCompositionResult(null); setCompositionError(""); }}
+        />
+      </Card>
+
+      <Card className="fade-up" style={{ gridColumn: "1 / -1" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, color: C.ink, margin: 0 }}>
-            Batch Job Descriptions
+            Job Description(s)
           </h2>
           <span style={{ fontSize: 12, color: C.silver }}>{jds.filter((j) => j.text.trim()).length} loaded</span>
         </div>
@@ -1479,19 +1734,22 @@ function FairIndexAnalyze({ onSaved }) {
         </div>
 
         <div style={{ marginTop: 14 }}>
-          <Btn onClick={calculateFHI} disabled={loading || !jds.some((j) => j.text.trim())} style={{ width: "100%", justifyContent: "center" }}>
-            {loading ? <><Spinner /> Calculating…</> : "Calculate Fair Hiring Index"}
+          <Btn onClick={submitAssessment} disabled={loading || !jds.some((j) => j.text.trim())} style={{ width: "100%", justifyContent: "center" }}>
+            {loading ? <><Spinner /> Calculating…</> : "Submit Assessment"}
           </Btn>
         </div>
 
         <div style={{ marginTop: 20, padding: "16px", background: C.surface, borderRadius: 8, border: `1px solid ${C.ghost}` }}>
           <SectionLabel>How the score is calculated</SectionLabel>
           <div style={{ fontFamily: "monospace", fontSize: 13, color: C.slate, lineHeight: 1.9 }}>
-            FHI = average Inclusive Language Score across all analyzed JDs
+            {compositionResult
+              ? "FHI = 70% Language Fairness + 30% Representation Balance"
+              : "FHI = average Inclusive Language Score across all analyzed JDs"}
           </div>
           <div style={{ fontSize: 11, color: C.mist, marginTop: 4, lineHeight: 1.6 }}>
-            Each JD's Inclusive Language Score already weighs every flagged phrase by severity,
-            model confidence, and category (below) — the same score shown on the Bias Reducer page.
+            Language Fairness already weighs every flagged phrase by severity, model confidence,
+            and category (below). Representation Balance only enters the score once you upload a
+            Team Composition CSV — no file, no fabricated numbers.
           </div>
           <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: 6 }}>
             {Object.entries(FHI_CATEGORY_META).map(([k, v]) => (
@@ -1504,16 +1762,16 @@ function FairIndexAnalyze({ onSaved }) {
       </Card>
 
       {/* Results */}
-      <div className="fade-up-2">
+      <div className="fade-up-2" style={{ gridColumn: "1 / -1" }}>
         {!scores && (
-          <Card style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <EmptyState icon="📊" title="FHI will appear here" body="Paste or upload job descriptions, then calculate." />
+          <Card style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: 200 }}>
+            <EmptyState icon="📊" title="Your assessment will appear here" body="Fill in your team profile and job description(s), then submit." />
           </Card>
         )}
         {scores && (
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <Card style={{ textAlign: "center", borderTop: `3px solid ${fhiColor}` }}>
-              <SectionLabel>Fair Hiring Index</SectionLabel>
+              <SectionLabel>Fair Hiring Index{teamName ? ` — ${teamName}` : ""}</SectionLabel>
               <div style={{ fontFamily: "'Fraunces', serif", fontSize: 80, fontWeight: 800, color: fhiColor, lineHeight: 1, marginTop: 8, textShadow: `0 0 40px ${fhiColor}60` }}>
                 {scores.fhi}
               </div>
@@ -1523,7 +1781,12 @@ function FairIndexAnalyze({ onSaved }) {
                   {scores.fhi >= 75 ? "High Fairness" : scores.fhi >= 50 ? "Moderate Fairness" : "Low Fairness"}
                 </Pill>
               </div>
-              <div style={{ fontSize: 12, color: C.silver, marginTop: 10 }}>Saved to Metrics History ✓</div>
+              <div style={{ fontSize: 12, color: C.silver, marginTop: 10 }}>
+                {scores.balanceScore != null
+                  ? `Composite of Language Fairness (${scores.languageFairness}) and Representation Balance (${scores.balanceScore})`
+                  : "Based on Language Fairness only — add a Team Composition CSV for a fuller picture"}
+                {" · "}Saved to Metrics History ✓
+              </div>
             </Card>
 
             <Card style={{ padding: "16px 20px" }}>
@@ -1629,7 +1892,7 @@ function FairIndexHistory() {
   if (!summary) {
     return (
       <Card>
-        <EmptyState icon="📈" title="No runs yet" body="Calculate a Fair Hiring Index on the Analyze tab to start tracking trend over time." />
+        <EmptyState icon="📈" title="No runs yet" body="Submit an assessment on the Analyze tab to start tracking trend over time." />
       </Card>
     );
   }
@@ -1645,7 +1908,12 @@ function FairIndexHistory() {
         {[
           { label: "Runs logged", value: summary.totalRuns },
           { label: "JDs analyzed", value: summary.totalJds },
+          { label: "People covered", value: summary.totalPeople || "—" },
           { label: "Average FHI", value: summary.avgFhi },
+          {
+            label: "Team-weighted FHI", value: summary.weightedFhi,
+            sub: "weighted by team size", subColor: C.mist,
+          },
           { label: "Latest FHI", value: summary.latest.fhi, sub: summary.trend !== 0 ? `${summary.trend > 0 ? "+" : ""}${summary.trend} vs prior run` : "first run", subColor: trendColor },
         ].map((s, i) => (
           <Card key={i} style={{ padding: "18px 20px", textAlign: "center" }}>
@@ -1701,9 +1969,13 @@ function FairIndexHistory() {
                 <div key={r.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 10px", background: C.surface, borderRadius: 8, border: `1px solid ${C.ghost}` }}>
                   <div>
                     <div style={{ fontSize: 12, color: C.ink, fontWeight: 600 }}>
-                      {new Date(r.timestamp).toLocaleDateString()} · {r.jdCount} JD{r.jdCount > 1 ? "s" : ""}
+                      {r.teamName ? `${r.teamName} · ` : ""}{new Date(r.timestamp).toLocaleDateString()} · {r.jdCount} JD{r.jdCount > 1 ? "s" : ""}
+                      {r.teamSize > 0 ? ` · ${r.teamSize} people` : ""}
                     </div>
-                    <div style={{ fontSize: 11, color: C.mist }}>{topCat ? fhiCatMeta(topCat[0]).label : "No issues"}</div>
+                    <div style={{ fontSize: 11, color: C.mist }}>
+                      {topCat ? fhiCatMeta(topCat[0]).label : "No issues"}
+                      {r.balanceScore != null ? ` · Balance ${r.balanceScore}` : ""}
+                    </div>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <span style={{ fontFamily: "'Fraunces', serif", fontWeight: 800, color }}>{r.fhi}</span>
@@ -1728,8 +2000,8 @@ function FairIndexPage() {
           Fair Hiring Index
         </h1>
         <p style={{ color: C.slate, fontSize: 16, maxWidth: 560, margin: "0 auto" }}>
-          Paste job descriptions or upload PDFs in bulk to get a single 0–100 fairness score —
-          then track it over time as your team's language improves.
+          A fuller fairness assessment: your team profile, job description(s), and — optionally —
+          real team composition data, combined into one 0–100 score you can track over time.
         </p>
         <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 20 }}>
           <TabButton active={tab === "analyze"} onClick={() => setTab("analyze")}>Analyze</TabButton>
