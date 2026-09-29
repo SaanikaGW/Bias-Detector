@@ -87,5 +87,18 @@ export function summarize(runs) {
     });
   });
 
-  return { totalRuns: runs.length, totalJds, avgFhi, best, worst, latest, trend, categoryTotals };
+  // Team-size-weighted average: a run covering a 50-person team counts more
+  // toward the org-wide picture than one covering a team of 2. Runs without
+  // a team size fall back to a weight of 1 so they still count once.
+  const totalPeople = runs.reduce((s, r) => s + (r.teamSize > 0 ? r.teamSize : 0), 0);
+  const weightSum = runs.reduce((s, r) => s + (r.teamSize > 0 ? r.teamSize : 1), 0);
+  const weightedFhi = Math.round(
+    runs.reduce((s, r) => s + r.fhi * (r.teamSize > 0 ? r.teamSize : 1), 0) / weightSum
+  );
+  const runsWithCompositionData = runs.filter((r) => r.balanceScore != null).length;
+
+  return {
+    totalRuns: runs.length, totalJds, avgFhi, best, worst, latest, trend, categoryTotals,
+    totalPeople, weightedFhi, runsWithCompositionData,
+  };
 }
