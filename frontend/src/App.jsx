@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 // Shared client module — synced from /shared/biosClient.js (the same source
 // the Chrome extension uses). Edit /shared/biosClient.js and run `make ext`;
 // `make check-shared` fails CI if the copies ever drift.
@@ -13,6 +13,16 @@ import {
   clearHistory as clearFhiHistory,
   summarize as summarizeFhiHistory,
 } from "./shared/fhiHistory.js";
+// Global (site-wide) usage metrics — how many job descriptions have been
+// analyzed, by what percent, the global Fair Hiring Index average, the
+// Hiring AI's measured impact, and how many companies vs. individuals have
+// used the tool. Complements fhiHistory.js, which is per-browser only.
+import {
+  hasUsageType,
+  registerUsageType,
+  logUsageEvent,
+  fetchUsageSummary,
+} from "./shared/usageMetrics.js";
 
 const API = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:5001";
 
@@ -316,6 +326,7 @@ function Nav({ page, setPage, theme, toggleTheme }) {
     { id: "reducer",   label: "JD Bias Reducer" },
     { id: "hiring",    label: "Hiring AI" },
     { id: "fairindex", label: "Fair Index" },
+    { id: "impact",    label: "Impact" },
     { id: "about",     label: "About" },
     { id: "contact",   label: "Contact" },
   ];
@@ -868,6 +879,11 @@ function ReducerPage() {
         entries.forEach((e) => { if (e.data) next[e.id] = e.data; });
         return next;
       });
+      entries.forEach((e) => {
+        if (e.data && typeof e.data.percent_improved === "number") {
+          logUsageEvent(API, "jd_analyzed", { percent_improved: e.data.percent_improved });
+        }
+      });
       const failed = entries.find((e) => e.err);
       if (failed) setError(`${jds.find((j) => j.id === failed.id)?.sourceName || "One JD"}: ${failed.err}`);
       setTab("issues");
@@ -1146,6 +1162,10 @@ function HiringAIPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Evaluation failed");
       setResult(data);
+      const delta = parseFloat(data.score_delta);
+      if (!Number.isNaN(delta)) {
+        logUsageEvent(API, "hiring_ai_compared", { score_delta: delta });
+      }
       setStep(3);
     } catch (e) {
       setError(e.message);
@@ -1612,6 +1632,7 @@ function FairIndexAnalyze({ onSaved }) {
         categoryCounts,
         sources: entries.map((e) => e.sourceName || "pasted"),
       });
+      logUsageEvent(API, "fhi_submitted", { fhi, team_size: teamSizeNum });
       onSaved?.(saved);
     } catch (e) {
       console.error(e);
@@ -2199,6 +2220,193 @@ function AboutPage() {
   );
 }
 
+// ── Usage type prompt (company vs. individual) ────────────────────────────────
+// Asked once per browser so the Impact page can report a real split between
+// companies and individuals, instead of one undifferentiated visitor count.
+// Non-blocking: dismissing it just leaves this visitor counted as an
+// anonymous individual (the backend does this automatically on first logged
+// event), so it never gets in the way of actually using the tools.
+
+function UsageTypeGate() {
+  const [dismissed, setDismissed] = useState(() => hasUsageType());
+  const [mode, setMode] = useState(null); // null | "company"
+  const [companyName, setCompanyName] = useState("");
+
+  if (dismissed) return null;
+
+  async function choose(userType, name) {
+    await registerUsageType(API, userType, name);
+    setDismissed(true);
+  }
+
+  return (
+    <div style={{
+      position: "fixed", bottom: 20, right: 20, zIndex: 200,
+      maxWidth: 320,
+      background: C.surface,
+      border: `1px solid ${C.ghost}`,
+      borderRadius: 14,
+      padding: 18,
+      boxShadow: "0 12px 32px rgba(0,0,0,0.25)",
+    }}>
+      <button
+        onClick={() => setDismissed(true)}
+        aria-label="Dismiss"
+        style={{ position: "absolute", top: 10, right: 12, background: "none", border: "none", color: C.silver, fontSize: 14, cursor: "pointer" }}
+      >✕</button>
+      <div style={{ fontSize: 13, color: C.ink, fontWeight: 700, marginBottom: 6 }}>
+        Quick question
+      </div>
+      <div style={{ fontSize: 12.5, color: C.mist, lineHeight: 1.5, marginBottom: 12 }}>
+        Are you using BIOS Check for a company, or on your own? This only powers the site-wide Impact stats.
+      </div>
+      {mode === "company" ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <input
+            autoFocus
+            value={companyName}
+            onChange={(e) => setCompanyName(e.target.value)}
+            placeholder="Company name (optional)"
+            style={{
+              padding: "8px 10px", borderRadius: 8, border: `1px solid ${C.ghost}`,
+              background: C.bg, color: C.ink, fontSize: 13, fontFamily: "'DM Sans', sans-serif",
+            }}
+          />
+          <Btn onClick={() => choose("company", companyName.trim())} style={{ fontSize: 13, padding: "8px 12px" }}>
+            Continue
+          </Btn>
+        </div>
+      ) : (
+        <div style={{ display: "flex", gap: 8 }}>
+          <Btn onClick={() => setMode("company")} style={{ fontSize: 13, padding: "8px 12px", flex: 1 }}>
+            🏢 Company
+          </Btn>
+          <Btn variant="outline" onClick={() => choose("individual", null)} style={{ fontSize: 13, padding: "8px 12px", flex: 1 }}>
+            🧑 Individual
+          </Btn>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Impact ────────────────────────────────────────────────────────────────────
+// Real, site-wide numbers — not per-browser history (that's the Fair Hiring
+// Index's own "Metrics" tab). Pulled from /api/metrics/summary, which is
+// backed by every tool on the site logging a real event after it runs.
+
+function ImpactStat({ label, value, sub, color }) {
+  return (
+    <Card style={{ textAlign: "center", padding: "28px 20px" }}>
+      <div style={{ fontFamily: "'Fraunces', serif", fontSize: 36, fontWeight: 800, color: color || C.ink, lineHeight: 1 }}>
+        {value}
+      </div>
+      <div style={{ fontSize: 13, color: C.mist, marginTop: 10, fontWeight: 600 }}>{label}</div>
+      {sub && <div style={{ fontSize: 11.5, color: C.silver, marginTop: 4 }}>{sub}</div>}
+    </Card>
+  );
+}
+
+function ImpactPage() {
+  const [summary, setSummary] = useState(null);
+  const [error, setError]     = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchUsageSummary(API)
+      .then(setSummary)
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, []);
+
+  return (
+    <div style={{ maxWidth: 1100, margin: "0 auto", padding: "48px 32px" }}>
+      <div className="fade-up" style={{ marginBottom: 36, textAlign: "center" }}>
+        <Pill>Real, Site-Wide Numbers</Pill>
+        <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 38, fontWeight: 800, marginTop: 16, marginBottom: 10, color: C.ink, letterSpacing: "-0.02em" }}>
+          Impact
+        </h1>
+        <p style={{ color: C.slate, fontSize: 16, maxWidth: 560, margin: "0 auto" }}>
+          Every number below comes from tools actually being used on this site — nothing here is estimated or fabricated.
+        </p>
+      </div>
+
+      {loading && <EmptyState title="Loading…" subtitle="Pulling the latest totals." />}
+      {error && !loading && (
+        <EmptyState title="Couldn't load Impact stats" subtitle={error} />
+      )}
+
+      {summary && !loading && !error && (
+        <>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20, marginBottom: 24 }}>
+            <ImpactStat
+              label="Job descriptions analyzed"
+              value={summary.jobDescriptions.totalAnalyzed.toLocaleString()}
+              sub="across every visitor"
+              color={C.teal}
+            />
+            <ImpactStat
+              label="Avg. bias reduction"
+              value={`${summary.jobDescriptions.avgPercentImproved}%`}
+              sub="original vs. suggested rewrite"
+              color={C.emerald}
+            />
+            <ImpactStat
+              label="Fair Hiring Index"
+              value={summary.fairHiringIndex.avgFhi != null ? summary.fairHiringIndex.avgFhi : "—"}
+              sub={`avg across ${summary.fairHiringIndex.totalSubmissions} org assessment${summary.fairHiringIndex.totalSubmissions === 1 ? "" : "s"}`}
+              color={C.amber}
+            />
+            <ImpactStat
+              label="People covered"
+              value={summary.fairHiringIndex.totalPeopleCovered.toLocaleString()}
+              sub="via submitted team sizes"
+            />
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: 20, marginBottom: 24 }}>
+            <Card style={{ padding: 24 }}>
+              <SectionLabel>Hiring AI — the difference bias-awareness makes</SectionLabel>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginTop: 8 }}>
+                <div style={{ fontFamily: "'Fraunces', serif", fontSize: 30, fontWeight: 800, color: C.ink }}>
+                  {summary.hiringAi.avgScoreDelta != null
+                    ? `${summary.hiringAi.avgScoreDelta > 0 ? "+" : ""}${summary.hiringAi.avgScoreDelta}`
+                    : "—"}
+                </div>
+                <div style={{ fontSize: 13, color: C.mist }}>avg. fit-score shift, bias-aware vs. traditional</div>
+              </div>
+              <div style={{ fontSize: 12.5, color: C.silver, marginTop: 8 }}>
+                from {summary.hiringAi.totalComparisons.toLocaleString()} side-by-side comparison{summary.hiringAi.totalComparisons === 1 ? "" : "s"} run
+              </div>
+            </Card>
+
+            <Card style={{ padding: 24 }}>
+              <SectionLabel>Who's using it</SectionLabel>
+              <div style={{ display: "flex", gap: 24, marginTop: 8 }}>
+                <div>
+                  <div style={{ fontFamily: "'Fraunces', serif", fontSize: 30, fontWeight: 800, color: C.ink }}>
+                    {summary.users.companies.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: 12.5, color: C.mist }}>🏢 companies</div>
+                </div>
+                <div>
+                  <div style={{ fontFamily: "'Fraunces', serif", fontSize: 30, fontWeight: 800, color: C.ink }}>
+                    {summary.users.individuals.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: 12.5, color: C.mist }}>🧑 individuals</div>
+                </div>
+              </div>
+              <div style={{ fontSize: 12.5, color: C.silver, marginTop: 10 }}>
+                {summary.users.total.toLocaleString()} total visitors tracked
+              </div>
+            </Card>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // ── Contact ───────────────────────────────────────────────────────────────────
 
 function ContactPage() {
@@ -2247,6 +2455,7 @@ export default function App() {
     reducer:   <ReducerPage />,
     hiring:    <HiringAIPage />,
     fairindex: <FairIndexPage />,
+    impact:    <ImpactPage />,
     about:     <AboutPage />,
     contact:   <ContactPage />,
   };
@@ -2257,6 +2466,7 @@ export default function App() {
       <style>{globalStyles()}</style>
       <Nav page={page} setPage={setPage} theme={theme}
            toggleTheme={() => setTheme(t => t === "dark" ? "light" : "dark")} />
+      <UsageTypeGate />
       <main style={{ minHeight: "calc(100vh - 60px)" }}>
         {pages[page] || pages.home}
       </main>
@@ -2285,7 +2495,7 @@ export default function App() {
         <div style={{ display: "flex", gap: 4 }}>
           {[
             ["Home", "home"], ["Bias Reducer", "reducer"], ["Hiring AI", "hiring"],
-            ["Fair Index", "fairindex"], ["About", "about"],
+            ["Fair Index", "fairindex"], ["Impact", "impact"], ["About", "about"],
           ].map(([l, id]) => (
             <button
               key={id}

@@ -38,10 +38,11 @@ def _bias_level(score: float) -> str:
     return "high"
 
 
-def analyze(text: str, use_llm: bool = True) -> dict:
-    cats = layer1.categories()
-
-    # ── Layer 1: rules ──
+def _detect_confirmed(text: str) -> tuple[list[dict], list[dict]]:
+    """Layers 1+2 only: which issues exist, and what inclusive signals are
+    present. Shared by analyze() (full, with Layer 3 enrichment) and
+    score_only() (scores only, no LLM) so a before/after comparison never
+    has to pay for a second LLM call just to re-derive the same numbers."""
     l1 = layer1.detect(text)
     clf = layer2.Layer2Classifier.load()
 
@@ -54,7 +55,6 @@ def analyze(text: str, use_llm: bool = True) -> dict:
         else:
             confirmed.append(hit)
 
-    # ── Layer 2: scan sentences no rule touched ──
     flagged_ranges = [(h["start"], h["end"]) for h in confirmed]
     for sent in layer1.split_sentences(text):
         if len(sent["text"].strip()) < _MIN_SENTENCE_LEN:
@@ -68,15 +68,14 @@ def analyze(text: str, use_llm: bool = True) -> dict:
             confirmed.append(issue)
 
     confirmed.sort(key=lambda h: h.get("start", 0))
+    return confirmed, l1["inclusive_signals"]
 
-    # ── Layer 3: enrich (never changes which issues exist) ──
-    issues, rewritten_jd, enrichment_source = layer3.enrich(
-        text, confirmed) if use_llm else layer3.enrich(text, confirmed)
 
-    # ── Transparent scoring ──
+def _score(confirmed: list[dict], inclusive_signals: list[dict]) -> dict:
+    cats = layer1.categories()
     derivation = []
     penalty_total = 0.0
-    for iss in issues:
+    for iss in confirmed:
         weight = cats.get(iss["category"], {}).get("weight", 0.7)
         penalty = SEV_POINTS[iss["severity"]] * iss["confidence"] * weight
         penalty_total += penalty
@@ -88,9 +87,41 @@ def analyze(text: str, use_llm: bool = True) -> dict:
             "penalty": round(penalty, 1),
         })
 
-    signal_points = min(40, sum(s["points"] for s in l1["inclusive_signals"]))
+    signal_points = min(40, sum(s["points"] for s in inclusive_signals))
     gender_bias_score = min(100, round(penalty_total))
     inclusive_score = max(0, min(100, round(60 + signal_points - 0.8 * penalty_total)))
+
+    return {
+        "gender_bias_score": gender_bias_score,
+        "inclusive_language_score": inclusive_score,
+        "bias_level": _bias_level(gender_bias_score),
+        "derivation": {
+            "issue_penalties": derivation,
+            "penalty_total": round(penalty_total, 1),
+            "inclusive_signal_points": signal_points,
+            "formula": ("bias = min(100, Σ sev_points×confidence×cat_weight); "
+                        "inclusive = clamp(60 + signals(≤40) − 0.8×bias_penalty)"),
+        },
+    }
+
+
+def score_only(text: str) -> dict:
+    """Scores for a piece of text with no Layer 3 (LLM) call — used to
+    compute an honest before/after comparison (e.g. original JD vs the
+    suggested rewrite) without doubling LLM cost, since enrichment never
+    changes which issues exist or their severity/confidence."""
+    confirmed, inclusive_signals = _detect_confirmed(text)
+    return _score(confirmed, inclusive_signals)
+
+
+def analyze(text: str, use_llm: bool = True) -> dict:
+    cats = layer1.categories()
+    confirmed, inclusive_signals = _detect_confirmed(text)
+
+    # ── Layer 3: enrich (never changes which issues exist) ──
+    issues, rewritten_jd, enrichment_source = layer3.enrich(text, confirmed)
+
+    scores = _score(issues, inclusive_signals)
 
     for iss in issues:
         iss["category_label"] = cats.get(iss["category"], {}).get(
@@ -99,24 +130,13 @@ def analyze(text: str, use_llm: bool = True) -> dict:
     return {
         # ── v2 contract ──
         "issues": issues,
-        "scores": {
-            "gender_bias_score": gender_bias_score,
-            "inclusive_language_score": inclusive_score,
-            "bias_level": _bias_level(gender_bias_score),
-            "derivation": {
-                "issue_penalties": derivation,
-                "penalty_total": round(penalty_total, 1),
-                "inclusive_signal_points": signal_points,
-                "formula": ("bias = min(100, Σ sev_points×confidence×cat_weight); "
-                            "inclusive = clamp(60 + signals(≤40) − 0.8×bias_penalty)"),
-            },
-        },
-        "inclusive_signals": l1["inclusive_signals"],
+        "scores": scores,
+        "inclusive_signals": inclusive_signals,
         "rewritten_jd": rewritten_jd,
         "enrichment_source": enrichment_source,
         # ── legacy fields (v1 UI / API consumers) ──
-        "bias_score": round(gender_bias_score / 100, 3),
-        "bias_level": _bias_level(gender_bias_score),
+        "bias_score": round(scores["gender_bias_score"] / 100, 3),
+        "bias_level": scores["bias_level"],
         "categories": sorted({i["category"] for i in issues}),
         "highlights": [{"span": i["span"], "type": i["category"],
                         "source": i["source"]} for i in issues],
