@@ -9,12 +9,14 @@ from dotenv import load_dotenv
 load_dotenv()
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from detection.pipeline import analyze as analyze_pipeline
+from detection.pipeline import analyze as analyze_pipeline, score_only as score_only_pipeline
+import metrics_store
 from agents import PIIStripper, FitEvaluator
 
 app = Flask(__name__)
 _cors_origin = os.environ.get("CORS_ORIGIN", "*")
 CORS(app, origins=_cors_origin)
+metrics_store.init_db()
 
 
 def _send_contact_email(name: str, sender_email: str, category: str, message: str) -> None:
@@ -57,6 +59,27 @@ def analyze():
     except Exception as e:
         print(f"[analyze] pipeline error: {e}")
         return jsonify({"error": "Analysis failed. Please try again."}), 500
+
+    # Honest before/after: re-score the suggested rewrite (Layers 1+2 only,
+    # no extra LLM call — see detection/pipeline.score_only) so "percent
+    # improved" reflects what actually changed, not an assumed 100% fix.
+    rewritten = (result.get("rewritten_jd") or "").strip()
+    before_bias = result["scores"]["gender_bias_score"]
+    if rewritten and rewritten != text:
+        try:
+            after = score_only_pipeline(rewritten)
+            after_bias = after["gender_bias_score"]
+            pct = round(max(0, (before_bias - after_bias) / before_bias * 100), 1) if before_bias > 0 else 0.0
+            result["after_scores"] = {
+                "gender_bias_score": after_bias,
+                "inclusive_language_score": after["inclusive_language_score"],
+            }
+            result["percent_improved"] = pct
+        except Exception as e:
+            print(f"[analyze] after-score computation failed: {e}")
+            result["percent_improved"] = None
+    else:
+        result["percent_improved"] = 0.0 if before_bias == 0 else None
 
     return jsonify(result)
 
@@ -125,6 +148,49 @@ def contact():
     except Exception as e:
         print(f"[Contact] Email delivery failed: {e}")
     return jsonify({"success": True, "message": "Thank you! We'll be in touch."})
+
+
+# ── Usage metrics (global, across all visitors) ──────────────────────────────
+
+@app.route("/api/usage/register", methods=["POST"])
+def usage_register():
+    data = request.get_json() or {}
+    user_id = (data.get("user_id") or "").strip()
+    user_type = data.get("user_type")
+    company_name = (data.get("company_name") or "").strip() or None
+    if not user_id or user_type not in metrics_store.USER_TYPES:
+        return jsonify({"error": "Missing or invalid user_id/user_type"}), 400
+    try:
+        metrics_store.register_user(user_id, user_type, company_name)
+    except Exception as e:
+        print(f"[usage] register failed: {e}")
+        return jsonify({"error": "Could not register"}), 500
+    return jsonify({"ok": True})
+
+
+@app.route("/api/metrics/log", methods=["POST"])
+def metrics_log():
+    data = request.get_json() or {}
+    user_id = (data.get("user_id") or "").strip()
+    event_type = data.get("event_type")
+    payload = data.get("payload") or {}
+    if not user_id or event_type not in metrics_store.EVENT_TYPES:
+        return jsonify({"error": "Missing or invalid user_id/event_type"}), 400
+    try:
+        metrics_store.log_event(user_id, event_type, payload)
+    except Exception as e:
+        print(f"[metrics] log failed: {e}")
+        return jsonify({"error": "Could not log event"}), 500
+    return jsonify({"ok": True})
+
+
+@app.route("/api/metrics/summary")
+def metrics_summary_route():
+    try:
+        return jsonify(metrics_store.summary())
+    except Exception as e:
+        print(f"[metrics] summary failed: {e}")
+        return jsonify({"error": "Could not load summary"}), 500
 
 
 @app.route("/api/health")
