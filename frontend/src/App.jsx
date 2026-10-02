@@ -838,13 +838,18 @@ function ReducerPage() {
     try {
       const { extractPdfTextBatch } = await import("./shared/pdfExtract.js");
       const { ok, failed } = await extractPdfTextBatch(files);
+      const warnings = ok
+        .filter((r) => r.truncated)
+        .map((r) => r.likelyMultipleJds
+          ? `"${r.file.name}" looks like it contains several job postings (${r.originalLength.toLocaleString()} characters). Only the first ${MAX.toLocaleString()} were analyzed -- split multi-JD PDFs into one file per posting for accurate results.`
+          : `"${r.file.name}" was trimmed to the first ${MAX.toLocaleString()} characters (it had ${r.originalLength.toLocaleString()}).`);
       if (ok.length) {
         let firstNewId = null;
         setJds((prev) => {
           const withoutBlankSeed = prev.filter((j) => j.text.trim() || j.sourceName);
           let id = nextId;
           const newRows = ok.map((r) => {
-            const row = { id: id++, text: r.text.slice(0, MAX), sourceName: r.file.name };
+            const row = { id: id++, text: r.text, sourceName: r.file.name };
             if (firstNewId === null) firstNewId = row.id;
             return row;
           });
@@ -854,7 +859,8 @@ function ReducerPage() {
         });
         if (firstNewId !== null) setActiveId(firstNewId);
       }
-      if (failed.length) setUploadErrors(failed.map((f) => `${f.file.name}: ${f.error}`));
+      const messages = [...failed.map((f) => `${f.file.name}: ${f.error}`), ...warnings];
+      if (messages.length) setUploadErrors(messages);
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -1573,18 +1579,24 @@ function FairIndexAnalyze({ onSaved }) {
     try {
       const { extractPdfTextBatch } = await import("./shared/pdfExtract.js");
       const { ok, failed } = await extractPdfTextBatch(files);
+      const warnings = ok
+        .filter((r) => r.truncated)
+        .map((r) => r.likelyMultipleJds
+          ? `"${r.file.name}" looks like it contains several job postings (${r.originalLength.toLocaleString()} characters). Only the first ${MAX_JD.toLocaleString()} were analyzed -- split multi-JD PDFs into one file per posting for accurate results.`
+          : `"${r.file.name}" was trimmed to the first ${MAX_JD.toLocaleString()} characters (it had ${r.originalLength.toLocaleString()}).`);
       if (ok.length) {
         setJds((prev) => {
           const withoutBlankSeed = prev.filter((j) => j.text.trim() || j.sourceName);
           const newRows = ok.map((r) => ({
             id: Date.now() + Math.random(),
-            text: r.text.slice(0, MAX_JD),
+            text: r.text,
             sourceName: r.file.name,
           }));
           return [...withoutBlankSeed, ...newRows];
         });
       }
-      if (failed.length) setUploadErrors(failed.map((f) => `${f.file.name}: ${f.error}`));
+      const messages = [...failed.map((f) => `${f.file.name}: ${f.error}`), ...warnings];
+      if (messages.length) setUploadErrors(messages);
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
