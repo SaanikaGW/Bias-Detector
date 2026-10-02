@@ -2339,7 +2339,7 @@ function ImpactPage() {
           Impact
         </h1>
         <p style={{ color: C.slate, fontSize: 16, maxWidth: 560, margin: "0 auto" }}>
-          Every number below comes from tools actually being used on this site — nothing here is estimated or fabricated.
+          Every number below comes from tools actually being used on this site.
         </p>
       </div>
 
@@ -2394,7 +2394,7 @@ function ImpactPage() {
 
             <Card style={{ padding: 24 }}>
               <SectionLabel>Who's using it</SectionLabel>
-              <div style={{ display: "flex", gap: 24, marginTop: 8 }}>
+              <div style={{ display: "flex", gap: 24, marginTop: 8, flexWrap: "wrap" }}>
                 <div>
                   <div style={{ fontFamily: "'Fraunces', serif", fontSize: 30, fontWeight: 800, color: C.ink }}>
                     {summary.users.companies.toLocaleString()}
@@ -2407,9 +2407,15 @@ function ImpactPage() {
                   </div>
                   <div style={{ fontSize: 12.5, color: C.mist }}>🧑 individuals</div>
                 </div>
+                <div>
+                  <div style={{ fontFamily: "'Fraunces', serif", fontSize: 30, fontWeight: 800, color: C.ink }}>
+                    {summary.users.unspecified.toLocaleString()}
+                  </div>
+                  <div style={{ fontSize: 12.5, color: C.mist }}>❔ didn't say</div>
+                </div>
               </div>
               <div style={{ fontSize: 12.5, color: C.silver, marginTop: 10 }}>
-                {summary.users.total.toLocaleString()} total visitors tracked
+                {summary.users.total.toLocaleString()} total visitors tracked — "didn't say" is anyone who used a tool before answering (or without answering) the company/individual prompt.
               </div>
             </Card>
           </div>
