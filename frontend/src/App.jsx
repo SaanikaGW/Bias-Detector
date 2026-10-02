@@ -426,6 +426,13 @@ function HomePage({ setPage }) {
       page: "fairindex",
       accent: C.emerald,
     },
+    {
+      icon: "📈",
+      title: "Impact",
+      desc: "Real, site-wide numbers: job descriptions analyzed, average bias reduction, the Fair Hiring Index average, and who's using it — pulled live from every visitor, not just you.",
+      page: "impact",
+      accent: C.amber,
+    },
   ];
 
   return (
