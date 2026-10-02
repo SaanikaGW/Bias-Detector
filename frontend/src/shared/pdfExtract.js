@@ -1,6 +1,7 @@
 /**
- * pdfExtract.js — client-side PDF -> plain text extraction, used by the
- * Fair Hiring Index page to accept batch PDF uploads of job descriptions.
+ * pdfExtract.js — client-side PDF -> plain text extraction, used by both
+ * the JD Bias Reducer and the Fair Hiring Index pages to accept batch PDF
+ * uploads of job descriptions.
  *
  * Runs entirely in the browser (pdf.js / pdfjs-dist); no file ever touches
  * the backend just to get text out of it. Only the extracted text is sent
@@ -14,9 +15,20 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorkerUrl;
 
 const MAX_PDF_BYTES = 15 * 1024 * 1024; // 15MB per file, generous for a JD
 
+// A single job description is a few hundred to a couple thousand
+// characters. MAX_EXTRACTED_CHARS matches the JD textarea's own cap (see
+// MAX_JD in App.jsx) so a PDF never sails past what the analysis actually
+// looks at. OBSCENE_MULTIPLE flags PDFs far past that -- almost always a
+// whole batch of job postings stapled into one file rather than one JD --
+// so the UI can tell the person to split it up instead of silently
+// analyzing only the first fragment of page one.
+export const MAX_EXTRACTED_CHARS = 3000;
+const OBSCENE_MULTIPLE = 3; // > 9,000 chars -> "this looks like several JDs"
+
 /**
  * Extract all text from a single PDF File/Blob.
- * Returns { text, pageCount } or throws an Error with a user-facing message.
+ * Returns { text, pageCount, truncated, originalLength, likelyMultipleJds }
+ * or throws an Error with a user-facing message.
  */
 export async function extractPdfText(file) {
   if (file.size > MAX_PDF_BYTES) {
@@ -43,20 +55,27 @@ export async function extractPdfText(file) {
     const pageText = content.items.map((it) => it.str).join(" ");
     pageTexts.push(pageText);
   }
-  const text = pageTexts.join("\n\n").replace(/[ \t]+/g, " ").trim();
+  const fullText = pageTexts.join("\n\n").replace(/[ \t]+/g, " ").trim();
 
-  if (!text) {
+  if (!fullText) {
     throw new Error(
       `"${file.name}" has no extractable text (it may be a scanned image -- try pasting the text instead).`
     );
   }
-  return { text, pageCount: pdf.numPages };
+
+  const originalLength = fullText.length;
+  const truncated = originalLength > MAX_EXTRACTED_CHARS;
+  const text = truncated ? fullText.slice(0, MAX_EXTRACTED_CHARS) : fullText;
+  const likelyMultipleJds = originalLength > MAX_EXTRACTED_CHARS * OBSCENE_MULTIPLE;
+
+  return { text, pageCount: pdf.numPages, truncated, originalLength, likelyMultipleJds };
 }
 
 /**
  * Extract text from multiple PDF files in parallel.
- * Never throws -- returns { ok: [{file, text, pageCount}], failed: [{file, error}] }
- * so the caller can add successes and surface per-file errors.
+ * Never throws -- returns { ok: [{file, text, pageCount, truncated,
+ * originalLength, likelyMultipleJds}], failed: [{file, error}] } so the
+ * caller can add successes and surface per-file errors/warnings.
  */
 export async function extractPdfTextBatch(files) {
   const results = await Promise.allSettled(
@@ -67,7 +86,14 @@ export async function extractPdfTextBatch(files) {
   results.forEach((r, i) => {
     const file = files[i];
     if (r.status === "fulfilled") {
-      ok.push({ file, text: r.value.text, pageCount: r.value.pageCount });
+      ok.push({
+        file,
+        text: r.value.text,
+        pageCount: r.value.pageCount,
+        truncated: r.value.truncated,
+        originalLength: r.value.originalLength,
+        likelyMultipleJds: r.value.likelyMultipleJds,
+      });
     } else {
       failed.push({ file, error: r.reason?.message || "Failed to extract text." });
     }
