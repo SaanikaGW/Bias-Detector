@@ -15,15 +15,16 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorkerUrl;
 
 const MAX_PDF_BYTES = 15 * 1024 * 1024; // 15MB per file, generous for a JD
 
-// A single job description is a few hundred to a couple thousand
-// characters. MAX_EXTRACTED_CHARS matches the JD textarea's own cap (see
-// MAX_JD in App.jsx) so a PDF never sails past what the analysis actually
-// looks at. OBSCENE_MULTIPLE flags PDFs far past that -- almost always a
-// whole batch of job postings stapled into one file rather than one JD --
-// so the UI can tell the person to split it up instead of silently
-// analyzing only the first fragment of page one.
-export const MAX_EXTRACTED_CHARS = 3000;
-const OBSCENE_MULTIPLE = 3; // > 9,000 chars -> "this looks like several JDs"
+// Even an unusually long, detailed single job posting (full responsibilities,
+// qualifications, benefits, EEO boilerplate) tops out well under this.
+// MAX_EXTRACTED_CHARS matches the JD textarea's own cap (see MAX_JD in
+// App.jsx) so a PDF never sails past what the analysis actually looks at.
+// OBSCENE_MULTIPLE flags PDFs far past that -- almost always a whole batch
+// of job postings stapled into one file rather than one JD -- so the UI can
+// tell the person to split it up instead of silently analyzing only the
+// first fragment of page one.
+export const MAX_EXTRACTED_CHARS = 50000;
+const OBSCENE_MULTIPLE = 3; // > 150,000 chars -> "this looks like several JDs"
 
 /**
  * Extract all text from a single PDF File/Blob.
