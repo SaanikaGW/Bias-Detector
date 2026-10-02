@@ -359,7 +359,7 @@ function Nav({ page, setPage, theme, toggleTheme }) {
           fontSize: 17,
           color: C.ink,
           letterSpacing: "-0.01em",
-        }}>BIOS Check</span>
+        }}>Bias Lite</span>
       </div>
       {items.map(it => (
         <button
@@ -481,7 +481,7 @@ function HomePage({ setPage }) {
           lineHeight: 1.7,
           fontWeight: 300,
         }}>
-          Detect and reduce gender bias before your job posting goes live. BIOS Check
+          Detect and reduce gender bias before your job posting goes live. Bias Lite
           analyzes your language, explains <em>why</em> each phrase matters — backed by
           research — and generates an inclusive rewrite that keeps every real requirement.
         </p>
@@ -1285,7 +1285,7 @@ function HiringAIPage() {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 20, marginBottom: 24 }}>
             {[
               { label: "Traditional AI", color: C.rose, data: result.traditional, icon: "📉" },
-              { label: "Bias-Aware AI (BIOS Check)", color: C.emerald, data: result.bias_aware, icon: "✦" },
+              { label: "Bias-Aware AI (Bias Lite)", color: C.emerald, data: result.bias_aware, icon: "✦" },
             ].map(({ label, color, data, icon }) => (
               <Card key={label} style={{ borderTop: `3px solid ${color}` }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
@@ -2086,7 +2086,7 @@ function AboutPage() {
       accent: "#8B5CF6",
       what: "Evaluates a candidate's resume against a job description using two separate AI pipelines: a traditional AI (which sees the original, potentially biased JD and unredacted resume) and a bias-aware AI (which uses a bias-reduced JD and a PII-stripped resume). Both return a fit score and skill match breakdown.",
       how: "The two scores are compared side-by-side. The delta between them reveals exactly how much bias in the original pipeline disadvantaged — or advantaged — the candidate.",
-      implications: "Most hiring AI systems learn from historical data that reflects past discrimination. By racing the two systems, BIOS Check shows not just that bias exists, but how much it changes outcomes for real candidates.",
+      implications: "Most hiring AI systems learn from historical data that reflects past discrimination. By racing the two systems, Bias Lite shows not just that bias exists, but how much it changes outcomes for real candidates.",
     },
   ];
 
@@ -2108,7 +2108,7 @@ function AboutPage() {
           Measuring what matters.
         </h1>
         <p style={{ fontSize: 17, color: C.slate, lineHeight: 1.8, marginBottom: 16, maxWidth: 640, margin: "0 auto 16px" }}>
-          BIOS Check is a research project investigating how gender bias in language propagates through AI hiring systems — and how to stop it.
+          Bias Lite is a research project investigating how gender bias in language propagates through AI hiring systems — and how to stop it.
         </p>
         <p style={{ fontSize: 15, color: C.mist, lineHeight: 1.8, maxWidth: 640, margin: "0 auto" }}>
           Most bias-detection tools work retroactively, flagging decisions already made. This project is designed differently: by stripping demographic signals before evaluation and using bias-reduced job descriptions as rubrics, the hiring AI is structurally incapable of acting on bias signals — not just instructed to ignore them.
@@ -2230,7 +2230,7 @@ function AboutPage() {
               Saanika
             </div>
             <div style={{ color: C.mist, fontSize: 13, lineHeight: 1.6 }}>
-              Builder of BIOS Check · Researching fairness in AI hiring systems · Mentored by Jason
+              Builder of Bias Lite · Researching fairness in AI hiring systems · Mentored by Jason
             </div>
           </div>
         </div>
@@ -2277,7 +2277,7 @@ function UsageTypeGate() {
         Quick question
       </div>
       <div style={{ fontSize: 12.5, color: C.mist, lineHeight: 1.5, marginBottom: 12 }}>
-        Are you using BIOS Check for a company, or on your own? This only powers the site-wide Impact stats.
+        Are you using Bias Lite for a company, or on your own? This only powers the site-wide Impact stats.
       </div>
       {mode === "company" ? (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -2514,7 +2514,7 @@ export default function App() {
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 13,
           }}>⚖️</div>
-          <span style={{ fontFamily: "'Fraunces', serif", color: C.mist, fontWeight: 600 }}>BIOS Check</span>
+          <span style={{ fontFamily: "'Fraunces', serif", color: C.mist, fontWeight: 600 }}>Bias Lite</span>
           <span style={{ color: C.silver }}>— Making fair hiring measurable.</span>
         </div>
         <div style={{ display: "flex", gap: 4 }}>
