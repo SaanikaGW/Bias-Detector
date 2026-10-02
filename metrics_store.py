@@ -28,7 +28,11 @@ DB_PATH = os.environ.get(
 )
 
 EVENT_TYPES = {"jd_analyzed", "fhi_submitted", "hiring_ai_compared"}
+# "company"/"individual" are explicit answers to the one-time prompt;
+# "unspecified" is the honest default for a visitor who ran a tool before
+# (or without ever) answering it -- NOT the same as "individual".
 USER_TYPES = {"company", "individual"}
+ALL_USER_TYPES = USER_TYPES | {"unspecified"}
 
 
 def _connect() -> sqlite3.Connection:
@@ -53,7 +57,7 @@ def init_db() -> None:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 user_id TEXT PRIMARY KEY,
-                user_type TEXT NOT NULL CHECK(user_type IN ('company','individual')),
+                user_type TEXT NOT NULL CHECK(user_type IN ('company','individual','unspecified')),
                 company_name TEXT,
                 created_at TEXT NOT NULL
             )
@@ -91,11 +95,14 @@ def log_event(user_id: str, event_type: str, payload: dict) -> None:
     with _db() as conn:
         # Attribute every event to *some* user even if the client never
         # finished registering (e.g. dismissed the company/individual
-        # prompt) — default to an anonymous individual so usage still
-        # counts toward totals instead of silently vanishing.
+        # prompt) — default to "unspecified" so usage still counts toward
+        # totals instead of silently vanishing, WITHOUT guessing that they
+        # were an individual. If register_user() runs later for this same
+        # user_id, its ON CONFLICT DO UPDATE overwrites this with their
+        # real answer.
         conn.execute("""
             INSERT INTO users (user_id, user_type, company_name, created_at)
-            VALUES (?, 'individual', NULL, ?)
+            VALUES (?, 'unspecified', NULL, ?)
             ON CONFLICT(user_id) DO NOTHING
         """, (user_id, now))
         conn.execute("""
@@ -111,6 +118,8 @@ def summary() -> dict:
             "SELECT COUNT(*) c FROM users WHERE user_type='company'").fetchone()["c"]
         individuals = conn.execute(
             "SELECT COUNT(*) c FROM users WHERE user_type='individual'").fetchone()["c"]
+        unspecified = conn.execute(
+            "SELECT COUNT(*) c FROM users WHERE user_type='unspecified'").fetchone()["c"]
 
         jd_rows = conn.execute(
             "SELECT payload FROM events WHERE event_type='jd_analyzed'").fetchall()
@@ -158,5 +167,6 @@ def summary() -> dict:
                 "total": total_users,
                 "companies": companies,
                 "individuals": individuals,
+                "unspecified": unspecified,
             },
         }
