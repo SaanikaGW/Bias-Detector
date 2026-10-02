@@ -803,7 +803,7 @@ function ReducerPage() {
   const [uploading, setUploading] = useState(false);
   const [uploadErrors, setUploadErrors] = useState([]);
   const fileInputRef = useRef(null);
-  const MAX = 3000;
+  const MAX = 50000;
 
   const activeJd = jds.find((j) => j.id === activeId) || jds[0];
   const text     = activeJd?.text || "";
@@ -1544,7 +1544,7 @@ function FairIndexAnalyze({ onSaved }) {
   const [uploading, setUploading] = useState(false);
   const [uploadErrors, setUploadErrors] = useState([]);
   const fileInputRef = useRef(null);
-  const MAX_JD = 3000;
+  const MAX_JD = 50000;
 
   function addJd() {
     setJds((prev) => [...prev, { id: Date.now(), text: "", sourceName: null }]);
