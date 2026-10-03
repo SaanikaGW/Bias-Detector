@@ -2188,30 +2188,6 @@ function AboutPage() {
         </div>
       </div>
 
-      {/* GitHub CTA */}
-      <Card style={{
-        marginBottom: 32,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
-        gap: 16,
-        background: `linear-gradient(135deg, rgba(14,165,233,0.08), rgba(16,185,129,0.04))`,
-        border: `1px solid ${C.teal}20`,
-      }}>
-        <div>
-          <div style={{ fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700, color: C.ink, marginBottom: 6 }}>
-            Curious about the methodology?
-          </div>
-          <p style={{ fontSize: 14, color: C.mist, lineHeight: 1.6 }}>
-            The full technical implementation — models, training data, bias detection logic, and evaluation pipeline — is open source.
-          </p>
-        </div>
-        <Btn variant="outline" onClick={() => window.open("https://github.com/SaanikaGW/Bias-Detector", "_blank")}>
-          View Source →
-        </Btn>
-      </Card>
-
       {/* Author */}
       <Card style={{
         background: `linear-gradient(135deg, rgba(14,165,233,0.1), rgba(16,185,129,0.06))`,
