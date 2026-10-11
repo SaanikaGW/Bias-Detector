@@ -14,7 +14,7 @@ import metrics_store
 from agents import PIIStripper, FitEvaluator
 
 app = Flask(__name__)
-_cors_origin = os.environ.get("CORS_ORIGIN", "*")
+_cors_origin = [o.strip() for o in os.environ.get("CORS_ORIGIN", "*").split(",") if o.strip()]
 CORS(app, origins=_cors_origin)
 metrics_store.init_db()
 
