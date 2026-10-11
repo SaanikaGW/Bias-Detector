@@ -26,6 +26,8 @@ DB_PATH = os.environ.get(
     "METRICS_DB_PATH",
     os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "metrics.db"),
 )
+BASELINE_INDIVIDUALS = int(os.environ.get("BASELINE_INDIVIDUALS", "82"))  # users before tracking began
+BASELINE_JDS = int(os.environ.get("BASELINE_JDS", "175"))  # JDs analyzed before tracking began
 
 EVENT_TYPES = {"jd_analyzed", "fhi_submitted", "hiring_ai_compared"}
 # "company"/"individual" are explicit answers to the one-time prompt;
@@ -113,11 +115,11 @@ def log_event(user_id: str, event_type: str, payload: dict) -> None:
 
 def summary() -> dict:
     with _db() as conn:
-        total_users = conn.execute("SELECT COUNT(*) c FROM users").fetchone()["c"]
+        total_users = conn.execute("SELECT COUNT(*) c FROM users").fetchone()["c"] + BASELINE_INDIVIDUALS
         companies = conn.execute(
             "SELECT COUNT(*) c FROM users WHERE user_type='company'").fetchone()["c"]
         individuals = conn.execute(
-            "SELECT COUNT(*) c FROM users WHERE user_type='individual'").fetchone()["c"]
+            "SELECT COUNT(*) c FROM users WHERE user_type='individual'").fetchone()["c"] + BASELINE_INDIVIDUALS
         unspecified = conn.execute(
             "SELECT COUNT(*) c FROM users WHERE user_type='unspecified'").fetchone()["c"]
 
@@ -151,7 +153,7 @@ def summary() -> dict:
 
         return {
             "jobDescriptions": {
-                "totalAnalyzed": len(jd_rows),
+                "totalAnalyzed": len(jd_rows) + BASELINE_JDS,
                 "avgPercentImproved": avg_improvement,
             },
             "fairHiringIndex": {
