@@ -28,6 +28,8 @@ DB_PATH = os.environ.get(
 )
 BASELINE_INDIVIDUALS = int(os.environ.get("BASELINE_INDIVIDUALS", "82"))  # users before tracking began
 BASELINE_JDS = int(os.environ.get("BASELINE_JDS", "175"))  # JDs analyzed before tracking began
+BASELINE_COMPANIES = int(os.environ.get("BASELINE_COMPANIES", "10"))  # companies before tracking began
+BASELINE_PEOPLE = int(os.environ.get("BASELINE_PEOPLE", "12"))  # people covered before tracking began
 
 EVENT_TYPES = {"jd_analyzed", "fhi_submitted", "hiring_ai_compared"}
 # "company"/"individual" are explicit answers to the one-time prompt;
@@ -115,9 +117,9 @@ def log_event(user_id: str, event_type: str, payload: dict) -> None:
 
 def summary() -> dict:
     with _db() as conn:
-        total_users = conn.execute("SELECT COUNT(*) c FROM users").fetchone()["c"] + BASELINE_INDIVIDUALS
+        total_users = conn.execute("SELECT COUNT(*) c FROM users").fetchone()["c"] + BASELINE_INDIVIDUALS + BASELINE_COMPANIES
         companies = conn.execute(
-            "SELECT COUNT(*) c FROM users WHERE user_type='company'").fetchone()["c"]
+            "SELECT COUNT(*) c FROM users WHERE user_type='company'").fetchone()["c"] + BASELINE_COMPANIES
         individuals = conn.execute(
             "SELECT COUNT(*) c FROM users WHERE user_type='individual'").fetchone()["c"] + BASELINE_INDIVIDUALS
         unspecified = conn.execute(
@@ -134,7 +136,7 @@ def summary() -> dict:
 
         fhi_rows = conn.execute(
             "SELECT payload FROM events WHERE event_type='fhi_submitted'").fetchall()
-        fhi_values, total_people_covered = [], 0
+        fhi_values, total_people_covered = [], BASELINE_PEOPLE
         for r in fhi_rows:
             p = json.loads(r["payload"] or "{}")
             if isinstance(p.get("fhi"), (int, float)):
