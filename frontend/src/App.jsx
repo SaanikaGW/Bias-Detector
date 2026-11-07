@@ -23,6 +23,7 @@ import {
   logUsageEvent,
   fetchUsageSummary,
 } from "./shared/usageMetrics.js";
+import { FeedbackPage, FeedbackPrompt } from "./FeedbackUI.jsx";
 
 const API = import.meta?.env?.VITE_API_BASE_URL || "http://localhost:5001";
 
@@ -323,6 +324,7 @@ function SectionLabel({ children }) {
 function Nav({ page, setPage, theme, toggleTheme }) {
   const items = [
     { id: "home",      label: "Home" },
+    { id: "feedback",  label: "Testimonials" },
     { id: "reducer",   label: "JD Bias Reducer" },
     { id: "hiring",    label: "Hiring AI" },
     { id: "fairindex", label: "Fair Index" },
@@ -2453,6 +2455,7 @@ export default function App() {
 
   const pages = {
     home:      <HomePage setPage={setPage} />,
+    feedback:  <FeedbackPage C={C} api={API} />,
     reducer:   <ReducerPage />,
     hiring:    <HiringAIPage />,
     fairindex: <FairIndexPage />,
@@ -2468,6 +2471,7 @@ export default function App() {
       <Nav page={page} setPage={setPage} theme={theme}
            toggleTheme={() => setTheme(t => t === "dark" ? "light" : "dark")} />
       <UsageTypeGate />
+      <FeedbackPrompt C={C} setPage={setPage} />
       <main style={{ minHeight: "calc(100vh - 60px)" }}>
         {pages[page] || pages.home}
       </main>
@@ -2495,7 +2499,7 @@ export default function App() {
         </div>
         <div style={{ display: "flex", gap: 4 }}>
           {[
-            ["Home", "home"], ["Bias Reducer", "reducer"], ["Hiring AI", "hiring"],
+            ["Testimonials", "feedback"], ["Home", "home"], ["Bias Reducer", "reducer"], ["Hiring AI", "hiring"],
             ["Fair Index", "fairindex"], ["Impact", "impact"], ["About", "about"],
           ].map(([l, id]) => (
             <button
