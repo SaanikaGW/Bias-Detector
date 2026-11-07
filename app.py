@@ -17,6 +17,8 @@ app = Flask(__name__)
 _cors_origin = [o.strip() for o in os.environ.get("CORS_ORIGIN", "*").split(",") if o.strip()]
 CORS(app, origins=_cors_origin)
 metrics_store.init_db()
+from feedback_routes import feedback_bp
+app.register_blueprint(feedback_bp)
 
 
 def _send_contact_email(name: str, sender_email: str, category: str, message: str) -> None:
