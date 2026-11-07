@@ -72,6 +72,7 @@ export async function registerUsageType(apiBase, userType, companyName) {
 export function logUsageEvent(apiBase, eventType, payload = {}) {
   const base = (apiBase || "").replace(/\/+$/, "");
   const userId = getUserId();
+  try { window.dispatchEvent(new CustomEvent("bios:run-complete")); } catch { /* no-op */ }
   try {
     fetch(`${base}/api/metrics/log`, {
       method: "POST",
